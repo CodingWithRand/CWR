@@ -1,18 +1,46 @@
-import logo from './logo.svg';
-import { useState, useEffect } from 'react';
+import cwr from './imgs/channel_logo_new.png'
+import { useState, useEffect, createContext, useContext } from 'react';
 import './App.css';
 
-function MyWork() {
-  const [ offsetX, setOffsetX ] = useState(0);
-  const [ offsetY, setOffsetY ] = useState(0);
+const GlobalState = createContext(undefined);
 
-  const [ orientX, setOrientX ] = useState(0);
-  const [ orientY, setOrientY ] = useState(0);
-  const [ orientZ, setOrientZ ] = useState(0);
+function Global({ children }){
+  const [loadingState, setLoadingState] = useState('undone');
+  return(
+    <GlobalState.Provider value={[
+      {loadingState, setLoadingState}
+    ]}>
+      {children}
+    </GlobalState.Provider>
+  );
+};
 
-  const [ equalizer, setEqualizer ] = useState(0);
-  // const maxOffsetX = 1250;
-  // const maxOffsetY = 560;
+function useGlobal(){
+  const context = useContext(GlobalState);
+  if(!context){
+    throw new Error("useGlobal must be used within a Global component!");
+  };
+  return context;
+};
+
+function LoadingScreen() {
+  const [offsetX, setOffsetX] = useState(0);
+  const [offsetY, setOffsetY] = useState(0);
+
+  const [orientX, setOrientX] = useState(0);
+  const [orientY, setOrientY] = useState(0);
+  const [orientZ, setOrientZ] = useState(0);
+
+  const [scale, setScale] = useState(1);
+
+  const [animationStyle, setAnimStyle] = useState('initial');
+
+  const [{loadingState, setLoadingState}] = useGlobal();
+
+  const [lsOffset, setLSOffset] = useState(0);
+  const [lsOpacity, setLSOpacity] = useState(1);
+
+  const equalizer = 15;
 
   const TTF = {
     linear: {
@@ -51,27 +79,29 @@ function MyWork() {
     const computedStyle = window.getComputedStyle(document.querySelector(".dice"));
     const transform = computedStyle.getPropertyValue('transform');
     const matrix = new DOMMatrix(transform);
-    const translationX = matrix.m41; 
+    const translationX = matrix.m41;
     const translationY = matrix.m42;
 
-    // console.log(translationX, translationY)
-
-    const newX = translationX - 30;
+    const newX = translationX - 30 + equalizer;
     const newY = translationY + 20;
 
     document.querySelector(".shadow").style.right = `${-newX}px`;
     document.querySelector(".shadow").style.top = `${newY}px`;
   }
 
-  async function initial_half_parabola(timeoutId_storage, configs){
-    for(let i = 0; i<configs.highestPoints; i++) {
+  async function initial_half_parabola(timeoutId_storage, configs) {
+    let negateMultiplier = 1;
+    if (configs.inverse) negateMultiplier = -1
+    for (let i = 0; i < configs.highestPoints; i++) {
+      if (i === configs.objHeight) break
       await new Promise((resolve) => {
         const timeoutId = setTimeout(() => {
-          setOrientX((prevOrientX) => (prevOrientX + configs.spinningRate));
-          setOrientY((prevOrientY) => (prevOrientY + configs.spinningRate));
-          setOrientZ((prevOrientZ) => (prevOrientZ + configs.spinningRate));
-          setOffsetX((prevOffsetX) => (prevOffsetX + configs.increment));
-          setOffsetY((prevOffsetY) => (prevOffsetY + Math.pow(i*configs.multiplicator, 1.5)));
+          setOrientX((prevOrientX) => (prevOrientX + Math.floor(Math.random() * configs.spinningRate)));
+          setOrientY((prevOrientY) => (prevOrientY + Math.floor(Math.random() * configs.spinningRate)));
+          setOrientZ((prevOrientZ) => (prevOrientZ + Math.floor(Math.random() * configs.spinningRate)));
+          setOffsetX((prevOffsetX) => (prevOffsetX + configs.XVelocity));
+          setOffsetY((prevOffsetY) => (prevOffsetY + (negateMultiplier * (Math.pow(i, configs.YVelocity)))));
+          setScale((prevScale) => { if (prevScale !== configs.maxPerspectiveScale) return prevScale + ((configs.maxPerspectiveScale - 1) / configs.highestPoints); });
           updateShadow();
           resolve();
         }, configs.accelerator);
@@ -80,16 +110,18 @@ function MyWork() {
     }
   }
 
-  async function end_half_parabola(timeoutId_storage, configs){
-    for(let i = configs.highestPoints; i>0; i--) {
-      if(i === configs.dampener) break
+  async function end_half_parabola(timeoutId_storage, configs) {
+    let negateMultiplier = 1;
+    if (configs.inverse) negateMultiplier = -1
+    for (let i = configs.highestPoints; i > 0; i--) {
+      if (i === configs.bounceRate) break
       await new Promise((resolve) => {
-        const timeoutId = setTimeout(() => { 
-          setOrientX((prevOrientX) => (prevOrientX - configs.spinningRate))
-          setOrientY((prevOrientY) => (prevOrientY - configs.spinningRate))
-          setOrientZ((prevOrientZ) => (prevOrientZ - configs.spinningRate))
-          setOffsetX((prevOffsetX) => (prevOffsetX + configs.increment));
-          setOffsetY((prevOffsetY) => (prevOffsetY - Math.pow((i-1)*configs.multiplicator, 1.5)));
+        const timeoutId = setTimeout(() => {
+          setOrientX((prevOrientX) => (prevOrientX - Math.floor(Math.random() * configs.spinningRate)))
+          setOrientY((prevOrientY) => (prevOrientY - Math.floor(Math.random() * configs.spinningRate)))
+          setOrientZ((prevOrientZ) => (prevOrientZ - Math.floor(Math.random() * configs.spinningRate)))
+          setOffsetX((prevOffsetX) => (prevOffsetX + configs.XVelocity));
+          setOffsetY((prevOffsetY) => (prevOffsetY - (negateMultiplier * (Math.pow((i - 1), configs.YVelocity)))));
           updateShadow()
           resolve();
         }, configs.accelerator);
@@ -98,17 +130,22 @@ function MyWork() {
     }
   }
 
-  async function parabola_freefall(timeoutId_storage, configs) {
+  async function parabola_motion(timeoutId_storage, configs, animStyle) {
+    setAnimStyle(animStyle)
+    configs.maxPerspectiveScale = configs.maxPerspectiveScale / 2
     await initial_half_parabola(timeoutId_storage, configs)
     await end_half_parabola(timeoutId_storage, configs)
-    if(configs.end_anim){
-      for(let i = 0; i<10; i++){ 
-        await new Promise((resolve) => {
-          const timeoutId = setTimeout(() => {updateShadow(); resolve();}, configs.accelerator)
-          timeoutId_storage.push(timeoutId)
-        })
-      }
-      setEqualizer(18)
+  }
+
+  async function end_anim(timeoutId_storage, accelerator) {
+    for (let i = 0; i < 10; i++) {
+      await new Promise((resolve) => {
+        const timeoutId = setTimeout(() => {
+          updateShadow();
+          resolve();
+        }, accelerator)
+        timeoutId_storage.push(timeoutId)
+      })
     }
   }
 
@@ -116,75 +153,265 @@ function MyWork() {
     const timeoutIds = [];
     /* Configs -> {
       accelerator: number -> indicate how fast the animation goes, the more you input, the slower it goes
-      increment: number -> indicate how far the animation go each keyframe (x axis)
-      multiplicator: number -> indicate how far the animation go each keyframe (y axis)
+      XVelocity: number -> indicate how far the animation go each keyframe (x axis)
+      YVelocity: number -> indicate how far the animation go each keyframe (y axis)
       highestPoints: number [int] -> the highest point in y axis that the obj will reach
-      dampener: number [int] -> indicate how much height obj will stop bouncing to
       spinningRate: number -> indicate the frequency of shaking
-      end_anim: boolean -> indicate that it is the last keyframe
+      bounceRate: number [int] -> indicate how much height obj will stop bouncing to
+      objHeight: number [int] -> indicate the height where the object starts falling
+      maxPerspetiveScale: number -> indicate the scale increment when the object is getting closer (must greater than 2)
     } */
     (async () => {
-      await parabola_freefall(timeoutIds, {
+      await parabola_motion(timeoutIds, {
         accelerator: 50,
-        increment: 10,
-        multiplicator: 2,
+        XVelocity: 30,
+        YVelocity: 2,
         highestPoints: 10,
-        spinningRate: 5,
-        dampener: 9
-      });
-      await parabola_freefall(timeoutIds, {
-        accelerator: 50,
-        increment: 5,
-        multiplicator: 2,
-        highestPoints: 5,
+        spinningRate: 20,
+        bounceRate: 9,
+        maxPerspectiveScale: 3
+      }, TTF.easeOut.linear_out_slow_in);
+      await parabola_motion(timeoutIds, {
+        accelerator: 80,
+        XVelocity: 20,
+        YVelocity: 2,
+        highestPoints: 9,
         spinningRate: -50,
+        objHeight: 2,
+        maxPerspectiveScale: 8,
+        inverse: true,
+      }, TTF.easeOut.cubic);
+      await parabola_motion(timeoutIds, {
+        accelerator: 80,
+        XVelocity: 10,
+        YVelocity: 2,
+        highestPoints: 8,
+        spinningRate: -85,
+        objHeight: 1,
+        maxPerspectiveScale: 10,
+        inverse: true
+      }, TTF.easeInOut.cubic);
+      for (let i = 0; i < 4; i++) {
+        await new Promise((resolve) => {
+          const timeoutId = setTimeout(() => {
+            setOrientX((prevOrientX) => (prevOrientX - Math.floor(Math.random() * prevOrientX)));
+            setOrientY((prevOrientY) => (prevOrientY - Math.floor(Math.random() * prevOrientY)));
+            setOrientZ((prevOrientZ) => (prevOrientZ - Math.floor(Math.random() * prevOrientZ)));
+            resolve();
+          }, 120)
+          timeoutIds.push(timeoutId)
+        });
+      }
+      setOrientX(90); setOrientY(0); setOrientZ(0);
+      await new Promise((resolve) => {
+        const timeoutId = setTimeout(() => {
+          document.querySelector('.loading-screen').style.width = '100vw';
+          document.querySelector('.loading-screen').style.height = '100vh';
+          document.querySelector('.loading-screen').style.opacity = 1;
+          resolve();
+        }, 1000)
+        timeoutIds.push(timeoutId)
       });
-      await parabola_freefall(timeoutIds, {
-        accelerator: 70,
-        increment: 2,
-        multiplicator: 1.5,
-        highestPoints: 4,
-        spinningRate: -45,
+      await new Promise((resolve) => {
+        const timeoutId = setTimeout(() => {
+          document.querySelector('.title').style.width = '100%';
+          document.querySelector('.stick').style.transitionTimingFunction = 'cubic-bezier(1, 0.1, 0, 1.25)';
+          document.querySelector('.stick').style.transform = 'translateX(510px)';
+          resolve();
+        }, 700)
+        timeoutIds.push(timeoutId)
       });
-      await parabola_freefall(timeoutIds, {
-        accelerator: 90,
-        increment: 1,
-        multiplicator: 1.25,
-        highestPoints: 3,
-        spinningRate: -35,
-        end_anim: true
+      await new Promise((resolve) => {
+        const timeoutId = setTimeout(() => {
+          document.querySelector('.stick').style.transitionTimingFunction = TTF.linear.emphasized;
+          document.querySelector('.stick').style.transform = 'translateX(0px)';
+          resolve();
+        }, 2000)
+        timeoutIds.push(timeoutId)
       });
-    })()
-    
+      await new Promise((resolve) => {
+        const timeoutId = setTimeout(() => {
+          document.querySelector('.subtitle').style.transform = 'translateY(-13vh) scale(1, 0.8)';
+          resolve();
+        }, 2300)
+        timeoutIds.push(timeoutId)
+      });
+    })();
+
     return () => {
-      timeoutIds.forEach((id) => clearTimeout(id))
+      timeoutIds.forEach((id) => clearTimeout(id));
+    };
+  }, []);
+
+  useEffect(() => {
+    let STOPFLAG = {
+      intervalChecking: false,
+      loop: false
+    };
+    const timeoutIds = [];
+    function getElemProperty(prop, elem, expectedUnit, keepUnit){
+      const elemSize = Math.round(parseFloat(window.getComputedStyle(document.querySelector(elem)).getPropertyValue(prop)));
+      switch(expectedUnit){
+        case '%':
+          const parentWidth = document.querySelector(elem).parentElement.offsetWidth;
+          const parentHeight = document.querySelector(elem).parentElement.offsetHeight;
+          const convertedWidth = Math.round((elemSize / parentWidth) * 100)
+          const convertedHeight = Math.round((elemSize / parentHeight) * 100)
+          if(keepUnit){
+            if(prop === 'width') return `${convertedWidth}%`
+            else if(prop === 'height') return `${convertedHeight}%`
+          }else{
+            if(prop === 'width') return convertedWidth
+            else if(prop === 'height') return convertedHeight
+          }
+          break;
+        default: 
+          return `${elemSize}px`;
+      };
+    };
+
+    async function initLoading() {
+      if(
+        getElemProperty('width', '.loading-screen', 'px', true) === `${window.innerWidth}px` && 
+        getElemProperty('height', '.loading-screen', 'px', true) === `${window.innerHeight}px` &&
+        !STOPFLAG.intervalChecking
+      ){
+        STOPFLAG.intervalChecking = true;
+        for(let i = 0; i<200 && !STOPFLAG.loop; i++){
+          await new Promise((resolve) => {
+            const timeoutId = setTimeout(() => {
+              const nextProgress = getElemProperty('width', '.progress', '%', false) + Math.floor(Math.random() * 10);
+              if(nextProgress >= 100) STOPFLAG.loop = true;
+              document.querySelector(".progress").style.width = `${nextProgress}%`;
+              resolve();
+            }, 500);
+            timeoutIds.push(timeoutId);
+          });
+        };
+        document.querySelector(".loading-bar").style.opacity = 0;
+        document.querySelector(".loading-bar").style.transform = "translateY(20vw)";
+        document.querySelector(".progress").style.width = "100%";
+        await new Promise((resolve) => {
+          const timeoutId = setTimeout(() => {
+            document.querySelector('.continue').classList.add("blink");
+            resolve();
+          }, 1500);
+          timeoutIds.push(timeoutId);
+        })
+        setLoadingState("done");
+      }
     }
-  }, [])
+
+    const intervalId = setInterval(initLoading, 100);
+
+    return () => {
+      timeoutIds.forEach((id) => clearTimeout(id));
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  function Continue(){
+    let timeoutId;
+    if(loadingState === "done"){
+      setLSOffset(100); setLSOpacity(0);
+      (async () => {
+        await new Promise((resolve) => {
+          timeoutId = setTimeout(() => {
+            setLoadingState("proceeded");
+            resolve();
+          }, 3500);
+        });
+      })();
+    }
+    return () => {
+      if(timeoutId) clearTimeout(timeoutId);
+    }
+  }
 
   return (
     <div className='screen'>
       <div className="perspective-field">
         <div className='dice' style={{
-          transform: `translateZ(50px) translateX(-${offsetX + equalizer}px) translateY(${offsetY}px) rotateX(${orientX}deg) rotateY(${orientY/2}deg) rotateZ(${orientZ}deg)`,
+          transform: `translate3d(-${offsetX + equalizer}px, ${offsetY}px, 150px) rotateX(${orientX}deg) rotateY(${orientY / 2}deg) rotateZ(${orientZ}deg) scale3d(${scale}, ${scale}, ${scale})`,
           transitionDuration: '0.1s',
-          transitionTimingFunction: TTF.easeOut.linear_out_slow_in
-          }}>
-          <div className='front face'>front</div>
-          <div className='back face'>back</div>
-          <div className='left face'>left</div>
-          <div className='right face'>right</div>
-          <div className='top face'>top</div>
-          <div className='bottom face'>bottom</div>
-          
+          transitionTimingFunction: animationStyle
+        }}>
+          <div className='front face' />
+          <div className='back face'>
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="30" cy="30" r="10" />
+              <circle cx="70" cy="70" r="10" />
+            </svg>
+          </div>
+          <div className='left face'>
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="30" cy="30" r="10" />
+              <circle cx="50" cy="50" r="10" />
+              <circle cx="70" cy="70" r="10" />
+            </svg>
+          </div>
+          <div className='right face'>
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="30" cy="30" r="10" />
+              <circle cx="70" cy="30" r="10" />
+              <circle cx="30" cy="70" r="10" />
+              <circle cx="70" cy="70" r="10" />
+            </svg>
+
+          </div>
+          <div className='top face'>
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="30" cy="30" r="10" />
+              <circle cx="70" cy="30" r="10" />
+              <circle cx="50" cy="50" r="10" />
+              <circle cx="30" cy="70" r="10" />
+              <circle cx="70" cy="70" r="10" />
+            </svg>
+          </div>
+          <div className='bottom face'>
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="10" />
+            </svg>
+          </div>
         </div>
-        <div className='shadow'>shadow</div>
+        <div className='shadow' style={{ transform: `scale3d(${scale}, ${scale}, ${scale})`}}></div>
+      </div>
+      <div className='loading-screen'>
+        <div className='ls-container' style={{ transform: `translateY(${lsOffset}vh)`, opacity: `${lsOpacity}` }}>
+          <div className='banner'>
+            <div className='banner-container'>
+              <img src={cwr} alt='CodingWithRand'/>
+              <div className='stick'/>
+              <h1 className='title'>CodingWithRand</h1>
+            </div>
+            <div className='banner-shadow'/>
+          </div>
+          <label className='subtitle'>Present</label>
+          <div className='loading-bar'>
+            <label>Tip: Look at your closet</label>
+            <div className='outline'>
+              <div className='progress' />
+            </div>
+          </div>
+          <label className='continue' onClick={Continue}>Click anywhere to continue...</label>
+        </div>
       </div>
     </div>
   );
 }
 
+function PageAnalysis() {
+  const [{loadingState, setLoadingState}] = useGlobal();
+  if(loadingState === 'undone' || loadingState === 'done') return <LoadingScreen />
+  else if(loadingState === 'proceeded') return <></>
+}
+
 function App() {
-  return <MyWork/>
+  return (
+    <Global>
+      <PageAnalysis />
+    </Global>
+  )
 }
 
 export default App;

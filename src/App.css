@@ -1,16 +1,33 @@
-html, body, #root, .screen{width: 100%; height: 100%; overflow-x: hidden;}
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@300&display=swap");
+/* @import url("https://fonts.googleapis.com");
+@import url("https://fonts.gstatic.com"); */
 
-.screen{perspective: 100vw;}
+html, body, #root, .screen{width: 100%; height: 100%; overflow: hidden;}
+
+:root{
+  --elastic: linear(0 0%, 0.22 2.1%, 0.86 6.5%, 1.11 8.6%, 1.3 10.7%, 1.35 11.8%, 1.37 12.9%, 1.37 13.7%, 1.36 14.5%, 1.32 16.2%, 1.03 21.8%, 0.94 24%, 0.89 25.9%, 0.88 26.85%, 0.87 27.8%, 0.87 29.25%, 0.88 30.7%, 0.91 32.4%, 0.98 36.4%, 1.01 38.3%, 1.04 40.5%, 1.05 42.7%, 1.05 44.1%, 1.04 45.7%, 1 53.3%, 0.99 55.4%, 0.98 57.5%, 0.99 60.7%, 1 68.1%, 1.01 72.2%, 1 86.7%, 1 100%);
+  --shadow: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+  --fastout-slowin: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in-cubic: cubic-bezier(0.55, 0.06, 0.68, 0.19);
+  --ease-inout-cubic-v2: cubic-bezier(0.83, -0.75, 0.33, 1.21);
+}
+
+.screen{ 
+  perspective: 100vw; 
+  background-image: url("./imgs/bg.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: rgb(50,50,50);
+}
 
 .perspective-field{
   width: 100vw;
   height: 100vh;
-  background-color: grey;
+  /* background-image: linear-gradient(to bottom, gray, rgb(50,50,50)); */
+  /* box-shadow: inset 0px -10px 20px rgb(45,45,45), 0px -10px 20px rgb(100,100,100); */
+  /* Transparent is better */
   transform: rotateX(30deg);
   transform-style: preserve-3d;
-  /* position: relative;
-  left: 50px;
-  top: 50px; */
 }
 .dice{
   position: absolute;
@@ -23,19 +40,19 @@ html, body, #root, .screen{width: 100%; height: 100%; overflow-x: hidden;}
   background-color: transparent;
   transform-style: preserve-3d;
   transition-property: transform;
+  transition-duration: '0.1s';
 }
 .face{
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid black;
   width: 50px;
   height: 50px;
-  background-color: rgb(200,30,212);
+  background-color: white;
   position: absolute;
 }
 
-.front{transform: rotateX(-90deg);}
+.front{background-image: url('./imgs/channel_logo_old.png'); background-size: contain; transform: rotateX(-90deg);}
 .back{transform: translateY(-50px) rotateX(90deg) rotateZ(180deg);}
 .left{transform: translateY(-25px) translateX(-25px) rotateX(-90deg) rotateY(-90deg);}
 .right{transform: translateY(-25px) translateX(25px) rotateX(-90deg) rotateY(90deg);}
@@ -50,7 +67,139 @@ html, body, #root, .screen{width: 100%; height: 100%; overflow-x: hidden;}
   align-items: center;
   width: 90px;
   height: 90px;
-  background-color: rgb(0,0,0,0.6);
-  color: white;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 70%);
+  background: var(--shadow);
+}
+
+.loading-screen{
+  width: 0;
+  height: 100vh;
+  opacity: 0;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  transition: width 0.5s, height 0.5s, opacity 0.5s;
+}
+
+.ls-container{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10vw;
+  row-gap: 30px;
+  transition: opacity 2s var(--ease-in-cubic), transform 3s var(--ease-inout-cubic-v2);
+}
+
+.ls-container img, h1, label{
+  user-select: none;
+}
+
+.banner{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+}
+
+.banner img{
+  border-radius: 9999px;
+  border: solid 3px black;
+  box-shadow: 0px 0px 10px black;
+  width: 100px;
+  height: 100px;
+}
+
+.banner .stick{
+  width: 2px;
+  height: 100px;
+  background-color: black;
+  transition-property: transform;
+  transition-duration: 2s;
+}
+
+.banner .title{
+  width: 0;
+  overflow: hidden;
+  font-weight: normal;
+  font-size: 4em;
+  transition: width 2s cubic-bezier(1, -0.1, 0, 0.8);
+}
+
+.subtitle{
+  font-size: 3em;
+  transform: translateY(-13vh) scale(0, 0.8);
+  font-family: 'League Spartan', sans-serif;
+  font-stretch: ultra-expanded;
+  transition: transform 1s var(--elastic);
+  color: gray;
+}
+
+.loading-bar{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 10px;
+  width: 70%;
+  transition: opacity 1s var(--ease-in-cubic), transform 1.1s var(--ease-inout-cubic-v2);
+}
+
+.outline{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 1em;
+  border: solid 2px rgb(50,50,50);
+  border-radius: 10px;
+  padding: 0 1px;
+  box-shadow: 0px 10px 10px lightgray;
+}
+
+.progress{
+  width: 0;
+  height: 90%;
+  border-radius: 10px;
+  background-color: rgb(50,50,50);
+  transition: width 0.5s var(--fastout-slowin);
+}
+
+.banner-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  column-gap: 20px;
+}
+
+.banner-shadow{
+  position: relative;
+  width: 70%;
+  height: 10vh;
+  left: 0;
+  bottom: 30%;
+  background: var(--shadow);
+}
+
+.continue{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  opacity: 0;
+  position: absolute;
+  font-size: 1.2em;
+  margin-bottom: 5%;
+}
+
+.blink{animation: blinking 3s linear infinite;}
+
+@keyframes blinking {
+  0% {opacity: 0;}
+  50% {opacity: 1;}
+  100% {opacity: 0;}
 }

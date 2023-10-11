@@ -3,7 +3,8 @@ import LoadingScreen from "./components/intro";
 import SetUp from './components/setup';
 
 function PageAnalysis() {
-  const [{loadingState}] = useGlobal();
+  const [{searchParams}] = useGlobal();
+  const loadingState = searchParams.get('loadingState');
   if(loadingState === 'undone' || loadingState === 'done') return <LoadingScreen />
   else if(loadingState === 'proceeded') return <></>
 }

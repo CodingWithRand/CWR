@@ -1,12 +1,14 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const GlobalState = createContext(undefined);
 
 export function Global({ children }){
-  const [loadingState, setLoadingState] = useState('undone');
+  const [searchParams, setSearchParams] = useSearchParams({loadingState: 'undone'});
+
   return(
     <GlobalState.Provider value={[
-      {loadingState, setLoadingState}
+      {searchParams, setSearchParams}
     ]}>
       {children}
     </GlobalState.Provider>

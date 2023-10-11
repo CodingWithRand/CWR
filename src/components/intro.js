@@ -276,13 +276,17 @@ export default function LoadingScreen() {
         STOPFLAG.intervalChecking = true;
         for(let i = 0; i<200 && !STOPFLAG.loop; i++){
           await new Promise((resolve) => {
-            const timeoutId = setTimeout(() => {
-              const nextProgress = getElemProperty('width', '.progress', '%', false) + Math.floor(Math.random() * 10);
-              if(nextProgress >= 100) STOPFLAG.loop = true;
-              document.querySelector(".progress").style.width = `${nextProgress}%`;
-              resolve();
-            }, 500);
-            timeoutIds.push(timeoutId);
+            try{
+              const timeoutId = setTimeout(() => {
+                const nextProgress = getElemProperty('width', '.progress', '%', false) + Math.floor(Math.random() * 10);
+                if(nextProgress >= 100) STOPFLAG.loop = true;
+                document.querySelector(".progress").style.width = `${nextProgress}%`;
+                resolve();
+              }, 500);
+              timeoutIds.push(timeoutId);
+            }catch(err){
+              alert(err);
+            }
           });
         };
         document.querySelector(".loading-bar").style.opacity = 0;

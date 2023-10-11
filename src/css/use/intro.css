@@ -18,7 +18,7 @@ html, body, #root, .screen{overflow: hidden;}
   height: 100%;
   perspective: 100vw; 
   background-image: url("../../../public/imgs/backend-images/bg.png");
-  background-size: contain;
+  /* background-size: contain; */
   background-repeat: no-repeat;
   background-color: rgb(50,50,50);
 }
@@ -196,7 +196,7 @@ html, body, #root, .screen{overflow: hidden;}
   opacity: 0;
   position: absolute;
   font-size: 1.2em;
-  margin-bottom: 5%;
+  margin-bottom: 5vh;
 }
 
 .blink{animation: blinking 3s linear infinite;}

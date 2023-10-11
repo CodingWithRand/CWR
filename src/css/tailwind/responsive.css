@@ -1,0 +1,24 @@
+@tailwind utilities;
+
+@layer utilities{
+    .subtitle.responsive{
+        @apply text-[2em] nmob:text-[3em];
+    }
+
+    .banner-container.responsive{
+        @apply gap-x-[10px] nmob:gap-x-[20px];
+    }
+    .banner-container.responsive img{
+        @apply w-[60px] h-[60px] gmob-lsm:w-[75px] gmob-lsm:h-[75px] sm:w-[100px] sm:h-[100px];
+    }
+    .banner-container.responsive .stick{
+        @apply h-[60px] gmob-lsm:h-[75px] sm:h-[100px];
+    }
+    .banner-container.responsive .title{
+        @apply text-[1.5em] gmob-lsm:text-[2em] sm:text-[3em] amd:text-[4em];
+    }
+
+    .cursor-pointer-animate.responsive{
+        @apply translate-x-[200px] gmob-lsm:translate-x-[270px] sm:translate-x-[400px] amd:translate-x-[520px];
+    }
+}

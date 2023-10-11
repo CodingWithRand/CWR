@@ -1,0 +1,98 @@
+@tailwind utilities;
+
+@layer utilities{
+
+    .white-shadow{--shadow: radial-gradient(ellipse at center, rgb(100, 100, 100, 0.3) 0%, transparent 70%);}
+    .black-shadow{--shadow: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, transparent 70%);}
+
+    .white-backdrop{--ldbb-backdrop: lightgray;}
+    .black-backdrop{--ldbb-backdrop: rgb(50,50,50);}
+
+    .light-mode-icon{--icon-shadow: radial-gradient(gray 0%, transparent 60%);}
+    .dark-mode-icon{--icon-shadow: radial-gradient(rgb(50, 50, 50) 0%, transparent 75%);}
+
+    label.theme.text-color,
+    h1.theme.text-color,
+    h2.theme.text-color,
+    h3.theme.text-color,
+    h4.theme.text-color,
+    h5.theme.text-color,
+    h6.theme.text-color,
+    div.theme.text-color,
+    button.theme.text-color,
+    code.theme.text-color,
+    pre.theme.text-color,
+    a.theme.text-color,
+    option.theme.text-color,
+    li.theme.text-color,
+    ul.theme.text-color,
+    ol.theme.text-color,
+    textarea.theme.text-color,
+    input.theme.text-color
+    {
+        @apply text-black dark:text-white;
+    }
+
+    label.theme.component.bg-color,
+    h1.theme.component.bg-color,
+    h2.theme.component.bg-color,
+    h3.theme.component.bg-color,
+    h4.theme.component.bg-color,
+    h5.theme.component.bg-color,
+    h6.theme.component.bg-color,
+    div.theme.component.bg-color,
+    button.theme.component.bg-color,
+    code.theme.component.bg-color,
+    pre.theme.component.bg-color,
+    a.theme.component.bg-color,
+    option.theme.component.bg-color,
+    li.theme.component.bg-color,
+    ul.theme.component.bg-color,
+    ol.theme.component.bg-color,
+    textarea.theme.component.bg-color,
+    input.theme.component.bg-color
+    {
+        @apply bg-black dark:bg-white;
+    }
+
+    div.theme.container.bg-color,
+    ul.theme.container.bg-color,
+    ol.theme.container.bg-color
+    {
+        @apply bg-white dark:bg-neutral-900;
+    }
+
+    label.theme.border-color,
+    h1.theme.border-color,
+    h2.theme.border-color,
+    h3.theme.border-color,
+    h4.theme.border-color,
+    h5.theme.border-color,
+    h6.theme.border-color,
+    div.theme.border-color,
+    button.theme.border-color,
+    code.theme.border-color,
+    pre.theme.border-color,
+    a.theme.border-color,
+    option.theme.border-color,
+    li.theme.border-color,
+    ul.theme.border-color,
+    ol.theme.border-color,
+    textarea.theme.border-color,
+    input.theme.border-color
+    {
+        @apply border-black dark:border-white;
+    }
+
+    .loading-bar-border.theme.custom{
+        @apply white-backdrop dark:black-backdrop
+    }
+
+    .banner-shadow.theme.custom{
+        @apply black-shadow dark:white-shadow
+    }
+
+    .tc-icon.theme.custom{
+        @apply light-mode-icon dark:dark-mode-icon
+    }
+}

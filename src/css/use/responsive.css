@@ -1,0 +1,129 @@
+.transform {
+  -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+          transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+}
+
+.resize {
+  resize: both
+}
+
+.ease-in {
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1)
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1)
+}
+
+.ease-out {
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1)
+}
+
+.subtitle.responsive {
+  font-size: 2em
+}
+
+@media (min-width: 400px) {
+  .subtitle.responsive {
+    font-size: 3em
+  }
+}
+
+.banner-container.responsive {
+  -webkit-column-gap: 10px;
+          column-gap: 10px
+}
+
+@media (min-width: 400px) {
+  .banner-container.responsive {
+    -webkit-column-gap: 20px;
+            column-gap: 20px
+  }
+}
+
+.banner-container.responsive img {
+  height: 60px;
+  width: 60px
+}
+
+@media (min-width: 640px) {
+  .banner-container.responsive img {
+    height: 100px;
+    width: 100px
+  }
+}
+
+@media (min-width: 500px) and (max-width: 640px) {
+  .banner-container.responsive img {
+    height: 75px;
+    width: 75px
+  }
+}
+
+.banner-container.responsive .stick {
+  height: 60px
+}
+
+@media (min-width: 640px) {
+  .banner-container.responsive .stick {
+    height: 100px
+  }
+}
+
+@media (min-width: 500px) and (max-width: 640px) {
+  .banner-container.responsive .stick {
+    height: 75px
+  }
+}
+
+.banner-container.responsive .title {
+  font-size: 1.5em
+}
+
+@media (min-width: 640px) {
+  .banner-container.responsive .title {
+    font-size: 3em
+  }
+}
+
+@media (min-width: 777px) {
+  .banner-container.responsive .title {
+    font-size: 4em
+  }
+}
+
+@media (min-width: 500px) and (max-width: 640px) {
+  .banner-container.responsive .title {
+    font-size: 2em
+  }
+}
+
+.cursor-pointer-animate.responsive {
+  --tw-translate-x: 200px;
+  -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+          transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+}
+
+@media (min-width: 640px) {
+  .cursor-pointer-animate.responsive {
+    --tw-translate-x: 400px;
+    -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+  }
+}
+
+@media (min-width: 777px) {
+  .cursor-pointer-animate.responsive {
+    --tw-translate-x: 520px;
+    -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+  }
+}
+
+@media (min-width: 500px) and (max-width: 640px) {
+  .cursor-pointer-animate.responsive {
+    --tw-translate-x: 270px;
+    -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+  }
+}

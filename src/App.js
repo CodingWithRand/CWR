@@ -1,12 +1,24 @@
 import { Global, useGlobal } from "./components/global";
+import { Routes, Outlet, useNavigate, Route } from "react-router-dom";
 import LoadingScreen from "./components/intro";
 import SetUp from './components/setup';
+import LessonList from "./components/lesson-list";
+import functions from "./scripts/functions";
 
 function PageAnalysis() {
+  const navigator = useNavigate();
   const [{searchParams}] = useGlobal();
   const loadingState = searchParams.get('loadingState');
-  if(loadingState === 'undone' || loadingState === 'done') return <LoadingScreen />
-  else if(loadingState === 'proceeded') return <></>
+  if(loadingState === 'proceeded'){
+    functions.sync_delay(1000)
+    navigator('/lesson-list')
+  }
+  return (
+    <Routes>
+      <Route path="/" element={<LoadingScreen />} />
+      <Route path="/lesson-list" element={<LessonList />} />
+    </Routes>
+  )
 }
 
 function App() {
@@ -20,6 +32,7 @@ function App() {
         <a href="https://www.flaticon.com/free-icons/weather" title="weather icons">Weather icons created by Freepik - Flaticon</a>
         <a href="https://www.flaticon.com/free-icons/desktop" title="desktop icons">Desktop icons created by Pixel perfect - Flaticon</a>
       */}
+      <Outlet/>
     </Global>
   )
 }

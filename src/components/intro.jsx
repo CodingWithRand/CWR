@@ -317,7 +317,7 @@ export default function LoadingScreen() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       if(loadingState !== "undone") clearInterval(intervalId);
-      const quote = ["\"Hi guys, Rand here.\" How original...", "A former Roblox tutorial YouTuber", "I like you, Carisa", "Look at your closet"];
+      const quote = ["\"Hi guys, Rand here.\" How original...", "A former Roblox tutorial YouTuber", "I love you, Carisa", "Look at your closet"];
       const randomIndex = Math.floor(Math.random() * quote.length);
       setLoadingQuote(quote[randomIndex]);
     }, 3000);

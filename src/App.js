@@ -2,7 +2,7 @@ import { Global, useGlobal } from "./components/global";
 import { Routes, Outlet, useNavigate, Route } from "react-router-dom";
 import LoadingScreen from "./components/intro";
 import SetUp from './components/setup';
-import LessonList from "./components/lesson-list";
+import Registry from "./components/registry";
 import functions from "./scripts/functions";
 
 function PageAnalysis() {
@@ -11,12 +11,12 @@ function PageAnalysis() {
   const loadingState = searchParams.get('loadingState');
   if(loadingState === 'proceeded'){
     functions.sync_delay(1000)
-    navigator('/lesson-list')
+    navigator('/regristation')
   }
   return (
     <Routes>
       <Route path="/" element={<LoadingScreen />} />
-      <Route path="/lesson-list" element={<LessonList />} />
+      <Route path="/regristation" element={<Registry />} />
     </Routes>
   )
 }

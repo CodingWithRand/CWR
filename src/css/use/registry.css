@@ -1,6 +1,100 @@
-@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@300&family=Montserrat:wght@200&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@300&family=Montserrat:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300&display=swap");
+
+h1, h2, li, form{ user-select: none; }
+
+:root{
+    --ease-out-cubic: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
 
 .h-reg{
     font-family: 'League Spartan', sans-serif;
     font-family: 'Montserrat', sans-serif;
+    font-size: 3em;
+    transition: transform 1s var(--ease-out-cubic), opacity 1s var(--ease-out-cubic);
+    opacity: 0;
+    transform: translateY(-15vh);
+    margin-top: 1em;
+}
+
+.h-reg.animate{
+    transform: translateY(0vh);
+    opacity: 1;
+}
+
+.reg-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.h-reg.animate{
+    transform: translateY();
+}
+
+.registration-forms{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    transition: opacity 1s linear;
+    opacity: 0;
+}
+
+.registration-forms.animate{
+    opacity: 1;
+}
+
+.reg-t-or{
+    background-color: rgb(240,240,240,0.3);
+}
+
+.registration-forms li{
+    width: 100%;
+    text-align: center;
+    padding: 2em;
+    cursor: pointer;
+}
+
+.registration-forms li:nth-of-type(even){
+    padding: 0;
+    cursor: initial;
+}
+
+.reg-t{
+    font-family: 'Barlow', sans-serif;
+    font-size: 1.5em;
+}
+
+.log-in{
+    background-image: linear-gradient(to bottom, transparent, rgb(240, 240, 240, 0.3));
+}
+
+.log-in, .sign-up > .reg-t{ color: darkgray; }
+
+.sign-up{
+    background-image: linear-gradient(to bottom, rgb(240, 240, 240, 0.3), transparent);
+}
+
+.hov-eff{
+    transition: transform 0.2s ease-out;
+}
+
+.hov-eff:hover > .reg-t{
+    transform: scale3d(1.1, 1.1, 1.1);
+    color: rgb(50,50,50);
+}
+
+.reg-form{
+    transition: margin 0.5s var(--fastout-slowin), height 0.5s var(--fastout-slowin);
+    overflow: auto;
+    margin: 0;
+    height: 0;
+}
+
+.reg-form.animate{
+    margin: 2vh 0;
+    height: fit-content;
 }

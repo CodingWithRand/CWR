@@ -3,6 +3,8 @@
     --icon-shadow: radial-gradient(gray 0%, transparent 60%);
 }
 
+img{ user-select: none; }
+
 .setup{
     position: absolute;
     z-index: 20;

@@ -1,14 +1,18 @@
-import { useContext, createContext } from "react";
+import { useContext, createContext, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import Cookies from 'universal-cookie';
 
 const GlobalState = createContext(undefined);
 
 export function Global({ children }){
+  const currentTheme = new Cookies();
+  const [theme, setTheme] = useState(currentTheme.get("theme") || "default-os");
   const [searchParams, setSearchParams] = useSearchParams({loadingState: 'undone'});
 
   return(
     <GlobalState.Provider value={[
-      {searchParams, setSearchParams}
+      {searchParams, setSearchParams},
+      {theme, setTheme, currentTheme}
     ]}>
       {children}
     </GlobalState.Provider>

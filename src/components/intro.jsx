@@ -1,11 +1,20 @@
 import '../css/use/intro.css';
-import '../css/use/responsive.css';
-import '../css/use/theme.css';
 import { useState, useEffect } from 'react';
-import { useGlobal } from './global';
-import functions from '../scripts/functions';
+import { useGlobal } from '../scripts/global';
+import { Components } from '../scripts/util';
+import { useNavigate } from 'react-router-dom';
+import { functions } from '../scripts/util';
 
 export default function LoadingScreen() {
+
+  const navigator = useNavigate();
+  const [{searchParams, setSearchParams}] = useGlobal();
+  const loadingState = searchParams.get('loadingState');
+  if(loadingState === 'proceeded'){
+    functions.sync_delay(1000)
+    navigator('/registration')
+  }
+
   const [offsetX, setOffsetX] = useState(0);
   const [offsetY, setOffsetY] = useState(0);
 
@@ -16,9 +25,6 @@ export default function LoadingScreen() {
   const [scale, setScale] = useState(1);
 
   const [animationStyle, setAnimStyle] = useState('initial');
-
-  const [{searchParams, setSearchParams}] = useGlobal();
-  const loadingState = searchParams.get('loadingState');
 
   const [lsOffset, setLSOffset] = useState(0);
   const [lsOpacity, setLSOpacity] = useState(1);
@@ -247,7 +253,10 @@ export default function LoadingScreen() {
     };
     const timeoutIds = [];
     function getElemProperty(prop, elem, expectedUnit, keepUnit){
-      const elemSize = Math.round(parseFloat(window.getComputedStyle(document.querySelector(elem)).getPropertyValue(prop)));
+      const elemSize = (() => {
+        try { return Math.round(parseFloat(window.getComputedStyle(document.querySelector(elem)).getPropertyValue(prop))); } 
+        catch { return 0; };
+      })();
       switch(expectedUnit){
         case '%':
           const parentWidth = document.querySelector(elem).parentElement.offsetWidth;
@@ -284,9 +293,7 @@ export default function LoadingScreen() {
                 resolve();
               }, 500);
               timeoutIds.push(timeoutId);
-            }catch(err){
-              alert(err);
-            }
+            }catch(err){ console.error(err); }
           });
         };
         document.querySelector(".loading-bar").style.opacity = 0;
@@ -348,71 +355,73 @@ export default function LoadingScreen() {
   };
 
   return (
-    <div className='screen'>
-      <div className="perspective-field">
-        <div className='dice' style={{
-          transform: `translate3d(-${offsetX + equalizer}vw, ${offsetY}vh, 150px) rotateX(${orientX}deg) rotateY(${orientY / 2}deg) rotateZ(${orientZ}deg) scale3d(${scale}, ${scale}, ${scale})`,
-          transitionDuration: '0.1s',
-          transitionTimingFunction: animationStyle
-        }}>
-          <div className='front face' />
-          <div className='back face'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="30" cy="30" r="10" />
-              <circle cx="70" cy="70" r="10" />
-            </svg>
-          </div>
-          <div className='left face'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="30" cy="30" r="10" />
-              <circle cx="50" cy="50" r="10" />
-              <circle cx="70" cy="70" r="10" />
-            </svg>
-          </div>
-          <div className='right face'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="30" cy="30" r="10" />
-              <circle cx="70" cy="30" r="10" />
-              <circle cx="30" cy="70" r="10" />
-              <circle cx="70" cy="70" r="10" />
-            </svg>
+    <div className="page-container">
+      <div className='screen'>
+        <div className="perspective-field">
+          <div className='dice' style={{
+            transform: `translate3d(-${offsetX + equalizer}vw, ${offsetY}vh, 150px) rotateX(${orientX}deg) rotateY(${orientY / 2}deg) rotateZ(${orientZ}deg) scale3d(${scale}, ${scale}, ${scale})`,
+            transitionDuration: '0.1s',
+            transitionTimingFunction: animationStyle
+          }}>
+            <div className='front face' />
+            <div className='back face'>
+              <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="30" cy="30" r="10" />
+                <circle cx="70" cy="70" r="10" />
+              </svg>
+            </div>
+            <div className='left face'>
+              <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="30" cy="30" r="10" />
+                <circle cx="50" cy="50" r="10" />
+                <circle cx="70" cy="70" r="10" />
+              </svg>
+            </div>
+            <div className='right face'>
+              <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="30" cy="30" r="10" />
+                <circle cx="70" cy="30" r="10" />
+                <circle cx="30" cy="70" r="10" />
+                <circle cx="70" cy="70" r="10" />
+              </svg>
 
+            </div>
+            <div className='top face'>
+              <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="30" cy="30" r="10" />
+                <circle cx="70" cy="30" r="10" />
+                <circle cx="50" cy="50" r="10" />
+                <circle cx="30" cy="70" r="10" />
+                <circle cx="70" cy="70" r="10" />
+              </svg>
+            </div>
+            <div className='bottom face'>
+              <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="10" />
+              </svg>
+            </div>
           </div>
-          <div className='top face'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="30" cy="30" r="10" />
-              <circle cx="70" cy="30" r="10" />
-              <circle cx="50" cy="50" r="10" />
-              <circle cx="30" cy="70" r="10" />
-              <circle cx="70" cy="70" r="10" />
-            </svg>
-          </div>
-          <div className='bottom face'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="10" />
-            </svg>
-          </div>
+          <div className='dice-shadow' style={{ transform: `scale3d(${scale}, ${scale}, ${scale})`}}></div>
         </div>
-        <div className='dice-shadow' style={{ transform: `scale3d(${scale}, ${scale}, ${scale})`}}></div>
-      </div>
-      <div className='loading-screen theme container bg-color'>
-        <div className='ls-container' style={{ transform: `translateY(${lsOffset}vh)`, opacity: `${lsOpacity}` }}>
-          <div className='banner'>
-            <div className='banner-container responsive'>
-              <img src={functions.retrieve_image('channel_logo_new.png', true)} alt='CodingWithRand'/>
-              <div className='stick responsive theme component bg-color'/>
-              <h1 className='title theme text-color'>CodingWithRand</h1>
+        <div className='loading-screen theme container bg-color'>
+          <div className='ls-container' style={{ transform: `translateY(${lsOffset}vh)`, opacity: `${lsOpacity}` }}>
+            <div className='banner'>
+              <div className='banner-container responsive'>
+                <Components.DynamicImage alt='CodingWithRand' constant={true} name="channel_logo_new.png" />
+                <div className='stick responsive theme component bg-color'/>
+                <h1 className='title theme text-color'>CodingWithRand</h1>
+              </div>
+              <div className='banner-shadow theme custom'/>
             </div>
-            <div className='banner-shadow theme custom'/>
-          </div>
-          <label className='subtitle responsive'>Present</label>
-          <div className='loading-bar'>
-            <label className='theme text-color'>{loadingQuote}</label>
-            <div className='loading-bar-border theme border-color custom'>
-              <div className='progress theme component bg-color' />
+            <label className='subtitle responsive'>Present</label>
+            <div className='loading-bar'>
+              <label className='theme text-color'>{loadingQuote}</label>
+              <div className='loading-bar-border theme border-color intense custom'>
+                <div className='progress theme component bg-color' />
+              </div>
             </div>
+            <label className='continue theme text-color' onClick={Continue}>Click anywhere to continue...</label>
           </div>
-          <label className='continue theme text-color' onClick={Continue}>Click anywhere to continue...</label>
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
 :root{
-    --theme-changer-icon: url("../../../public/imgs/backend-images/light-mode.png");
     --icon-shadow: radial-gradient(gray 0%, transparent 60%);
 }
 
@@ -15,7 +14,6 @@ img{ user-select: none; }
 .theme-changer{
     width: 35px;
     height: 35px;
-    background-image: var(--theme-changer-icon);
 }
 .theme-changer img{
     height: 100% !important;

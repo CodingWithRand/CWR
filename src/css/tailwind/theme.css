@@ -11,6 +11,12 @@
     .light-mode-icon{--icon-shadow: radial-gradient(gray 0%, transparent 60%);}
     .dark-mode-icon{--icon-shadow: radial-gradient(rgb(50, 50, 50) 0%, transparent 75%);}
 
+    .light-mode-reg-btn-txt-color{--reg-btn-txt-color: rgb(50,50,50);}
+    .dark-mode-reg-btn-txt-color{--reg-btn-txt-color: rgb(200,200,200);}
+
+    .light-mode-reg-btn-bg-color{--reg-btn-bg-color: rgb(240, 240, 240, 0.3);}
+    .dark-mode-reg-btn-bg-color{--reg-btn-bg-color: rgb(35, 35, 35, 0.3);}
+
     label.theme.text-color,
     h1.theme.text-color,
     h2.theme.text-color,
@@ -31,6 +37,28 @@
     input.theme.text-color
     {
         @apply text-black dark:text-white;
+    }
+
+    label.theme.component.bg-color.inverse,
+    h1.theme.component.bg-color.inverse,
+    h2.theme.component.bg-color.inverse,
+    h3.theme.component.bg-color.inverse,
+    h4.theme.component.bg-color.inverse,
+    h5.theme.component.bg-color.inverse,
+    h6.theme.component.bg-color.inverse,
+    div.theme.component.bg-color.inverse,
+    button.theme.component.bg-color.inverse,
+    code.theme.component.bg-color.inverse,
+    pre.theme.component.bg-color.inverse,
+    a.theme.component.bg-color.inverse,
+    option.theme.component.bg-color.inverse,
+    li.theme.component.bg-color.inverse,
+    ul.theme.component.bg-color.inverse,
+    ol.theme.component.bg-color.inverse,
+    textarea.theme.component.bg-color.inverse,
+    input.theme.component.bg-color.inverse
+    {
+        @apply bg-white dark:bg-[#0f0f0f];
     }
 
     label.theme.component.bg-color,
@@ -81,6 +109,28 @@
     textarea.theme.border-color,
     input.theme.border-color
     {
+        @apply border-gray-300 dark:border-[#282828];
+    }
+
+    label.theme.border-color.intense,
+    h1.theme.border-color.intense,
+    h2.theme.border-color.intense,
+    h3.theme.border-color.intense,
+    h4.theme.border-color.intense,
+    h5.theme.border-color.intense,
+    h6.theme.border-color.intense,
+    div.theme.border-color.intense,
+    button.theme.border-color.intense,
+    code.theme.border-color.intense,
+    pre.theme.border-color.intense,
+    a.theme.border-color.intense,
+    option.theme.border-color.intense,
+    li.theme.border-color.intense,
+    ul.theme.border-color.intense,
+    ol.theme.border-color.intense,
+    textarea.theme.border-color.intense,
+    input.theme.border-color.intense
+    {
         @apply border-black dark:border-white;
     }
 
@@ -94,5 +144,13 @@
 
     .tc-icon.theme.custom{
         @apply light-mode-icon dark:dark-mode-icon
+    }
+
+    .reg-t.theme.custom{
+        @apply light-mode-reg-btn-txt-color dark:dark-mode-reg-btn-txt-color
+    }
+
+    .reg-f.theme.custom, .reg-t-or.theme.custom{
+        @apply light-mode-reg-btn-bg-color dark:dark-mode-reg-btn-bg-color
     }
 }

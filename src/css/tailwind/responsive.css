@@ -1,6 +1,9 @@
 @tailwind utilities;
 
 @layer utilities{
+
+    /* intro.jsx */
+
     .subtitle.responsive{
         @apply text-[2em] nmob:text-[3em];
     }
@@ -21,4 +24,36 @@
     .cursor-pointer-animate.responsive{
         @apply translate-x-[200px] gmob-lsm:translate-x-[270px] sm:translate-x-[400px] amd:translate-x-[520px];
     }
+
+    /* registration-page/index.jsx */
+
+    .h-reg.responsive{
+        @apply text-2xl mt-[2em] sm:text-[2em] sm:mt-[1em] lg:text-[3em];
+    }
+
+    .reg-t.responsive{
+        @apply sm:text-xl lg:text-[1.5em];
+    }
+
+    .reg-f.responsive{
+        @apply py-[1em] sm:py-[2em];
+    }
+
+    .input-field > input.responsive,
+    .field-label.responsive,
+    .submit-btn.responsive{
+        @apply text-xs sm:text-base;
+    }
+    
+
+    /* registration-page/email-verification.jsx */
+
+    .email-icon.responsive{
+        @apply w-[150px] h-[150px] sm:w-[200px] sm:h-[200px];
+    }
+
+    .notf-box.responsive{
+        @apply p-[3vh] text-sm sm:p-[5vh] sm:text-base;
+    }
+
 }

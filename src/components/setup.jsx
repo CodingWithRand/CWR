@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import '../css/use/setup.css';
-import { functions, Components } from '../scripts/util';
+import {  Components } from '../scripts/util';
 import { useGlobal } from '../scripts/global';
 
 export default function SetUp(){
-    const [{}, {theme, setTheme, currentTheme}] = useGlobal();
+    const [{}, {theme, setTheme}] = useGlobal();
 
     useEffect(() => {
         switch(theme){
@@ -23,8 +23,8 @@ export default function SetUp(){
     }, [theme])
 
     useEffect(() => {
-        if(!currentTheme.get("theme")) currentTheme.set("theme", undefined, { path: '/' });
-        else currentTheme.set("theme", theme, { path: '/' });
+        if(!localStorage.getItem("theme")) localStorage.setItem("theme", undefined);
+        else localStorage.setItem("theme", theme);
     }, [theme])
 
     function changeTheme(){

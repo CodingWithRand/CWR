@@ -80,7 +80,8 @@ label.theme.component.bg-color.inverse,
     ul.theme.component.bg-color.inverse,
     ol.theme.component.bg-color.inverse,
     textarea.theme.component.bg-color.inverse,
-    input.theme.component.bg-color.inverse{
+    input.theme.component.bg-color.inverse,
+    dialog.theme.component.bg-color.inverse{
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
@@ -102,7 +103,8 @@ label.theme.component.bg-color.inverse,
     ul.theme.component.bg-color.inverse),:is(.dark 
     ol.theme.component.bg-color.inverse),:is(.dark 
     textarea.theme.component.bg-color.inverse),:is(.dark 
-    input.theme.component.bg-color.inverse){
+    input.theme.component.bg-color.inverse),:is(.dark 
+    dialog.theme.component.bg-color.inverse){
   --tw-bg-opacity: 1;
   background-color: rgb(15 15 15 / var(--tw-bg-opacity));
 }
@@ -124,7 +126,8 @@ label.theme.component.bg-color,
     ul.theme.component.bg-color,
     ol.theme.component.bg-color,
     textarea.theme.component.bg-color,
-    input.theme.component.bg-color{
+    input.theme.component.bg-color,
+    dialog.theme.component.bg-color{
   --tw-bg-opacity: 1;
   background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
@@ -146,21 +149,24 @@ label.theme.component.bg-color,
     ul.theme.component.bg-color),:is(.dark 
     ol.theme.component.bg-color),:is(.dark 
     textarea.theme.component.bg-color),:is(.dark 
-    input.theme.component.bg-color){
+    input.theme.component.bg-color),:is(.dark 
+    dialog.theme.component.bg-color){
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
 div.theme.container.bg-color,
     ul.theme.container.bg-color,
-    ol.theme.container.bg-color{
+    ol.theme.container.bg-color,
+    dialog.theme.container.bg-color{
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
 :is(.dark div.theme.container.bg-color),:is(.dark 
     ul.theme.container.bg-color),:is(.dark 
-    ol.theme.container.bg-color){
+    ol.theme.container.bg-color),:is(.dark 
+    dialog.theme.container.bg-color){
   --tw-bg-opacity: 1;
   background-color: rgb(23 23 23 / var(--tw-bg-opacity));
 }
@@ -182,7 +188,8 @@ label.theme.border-color,
     ul.theme.border-color,
     ol.theme.border-color,
     textarea.theme.border-color,
-    input.theme.border-color{
+    input.theme.border-color,
+    dialog.theme.border-color{
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
@@ -204,7 +211,8 @@ label.theme.border-color,
     ul.theme.border-color),:is(.dark 
     ol.theme.border-color),:is(.dark 
     textarea.theme.border-color),:is(.dark 
-    input.theme.border-color){
+    input.theme.border-color),:is(.dark 
+    dialog.theme.border-color){
   --tw-border-opacity: 1;
   border-color: rgb(40 40 40 / var(--tw-border-opacity));
 }
@@ -226,7 +234,8 @@ label.theme.border-color.intense,
     ul.theme.border-color.intense,
     ol.theme.border-color.intense,
     textarea.theme.border-color.intense,
-    input.theme.border-color.intense{
+    input.theme.border-color.intense,
+    dialog.theme.border-color.intense{
   --tw-border-opacity: 1;
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
 }
@@ -248,7 +257,8 @@ label.theme.border-color.intense,
     ul.theme.border-color.intense),:is(.dark 
     ol.theme.border-color.intense),:is(.dark 
     textarea.theme.border-color.intense),:is(.dark 
-    input.theme.border-color.intense){
+    input.theme.border-color.intense),:is(.dark 
+    dialog.theme.border-color.intense){
   --tw-border-opacity: 1;
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }

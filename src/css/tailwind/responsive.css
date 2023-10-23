@@ -56,4 +56,26 @@
         @apply p-[3vh] text-sm sm:p-[5vh] sm:text-base;
     }
 
+    /* util.jsx - AlertBox Component*/
+
+    #alert-box{
+        @apply w-[80vw] nmob:w-[60vw];
+        @apply lg:w-[40vw] !important;
+    }
+
+    .dialog-nester.responsive{
+        @apply p-[3vh] amd:p-[5vh];
+    }
+
+    .dialog-title.responsive{
+        @apply text-xl sm:text-[2em];
+    }
+
+    .dialog-subtitle.responsive, .dialog-btn.responsive{
+        @apply text-sm sm:text-base;
+    }
+
+    .dialog-description.responsive{
+        @apply text-xs sm:text-sm;
+    }
 }

@@ -4,8 +4,11 @@ import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVe
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { auth, firestoreDatabase } from "../../scripts/firebase";
 import { useNavigate } from "react-router-dom";
+import { functions } from "../../scripts/util";
+import { useGlobal } from "../../scripts/global";
 
 function SignUp() {
+
     const navigator = useNavigate();
     
     const userEmail = useRef("");
@@ -63,10 +66,7 @@ function SignUp() {
         e.preventDefault();
 
         createUserWithEmailAndPassword(auth, userEmail.current, userPass.current).then(() => {
-            sendEmailVerification(auth.currentUser).then(() => {
-                console.log('success');
-                navigator("/registration/verify")
-            });
+            sendEmailVerification(auth.currentUser).then(() => navigator("/registration/verify"));
             addDoc(collection(firestoreDatabase, "userData"), {
                 uid: auth.currentUser.uid,
                 name: userName.current
@@ -151,6 +151,8 @@ function SignUp() {
 
 function SignIn() {
 
+    const [{}, {logIn}] = useGlobal();
+
     const userEmail = useRef("");
     const userPass = useRef("");
     const userName = useRef("");
@@ -164,7 +166,7 @@ function SignIn() {
             snapshot.forEach((doc) => docData = doc.data());
             console.log(docData.name, userName.current);
             if(docData.name === userName.current) signInWithEmailAndPassword(auth, userEmail.current, userPass.current)
-            .then(() => { console.log("Successfully signed in!"); navigator("/") }).catch((error) => console.error("Error to sign in:", error));
+            .then(() => { logIn(true); navigator("/") }).catch((error) => console.error("Error to sign in:", error));
         });
     };
 
@@ -198,55 +200,41 @@ function SignIn() {
 }
 
 export default function RegistrationPage(){
+    const navigator = useNavigate();
+    const [{}, {isLoggedIn}] = useGlobal();
     const [isFillingForm , setFillingForm] = useState({undefined: false});
 
-    function initiateFillingFormProgress(section) {
+    async function initiateFillingFormProgress(section) {
         if(Object.keys(isFillingForm)[0] !== section && Object.values(isFillingForm)[0] && Object.keys(isFillingForm)[0] !== "undefined") return;
         if(isFillingForm[section]) {
             const formField = document.querySelector(`#${section} > .reg-form`);
             document.querySelector(`#${section}`).classList.add("hov-eff");
             formField.classList.remove("rev");
-            (async () => {
-                await new Promise((resolve) => {
-                    setTimeout(() => {
-                        formField.classList.remove("animate", "exp");
-                        resolve();
-                    }, 300);
-                });
-            })();
+            await functions.jobDelay(() => formField.classList.remove("animate", "exp"), 300);
             setFillingForm({undefined: false});
         } else {
             const formField = document.querySelector(`#${section} > .reg-form`);
             document.querySelector(`#${section}.hov-eff`).classList.remove("hov-eff");
             formField.classList.add("animate", "exp");
-            (async () => {
-                await new Promise((resolve) => {
-                    setTimeout(() => {
-                        formField.classList.add("rev");
-                        resolve();
-                    }, 300);
-                });
-            })();
+            await functions.jobDelay(() => formField.classList.add("rev"), 300);
             setFillingForm({[section]: true});
-        };
-    }
+        };  
+    };
+
+    useEffect(() => {
+        if(isLoggedIn) navigator("/");
+    }, [isLoggedIn]);
 
     useEffect(() => {
         (async () => {
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    try { document.querySelector('.h-reg').classList.add("animate"); }
-                    catch (error) { console.error(error); };
-                    resolve();
-                }, 400);
-            });
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    try { document.querySelector('.registration-forms').classList.add("animate"); }
-                    catch (error) { console.error(error) };
-                    resolve();
-                }, 1000);
-            });
+            await functions.jobDelay(() => {
+                try { document.querySelector('.h-reg').classList.add("animate"); }
+                catch (error) { console.error(error); };
+            }, 400)
+            await functions.jobDelay(() => {
+                try { document.querySelector('.registration-forms').classList.add("animate"); }
+                catch (error) { console.error(error) };
+            }, 1000);
         })();
     }, []);
 

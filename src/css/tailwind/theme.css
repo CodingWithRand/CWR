@@ -56,7 +56,8 @@
     ul.theme.component.bg-color.inverse,
     ol.theme.component.bg-color.inverse,
     textarea.theme.component.bg-color.inverse,
-    input.theme.component.bg-color.inverse
+    input.theme.component.bg-color.inverse,
+    dialog.theme.component.bg-color.inverse
     {
         @apply bg-white dark:bg-[#0f0f0f];
     }
@@ -78,14 +79,16 @@
     ul.theme.component.bg-color,
     ol.theme.component.bg-color,
     textarea.theme.component.bg-color,
-    input.theme.component.bg-color
+    input.theme.component.bg-color,
+    dialog.theme.component.bg-color
     {
         @apply bg-black dark:bg-white;
     }
 
     div.theme.container.bg-color,
     ul.theme.container.bg-color,
-    ol.theme.container.bg-color
+    ol.theme.container.bg-color,
+    dialog.theme.container.bg-color
     {
         @apply bg-white dark:bg-neutral-900;
     }
@@ -107,7 +110,8 @@
     ul.theme.border-color,
     ol.theme.border-color,
     textarea.theme.border-color,
-    input.theme.border-color
+    input.theme.border-color,
+    dialog.theme.border-color
     {
         @apply border-gray-300 dark:border-[#282828];
     }
@@ -129,7 +133,8 @@
     ul.theme.border-color.intense,
     ol.theme.border-color.intense,
     textarea.theme.border-color.intense,
-    input.theme.border-color.intense
+    input.theme.border-color.intense,
+    dialog.theme.border-color.intense
     {
         @apply border-black dark:border-white;
     }

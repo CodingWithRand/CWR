@@ -1,16 +1,36 @@
-import { useContext, createContext, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { useContext, createContext, useState, useEffect } from "react";
+import { auth } from "./firebase";
+import Cookies from "universal-cookie";
 
 const GlobalState = createContext(undefined);
 
 export function Global({ children }){
+  const cookies = new Cookies();
+  const [isLoggedIn, logIn] = useState(!cookies.get("login") ? false : cookies.get("login"));
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "default-os");
-  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if(!cookies.get("login")) logIn(false);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+
+  }, []);
+
+  useEffect(() => {
+    cookies.set("login", isLoggedIn, { path: "/", maxAge: 60 });
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if(!isLoggedIn) signOut(auth).then(() => console.log(auth.currentUser));
+  }, [isLoggedIn]);
 
   return(
     <GlobalState.Provider value={[
-      {searchParams, setSearchParams},
-      {theme, setTheme}
+      {theme, setTheme},
+      {isLoggedIn, logIn}
     ]}>
       {children}
     </GlobalState.Provider>

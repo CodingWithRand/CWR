@@ -219,3 +219,66 @@
     line-height: 1.5rem
   }
 }
+
+/* util.jsx - AlertBox Component*/
+
+#alert-box {
+  width: 80vw
+}
+
+@media (min-width: 400px) {
+  #alert-box {
+    width: 60vw
+  }
+}
+
+@media (min-width: 1024px) {
+  #alert-box {
+    width: 40vw !important
+  }
+}
+
+.dialog-nester.responsive {
+  padding: 3vh
+}
+
+@media (min-width: 777px) {
+  .dialog-nester.responsive {
+    padding: 5vh
+  }
+}
+
+.dialog-title.responsive {
+  font-size: 1.25rem;
+  line-height: 1.75rem
+}
+
+@media (min-width: 640px) {
+  .dialog-title.responsive {
+    font-size: 2em
+  }
+}
+
+.dialog-subtitle.responsive, .dialog-btn.responsive {
+  font-size: 0.875rem;
+  line-height: 1.25rem
+}
+
+@media (min-width: 640px) {
+  .dialog-subtitle.responsive, .dialog-btn.responsive {
+    font-size: 1rem;
+    line-height: 1.5rem
+  }
+}
+
+.dialog-description.responsive {
+  font-size: 0.75rem;
+  line-height: 1rem
+}
+
+@media (min-width: 640px) {
+  .dialog-description.responsive {
+    font-size: 0.875rem;
+    line-height: 1.25rem
+  }
+}

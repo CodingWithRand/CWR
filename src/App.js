@@ -1,7 +1,6 @@
 import { Global } from "./scripts/global";
-import { Routes, Outlet, Route, useNavigate } from "react-router-dom";
-import { IndexHomepage } from "./components";
-import { auth } from "./scripts/firebase";
+import { Routes, Outlet, Route} from "react-router-dom";
+import IndexHomepage from "./components/index";
 import LoadingScreen from "./components/intro";
 import SetUp from './components/setup';
 import RegistrationPage from "./components/registration-page/index";
@@ -10,10 +9,6 @@ import './css/use/responsive.css';
 import './css/use/theme.css';
 
 function PageRouter() {
-  const navigator = useNavigate();
-
-  if(!auth.currentUser) navigator("/intro");
-
   return (
     <Routes>
       <Route index path="/" element={<IndexHomepage />} />

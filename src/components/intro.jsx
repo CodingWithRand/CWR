@@ -1,19 +1,19 @@
 import '../css/use/intro.css';
 import { useState, useEffect } from 'react';
-import { useGlobal } from '../scripts/global';
 import { Components } from '../scripts/util';
 import { useNavigate } from 'react-router-dom';
 import { functions } from '../scripts/util';
+import { useSearchParams } from 'react-router-dom';
 
 export default function LoadingScreen() {
 
   const navigator = useNavigate();
-  const [{searchParams, setSearchParams}] = useGlobal();
-  const loadingState = searchParams.get('loadingState');
-  if(loadingState === 'proceeded'){
-    functions.sync_delay(1000)
-    navigator('/registration')
-  }
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if(searchParams.get('loadingState') === 'proceeded') navigator('/registration');
+  }, [searchParams.get('loadingState')]);
+  
 
   const [offsetX, setOffsetX] = useState(0);
   const [offsetY, setOffsetY] = useState(0);
@@ -83,64 +83,48 @@ export default function LoadingScreen() {
     document.querySelector(".dice-shadow").style.top = `${newY}px`;
   }
 
-  async function initial_half_parabola(timeoutId_storage, configs) {
+  async function initial_half_parabola(configs) {
     let negateMultiplier = 1;
     if (configs.inverse) negateMultiplier = -1;
     for (let i = 0; i < configs.highestPoints; i++) {
       if (i === configs.objHeight) break
-      await new Promise((resolve) => {
-        const timeoutId = setTimeout(() => {
-          setOrientX((prevOrientX) => (prevOrientX + Math.floor(Math.random() * configs.spinningRate)));
-          setOrientY((prevOrientY) => (prevOrientY + Math.floor(Math.random() * configs.spinningRate)));
-          setOrientZ((prevOrientZ) => (prevOrientZ + Math.floor(Math.random() * configs.spinningRate)));
-          setOffsetX((prevOffsetX) => (prevOffsetX + configs.XVelocity));
-          setOffsetY((prevOffsetY) => (prevOffsetY + (negateMultiplier * (Math.pow(i, configs.YVelocity)))));
-          setScale((prevScale) => { if (prevScale !== configs.maxPerspectiveScale) return prevScale + ((configs.maxPerspectiveScale - 1) / configs.highestPoints); });
-          updateShadow();
-          resolve();
-        }, configs.accelerator);
-        timeoutId_storage.push(timeoutId);
-      });
+      await functions.jobDelay(() => {
+        setOrientX((prevOrientX) => (prevOrientX + Math.floor(Math.random() * configs.spinningRate)));
+        setOrientY((prevOrientY) => (prevOrientY + Math.floor(Math.random() * configs.spinningRate)));
+        setOrientZ((prevOrientZ) => (prevOrientZ + Math.floor(Math.random() * configs.spinningRate)));
+        setOffsetX((prevOffsetX) => (prevOffsetX + configs.XVelocity));
+        setOffsetY((prevOffsetY) => (prevOffsetY + (negateMultiplier * (Math.pow(i, configs.YVelocity)))));
+        setScale((prevScale) => { if (prevScale !== configs.maxPerspectiveScale) return prevScale + ((configs.maxPerspectiveScale - 1) / configs.highestPoints); });
+        updateShadow();
+      }, configs.accelerator)
     };
   };
 
-  async function end_half_parabola(timeoutId_storage, configs) {
+  async function end_half_parabola(configs) {
     let negateMultiplier = 1;
     if (configs.inverse) negateMultiplier = -1;
     for (let i = configs.highestPoints; i > 0; i--) {
       if (i === configs.bounceRate) break;
-      await new Promise((resolve) => {
-        const timeoutId = setTimeout(() => {
+      await functions.jobDelay(() => {
           setOrientX((prevOrientX) => (prevOrientX - Math.floor(Math.random() * configs.spinningRate)))
           setOrientY((prevOrientY) => (prevOrientY - Math.floor(Math.random() * configs.spinningRate)))
           setOrientZ((prevOrientZ) => (prevOrientZ - Math.floor(Math.random() * configs.spinningRate)))
           setOffsetX((prevOffsetX) => (prevOffsetX + configs.XVelocity));
           setOffsetY((prevOffsetY) => (prevOffsetY - (negateMultiplier * (Math.pow((i - 1), configs.YVelocity)))));
           updateShadow()
-          resolve();
-        }, configs.accelerator);
-        timeoutId_storage.push(timeoutId);
-      });
+      }, configs.accelerator)
     };
   };
 
-  async function parabola_motion(timeoutId_storage, configs, animStyle) {
+  async function parabola_motion(configs, animStyle) {
     setAnimStyle(animStyle);
     configs.maxPerspectiveScale = configs.maxPerspectiveScale / 2;
-    await initial_half_parabola(timeoutId_storage, configs);
-    await end_half_parabola(timeoutId_storage, configs);
+    await initial_half_parabola(configs);
+    await end_half_parabola(configs);
   };
 
-  async function end_anim(timeoutId_storage, accelerator) {
-    for (let i = 0; i < 10; i++) {
-      await new Promise((resolve) => {
-        const timeoutId = setTimeout(() => {
-          updateShadow();
-          resolve();
-        }, accelerator);
-        timeoutId_storage.push(timeoutId);
-      });
-    };
+  async function end_anim(accelerator) {
+    for (let i = 0; i < 10; i++) await functions.jobDelay(() => updateShadow(), accelerator);
   };
 
   useEffect(() => {
@@ -155,7 +139,6 @@ export default function LoadingScreen() {
   }, [vw, vh]);
 
   useEffect(() => {
-    const timeoutIds = [];
     /* Configs -> {
       accelerator: number -> indicate how fast the animation goes, the more you input, the slower it goes
       XVelocity: number -> indicate how far the animation go each keyframe (x axis: vw)
@@ -167,83 +150,70 @@ export default function LoadingScreen() {
       maxPerspetiveScale: number -> indicate the scale increment when the object is getting closer (must greater than 2)
     } */
     (async () => {
-      await parabola_motion(timeoutIds, {
-        accelerator: 50,
-        XVelocity: 2,
-        YVelocity: 1,
-        highestPoints: 10,
-        spinningRate: 20,
-        bounceRate: 9,
-        maxPerspectiveScale: 3
-      }, TTF.easeOut.linear_out_slow_in);
-      await parabola_motion(timeoutIds, {
-        accelerator: 80,
-        XVelocity: 0.75,
-        YVelocity: 0.75,
-        highestPoints: 9,
-        spinningRate: -50,
-        objHeight: 2,
-        maxPerspectiveScale: 8,
-        inverse: true,
-      }, TTF.easeOut.cubic);
-      await parabola_motion(timeoutIds, {
-        accelerator: 80,
-        XVelocity: 0.5,
-        YVelocity: 0.5,
-        highestPoints: 6,
-        spinningRate: -85,
-        objHeight: 1,
-        maxPerspectiveScale: 10,
-        inverse: true
-      }, TTF.easeInOut.cubic);
-      for (let i = 0; i < 4; i++) {
-        await new Promise((resolve) => {
-          const timeoutId = setTimeout(() => {
+      if(searchParams.get("loadingState") === "proceeded") return;
+      if(!searchParams.get("loadingState")){
+        await parabola_motion({
+          accelerator: 80,
+          XVelocity: 1.5,
+          YVelocity: 1,
+          highestPoints: 7,
+          spinningRate: 20,
+          bounceRate: 6,
+          maxPerspectiveScale: window.innerWidth > 640 ? 3 : 2.1
+        }, TTF.easeOut.linear_out_slow_in);
+        await parabola_motion({
+          accelerator: 100,
+          XVelocity: window.innerWidth > 640 ? 0.5 : 0.35,
+          YVelocity: window.innerWidth > 640 ? 0.75 : 0.5,
+          highestPoints: 7,
+          spinningRate: -50,
+          objHeight: 2,
+          maxPerspectiveScale: window.innerWidth > 640 ? 4 : 2.8,
+          inverse: true,
+        }, TTF.easeOut.cubic);
+        await parabola_motion({
+          accelerator: 80,
+          XVelocity: window.innerWidth > 640 ? 0.35 : 0.2,
+          YVelocity: window.innerWidth > 640 ? 0.5 : 0.4,
+          highestPoints: 4,
+          spinningRate: -85,
+          objHeight: 1,
+          maxPerspectiveScale: window.innerWidth > 640 ? 4 : 3.5,
+          inverse: true
+        }, TTF.easeInOut.cubic);
+        for (let i = 0; i < 4; i++) {
+          await functions.jobDelay(() => {
             setOrientX((prevOrientX) => (prevOrientX - Math.floor(Math.random() * prevOrientX)));
             setOrientY((prevOrientY) => (prevOrientY - Math.floor(Math.random() * prevOrientY)));
             setOrientZ((prevOrientZ) => (prevOrientZ - Math.floor(Math.random() * prevOrientZ)));
-            resolve();
           }, 120);
-          timeoutIds.push(timeoutId);
-        });
+        };
+        setOrientX(90); setOrientY(0); setOrientZ(0);
       };
-      setOrientX(90); setOrientY(0); setOrientZ(0);
-      await new Promise((resolve) => {
-        const timeoutId = setTimeout(() => {
-          document.querySelector('.loading-screen').style.width = '100vw';
-          document.querySelector('.loading-screen').style.height = '100vh';
-          document.querySelector('.loading-screen').style.opacity = 1;
-          resolve();
-        }, 1000);
-        timeoutIds.push(timeoutId);
-      });
-      await new Promise((resolve) => {
-        const timeoutId = setTimeout(() => {
-          document.querySelector('.title').style.width = '100%';
-          document.querySelector('.stick').style.transitionTimingFunction = 'cubic-bezier(1, 0.1, 0, 1.25)';
-          document.querySelector('.stick').classList.add('cursor-pointer-animate');
-          resolve();
-        }, 700);
-        timeoutIds.push(timeoutId);
-      });
-      await new Promise((resolve) => {
-        const timeoutId = setTimeout(() => {
-          document.querySelector('.stick').style.transitionTimingFunction = TTF.linear.emphasized;
-          document.querySelector('.stick').classList.remove('cursor-pointer-animate');
-          resolve();
-        }, 2000);
-        timeoutIds.push(timeoutId);
-      });
-      await new Promise((resolve) => {
-        const timeoutId = setTimeout(() => {
-          document.querySelector('.subtitle').style.transform = 'translateY(-13vh) scale(1, 0.8)';
-          resolve();
-        }, 2300);
-        timeoutIds.push(timeoutId);
+
+      await functions.jobDelay(() => {
+        document.querySelector('.loading-screen').style.width = '100vw';
+        document.querySelector('.loading-screen').style.height = '100vh';
+        document.querySelector('.loading-screen').style.opacity = 1;
+      }, searchParams.get("loadingState") ? 0 : 1000);
+      await functions.jobDelay(() => {
+        document.querySelector('.title').style.width = '100%';
+        document.querySelector('.stick').style.transitionTimingFunction = 'cubic-bezier(1, 0.1, 0, 1.25)';
+        document.querySelector('.stick').classList.add('cursor-pointer-animate');
+      }, 700);
+      await functions.jobDelay(() => {
+        document.querySelector('.stick').style.transitionTimingFunction = TTF.linear.emphasized;
+        document.querySelector('.stick').classList.remove('cursor-pointer-animate');
+      }, 2000);
+      await functions.jobDelay(() => {
+        document.querySelector('.subtitle').style.transform = 'translateY(-13vh) scale(1, 0.8)';
+      }, 2300);
+      
+      setSearchParams((params) => {
+        params.set("animation", "done");
+        return params;
       });
     })();
-
-    return () => timeoutIds.forEach((id) => clearTimeout(id));
   }, []);
 
   useEffect(() => {
@@ -251,7 +221,6 @@ export default function LoadingScreen() {
       intervalChecking: false,
       loop: false
     };
-    const timeoutIds = [];
     function getElemProperty(prop, elem, expectedUnit, keepUnit){
       const elemSize = (() => {
         try { return Math.round(parseFloat(window.getComputedStyle(document.querySelector(elem)).getPropertyValue(prop))); } 
@@ -283,74 +252,51 @@ export default function LoadingScreen() {
         !STOPFLAG.intervalChecking
       ){
         STOPFLAG.intervalChecking = true;
-        for(let i = 0; i<200 && !STOPFLAG.loop; i++){
-          await new Promise((resolve) => {
-            try{
-              const timeoutId = setTimeout(() => {
+        if(!searchParams.get("loadingState")){
+          for(let i = 0; i<200 && !STOPFLAG.loop; i++){
+            await functions.jobDelay(() => {
+              try{
                 const nextProgress = getElemProperty('width', '.progress', '%', false) + Math.floor(Math.random() * 10);
                 if(nextProgress >= 100) STOPFLAG.loop = true;
                 document.querySelector(".progress").style.width = `${nextProgress}%`;
-                resolve();
-              }, 500);
-              timeoutIds.push(timeoutId);
-            }catch(err){ console.error(err); }
-          });
+              }catch(err){ console.error(err); };
+            }, 500);
+          };
         };
         document.querySelector(".loading-bar").style.opacity = 0;
         document.querySelector(".loading-bar").style.transform = "translateY(20vw)";
         document.querySelector(".progress").style.width = "100%";
-        await new Promise((resolve) => {
-          const timeoutId = setTimeout(() => {
-            document.querySelector('.continue').classList.add("blink");
-            resolve();
-          }, 1500);
-          timeoutIds.push(timeoutId);
-        });
-        setSearchParams(prevPV => {
-          prevPV.set("loadingState", "done");
-          return prevPV;
+        await functions.jobDelay(() => document.querySelector('.continue').classList.add("blink"), 1500);
+        setSearchParams((params) => {
+          params.set("loadingState", "done");
+          return params;
         });
       }
     }
 
     const intervalId = setInterval(initLoading, 100);
 
-    return () => {
-      timeoutIds.forEach((id) => clearTimeout(id));
-      clearInterval(intervalId);
-    };
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if(loadingState !== "undone") clearInterval(intervalId);
+      if(searchParams.get("loadingState")) clearInterval(intervalId);
       const quote = ["\"Hi guys, Rand here.\" How original...", "A former Roblox tutorial YouTuber", "I love you, Carisa", "Look at your closet"];
       const randomIndex = Math.floor(Math.random() * quote.length);
       setLoadingQuote(quote[randomIndex]);
     }, 3000);
 
     return () => clearInterval(intervalId);
-
   }, []);
 
-  function Continue(){
-    let timeoutId;
-    if(loadingState === "done"){
+  async function Continue(){
+    if(searchParams.get("loadingState") === "done" && searchParams.get("animation") === "done"){
       setLSOffset(100); setLSOpacity(0);
-      (async () => {
-        await new Promise((resolve) => {
-          timeoutId = setTimeout(() => {
-            setSearchParams(prevPV => {
-              prevPV.set("loadingState", "proceeded");
-              return prevPV;
-            });
-            resolve();
-          }, 3500);
-        });
-      })();
-    };
-    return () => {
-      if(timeoutId) clearTimeout(timeoutId);
+      await functions.jobDelay(() => setSearchParams((params) => {
+        params.set("loadingState", "proceeded");
+        return params;
+      }), 3500);
     };
   };
 

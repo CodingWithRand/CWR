@@ -4,11 +4,18 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged, reload, sendEmailVerification, signOut } from "firebase/auth";
 import { auth } from "../../scripts/firebase";
 import { useNavigate } from "react-router-dom";
+import { useGlobal } from "../../scripts/global";
 
 export default function EmailVerifificationPage() {
     const navigator = useNavigate();
     const [ timer, countdown ] = useState(60);
     const [ btnState, setBtnState ] = useState(true);
+
+    const [{}, {isLoggedIn}] = useGlobal();
+
+    useEffect(() => {
+        if(isLoggedIn) navigator("/");
+    }, [isLoggedIn]);
 
     onAuthStateChanged(auth, (user) => {
         if(!user) return;

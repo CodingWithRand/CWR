@@ -4,7 +4,7 @@ import {  Components } from '../scripts/util';
 import { useGlobal } from '../scripts/global';
 
 export default function SetUp(){
-    const [{}, {theme, setTheme}] = useGlobal();
+    const [{theme, setTheme}] = useGlobal();
 
     useEffect(() => {
         switch(theme){

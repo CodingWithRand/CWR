@@ -2,16 +2,22 @@ import '../css/use/intro.css';
 import { useState, useEffect } from 'react';
 import { Components } from '../scripts/util';
 import { useNavigate } from 'react-router-dom';
-import { functions } from '../scripts/util';
+import { Functions } from '../scripts/util';
 import { useSearchParams } from 'react-router-dom';
+import { useGlobal } from '../scripts/global';
 
 export default function LoadingScreen() {
 
   const navigator = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [{}, {isLoggedIn}] = useGlobal();
+
   useEffect(() => {
-    if(searchParams.get('loadingState') === 'proceeded') navigator('/registration');
+    if(searchParams.get('loadingState') === 'proceeded'){
+      if(isLoggedIn) navigator('/')
+      else navigator('/registration')
+    };
   }, [searchParams.get('loadingState')]);
   
 
@@ -88,7 +94,7 @@ export default function LoadingScreen() {
     if (configs.inverse) negateMultiplier = -1;
     for (let i = 0; i < configs.highestPoints; i++) {
       if (i === configs.objHeight) break
-      await functions.jobDelay(() => {
+      await Functions.jobDelay(() => {
         setOrientX((prevOrientX) => (prevOrientX + Math.floor(Math.random() * configs.spinningRate)));
         setOrientY((prevOrientY) => (prevOrientY + Math.floor(Math.random() * configs.spinningRate)));
         setOrientZ((prevOrientZ) => (prevOrientZ + Math.floor(Math.random() * configs.spinningRate)));
@@ -105,7 +111,7 @@ export default function LoadingScreen() {
     if (configs.inverse) negateMultiplier = -1;
     for (let i = configs.highestPoints; i > 0; i--) {
       if (i === configs.bounceRate) break;
-      await functions.jobDelay(() => {
+      await Functions.jobDelay(() => {
           setOrientX((prevOrientX) => (prevOrientX - Math.floor(Math.random() * configs.spinningRate)))
           setOrientY((prevOrientY) => (prevOrientY - Math.floor(Math.random() * configs.spinningRate)))
           setOrientZ((prevOrientZ) => (prevOrientZ - Math.floor(Math.random() * configs.spinningRate)))
@@ -124,7 +130,7 @@ export default function LoadingScreen() {
   };
 
   async function end_anim(accelerator) {
-    for (let i = 0; i < 10; i++) await functions.jobDelay(() => updateShadow(), accelerator);
+    for (let i = 0; i < 10; i++) await Functions.jobDelay(() => updateShadow(), accelerator);
   };
 
   useEffect(() => {
@@ -182,7 +188,7 @@ export default function LoadingScreen() {
           inverse: true
         }, TTF.easeInOut.cubic);
         for (let i = 0; i < 4; i++) {
-          await functions.jobDelay(() => {
+          await Functions.jobDelay(() => {
             setOrientX((prevOrientX) => (prevOrientX - Math.floor(Math.random() * prevOrientX)));
             setOrientY((prevOrientY) => (prevOrientY - Math.floor(Math.random() * prevOrientY)));
             setOrientZ((prevOrientZ) => (prevOrientZ - Math.floor(Math.random() * prevOrientZ)));
@@ -191,23 +197,23 @@ export default function LoadingScreen() {
         setOrientX(90); setOrientY(0); setOrientZ(0);
       };
 
-      await functions.jobDelay(() => {
+      await Functions.jobDelay(() => {
         document.querySelector('.loading-screen').style.width = '100vw';
         document.querySelector('.loading-screen').style.height = '100vh';
         document.querySelector('.loading-screen').style.opacity = 1;
       }, searchParams.get("loadingState") ? 0 : 1000);
-      await functions.jobDelay(() => {
+      await Functions.jobDelay(() => {
         document.querySelector('.title').style.width = '100%';
         document.querySelector('.stick').style.transitionTimingFunction = 'cubic-bezier(1, 0.1, 0, 1.25)';
         document.querySelector('.stick').classList.add('cursor-pointer-animate');
-      }, 700);
-      await functions.jobDelay(() => {
+      }, searchParams.get("loadingState") ? 0 : 700);
+      await Functions.jobDelay(() => {
         document.querySelector('.stick').style.transitionTimingFunction = TTF.linear.emphasized;
         document.querySelector('.stick').classList.remove('cursor-pointer-animate');
-      }, 2000);
-      await functions.jobDelay(() => {
+      }, searchParams.get("loadingState") ? 0 : 2000);
+      await Functions.jobDelay(() => {
         document.querySelector('.subtitle').style.transform = 'translateY(-13vh) scale(1, 0.8)';
-      }, 2300);
+      }, searchParams.get("loadingState") ? 0 : 2300);
       
       setSearchParams((params) => {
         params.set("animation", "done");
@@ -254,7 +260,7 @@ export default function LoadingScreen() {
         STOPFLAG.intervalChecking = true;
         if(!searchParams.get("loadingState")){
           for(let i = 0; i<200 && !STOPFLAG.loop; i++){
-            await functions.jobDelay(() => {
+            await Functions.jobDelay(() => {
               try{
                 const nextProgress = getElemProperty('width', '.progress', '%', false) + Math.floor(Math.random() * 10);
                 if(nextProgress >= 100) STOPFLAG.loop = true;
@@ -266,7 +272,7 @@ export default function LoadingScreen() {
         document.querySelector(".loading-bar").style.opacity = 0;
         document.querySelector(".loading-bar").style.transform = "translateY(20vw)";
         document.querySelector(".progress").style.width = "100%";
-        await functions.jobDelay(() => document.querySelector('.continue').classList.add("blink"), 1500);
+        await Functions.jobDelay(() => document.querySelector('.continue').classList.add("blink"), 1500);
         setSearchParams((params) => {
           params.set("loadingState", "done");
           return params;
@@ -293,7 +299,7 @@ export default function LoadingScreen() {
   async function Continue(){
     if(searchParams.get("loadingState") === "done" && searchParams.get("animation") === "done"){
       setLSOffset(100); setLSOpacity(0);
-      await functions.jobDelay(() => setSearchParams((params) => {
+      await Functions.jobDelay(() => setSearchParams((params) => {
         params.set("loadingState", "proceeded");
         return params;
       }), 3500);

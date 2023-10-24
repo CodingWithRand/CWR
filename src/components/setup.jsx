@@ -22,10 +22,7 @@ export default function SetUp(){
         }
     }, [theme])
 
-    useEffect(() => {
-        if(!localStorage.getItem("theme")) localStorage.setItem("theme", undefined);
-        else localStorage.setItem("theme", theme);
-    }, [theme])
+    useEffect(() => localStorage.setItem("theme", theme), [theme])
 
     function changeTheme(){
         switch(theme){

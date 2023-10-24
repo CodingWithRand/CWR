@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVe
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { auth, firestoreDatabase } from "../../scripts/firebase";
 import { useNavigate } from "react-router-dom";
-import { functions } from "../../scripts/util";
+import { Functions } from "../../scripts/util";
 import { useGlobal } from "../../scripts/global";
 
 function SignUp() {
@@ -210,13 +210,13 @@ export default function RegistrationPage(){
             const formField = document.querySelector(`#${section} > .reg-form`);
             document.querySelector(`#${section}`).classList.add("hov-eff");
             formField.classList.remove("rev");
-            await functions.jobDelay(() => formField.classList.remove("animate", "exp"), 300);
+            await Functions.jobDelay(() => formField.classList.remove("animate", "exp"), 300);
             setFillingForm({undefined: false});
         } else {
             const formField = document.querySelector(`#${section} > .reg-form`);
             document.querySelector(`#${section}.hov-eff`).classList.remove("hov-eff");
             formField.classList.add("animate", "exp");
-            await functions.jobDelay(() => formField.classList.add("rev"), 300);
+            await Functions.jobDelay(() => formField.classList.add("rev"), 300);
             setFillingForm({[section]: true});
         };  
     };
@@ -227,11 +227,11 @@ export default function RegistrationPage(){
 
     useEffect(() => {
         (async () => {
-            await functions.jobDelay(() => {
+            await Functions.jobDelay(() => {
                 try { document.querySelector('.h-reg').classList.add("animate"); }
                 catch (error) { console.error(error); };
             }, 400)
-            await functions.jobDelay(() => {
+            await Functions.jobDelay(() => {
                 try { document.querySelector('.registration-forms').classList.add("animate"); }
                 catch (error) { console.error(error) };
             }, 1000);

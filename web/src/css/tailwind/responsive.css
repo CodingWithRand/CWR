@@ -1,0 +1,81 @@
+@tailwind utilities;
+
+@layer utilities{
+
+    /* intro.jsx */
+
+    .subtitle.responsive{
+        @apply text-[2em] nmob:text-[3em];
+    }
+
+    .banner-container.responsive{
+        @apply gap-x-[10px] nmob:gap-x-[20px];
+    }
+    .banner-container.responsive img{
+        @apply w-[60px] h-[60px] gmob-lsm:w-[75px] gmob-lsm:h-[75px] sm:w-[100px] sm:h-[100px];
+    }
+    .banner-container.responsive .stick{
+        @apply h-[60px] gmob-lsm:h-[75px] sm:h-[100px];
+    }
+    .banner-container.responsive .title{
+        @apply text-[1.5em] gmob-lsm:text-[2em] sm:text-[3em] amd:text-[4em];
+    }
+
+    .cursor-pointer-animate.responsive{
+        @apply translate-x-[200px] gmob-lsm:translate-x-[270px] sm:translate-x-[400px] amd:translate-x-[520px];
+    }
+
+    /* registration-page/index.jsx */
+
+    .h-reg.responsive{
+        @apply text-2xl mt-[2em] sm:text-[2em] sm:mt-[1em] lg:text-[3em];
+    }
+
+    .reg-t.responsive{
+        @apply sm:text-xl lg:text-[1.5em];
+    }
+
+    .reg-f.responsive{
+        @apply py-[1em] sm:py-[2em];
+    }
+
+    .input-field > input.responsive,
+    .field-label.responsive,
+    .submit-btn.responsive{
+        @apply text-xs sm:text-base;
+    }
+    
+
+    /* registration-page/email-verification.jsx */
+
+    .email-icon.responsive{
+        @apply w-[150px] h-[150px] sm:w-[200px] sm:h-[200px];
+    }
+
+    .notf-box.responsive{
+        @apply p-[3vh] text-sm sm:p-[5vh] sm:text-base;
+    }
+
+    /* util.jsx - AlertBox Component*/
+
+    #alert-box{
+        @apply w-[80vw] nmob:w-[60vw];
+        @apply lg:w-[40vw] !important;
+    }
+
+    .dialog-nester.responsive{
+        @apply p-[3vh] amd:p-[5vh];
+    }
+
+    .dialog-title.responsive{
+        @apply text-xl sm:text-[2em];
+    }
+
+    .dialog-subtitle.responsive, .dialog-btn.responsive{
+        @apply text-sm sm:text-base;
+    }
+
+    .dialog-description.responsive{
+        @apply text-xs sm:text-sm;
+    }
+}

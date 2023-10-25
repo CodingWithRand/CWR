@@ -5,7 +5,7 @@ The quote I usually said in the video. (Subscribe to me @rand0mtutorial)
 I always look like a newbie in coding because I don't make that many projects. And seems like the projects I made are not that quality as well.
 When I code, I usually look up some guides on Google as well. But now, since the __ChatGPT__ has come. I will ask it instead
 
-## Current Projects on this repository
+## Current Projects in this repository
 
 1. Web Application
 Now, I have my own website made by react.js framework and hosted by Firebase. I plan to store my coding tutorials, which I'm about to share on YouTube very soon.

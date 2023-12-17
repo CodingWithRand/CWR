@@ -20,8 +20,11 @@ export default function LoadingScreen() {
 
   useEffect(() => {
     if(searchParams.get('loadingState') === 'proceeded'){
-      if(login.isLoggedIn) navigator(`/${searchParams.get("redirectFrom")}`)
-      else navigator('/greeting')
+      if(login.isLoggedIn){
+        navigator(`/${searchParams.get("redirectFrom") || ""}`);
+        window.location.reload();
+      }
+      else navigator('/greeting');
     };
   }, [searchParams.get('loadingState')]);
   
@@ -360,24 +363,24 @@ export default function LoadingScreen() {
           </div>
           <div className='dice-shadow' style={{ transform: `scale3d(${scale}, ${scale}, ${scale})`}}></div>
         </div>
-        <div className='loading-screen theme container bg-color'>
+        <div className='loading-screen'>
           <div className='ls-container' style={{ transform: `translateY(${lsOffset}vh)`, opacity: `${lsOpacity}` }}>
             <div className='banner'>
               <div className='banner-container responsive'>
                 <Image alt='CodingWithRand' constant={true} name="channel_logo_new.png" />
-                <div className='stick responsive theme component bg-color'/>
-                <h1 className='title theme text-color'>CodingWithRand</h1>
+                <div className='stick responsive'/>
+                <h1 className='title'>CodingWithRand</h1>
               </div>
-              <div className='banner-shadow theme custom'/>
+              <div className='banner-shadow'/>
             </div>
             <label className='subtitle responsive'>Present</label>
             <div className='loading-bar'>
-              <label className='theme text-color'>{loadingQuote}</label>
-              <div className='loading-bar-border theme border-color intense custom'>
-                <div className='progress theme component bg-color' />
+              <label>{loadingQuote}</label>
+              <div className='loading-bar-border'>
+                <div className='progress' />
               </div>
             </div>
-            <label className='continue theme text-color' onClick={Continue}>Click anywhere to continue...</label>
+            <label className='continue' onClick={Continue}>Click anywhere to continue...</label>
           </div>
         </div>
       </div>

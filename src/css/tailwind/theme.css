@@ -2,20 +2,8 @@
 
 @layer utilities{
 
-    .white-shadow{--shadow: radial-gradient(ellipse at center, rgb(100, 100, 100, 0.3) 0%, transparent 70%);}
-    .black-shadow{--shadow: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, transparent 70%);}
-
-    .white-backdrop{--ldbb-backdrop: lightgray;}
-    .black-backdrop{--ldbb-backdrop: rgb(50,50,50);}
-
     .light-mode-icon{--icon-shadow: radial-gradient(gray 0%, transparent 60%);}
     .dark-mode-icon{--icon-shadow: radial-gradient(rgb(50, 50, 50) 0%, transparent 75%);}
-
-    .light-mode-reg-btn-txt-color{--reg-btn-txt-color: rgb(50,50,50);}
-    .dark-mode-reg-btn-txt-color{--reg-btn-txt-color: rgb(200,200,200);}
-
-    .light-mode-reg-btn-bg-color{--reg-btn-bg-color: rgb(240, 240, 240, 0.3);}
-    .dark-mode-reg-btn-bg-color{--reg-btn-bg-color: rgb(35, 35, 35, 0.3);}
 
     label.theme.text-color,
     h1.theme.text-color,
@@ -152,24 +140,7 @@
         @apply border-black dark:border-white;
     }
 
-    .loading-bar-border.theme.custom{
-        @apply white-backdrop dark:black-backdrop
-    }
-
-    .banner-shadow.theme.custom{
-        @apply black-shadow dark:white-shadow
-    }
-
     .setup-btn-icon-shadow.theme.custom{
         @apply light-mode-icon dark:dark-mode-icon
     }
-
-    .reg-t.theme.custom{
-        @apply light-mode-reg-btn-txt-color dark:dark-mode-reg-btn-txt-color
-    }
-
-    .reg-f.theme.custom, .reg-t-or.theme.custom{
-        @apply light-mode-reg-btn-bg-color dark:dark-mode-reg-btn-bg-color
-    }
-
 }

@@ -1,3 +1,7 @@
+.hidden{
+  display: none;
+}
+
 .transform{
   -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
           transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -289,42 +293,10 @@ label.theme.border-color.intense,
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
-.loading-bar-border.theme.custom{
-  --ldbb-backdrop: lightgray;
-}
-
-:is(.dark .loading-bar-border.theme.custom){
-  --ldbb-backdrop: rgb(50,50,50);
-}
-
-.banner-shadow.theme.custom{
-  --shadow: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
-}
-
-:is(.dark .banner-shadow.theme.custom){
-  --shadow: radial-gradient(ellipse at center, rgb(100, 100, 100, 0.3) 0%, transparent 70%);
-}
-
 .setup-btn-icon-shadow.theme.custom{
   --icon-shadow: radial-gradient(gray 0%, transparent 60%);
 }
 
 :is(.dark .setup-btn-icon-shadow.theme.custom){
   --icon-shadow: radial-gradient(rgb(50, 50, 50) 0%, transparent 75%);
-}
-
-.reg-t.theme.custom{
-  --reg-btn-txt-color: rgb(50,50,50);
-}
-
-:is(.dark .reg-t.theme.custom){
-  --reg-btn-txt-color: rgb(200,200,200);
-}
-
-.reg-f.theme.custom, .reg-t-or.theme.custom{
-  --reg-btn-bg-color: rgb(240, 240, 240, 0.3);
-}
-
-:is(.dark .reg-f.theme.custom),:is(.dark  .reg-t-or.theme.custom){
-  --reg-btn-bg-color: rgb(35, 35, 35, 0.3);
 }

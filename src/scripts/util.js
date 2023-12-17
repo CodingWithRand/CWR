@@ -112,11 +112,11 @@ function AlertBox(props){
     }, [props.detect], 500);
 
     return (
-        <dialog id={props.id} className="alert-box responsive theme container bg-color border-color">
+        <dialog id={props.id} className={`alert-box responsive ${props.themed ? "theme" : ""} container bg-color border-color`}>
             <div className="dialog-nester responsive">
-                <h2 className="dialog-title theme text-color responsive">{props.messages.title}</h2>
-                <label className="dialog-subtitle responsive theme text-color">{props.messages.subtitle || ""}</label>
-                <div className="dialog-description responsive theme text-color">{props.messages.description || ""}</div>
+                <h2 className={`dialog-title ${props.themed ? "theme" : ""} text-color responsive`}>{props.messages.title}</h2>
+                <label className={`dialog-subtitle responsive ${props.themed ? "theme" : ""} text-color`}>{props.messages.subtitle || ""}</label>
+                <div className={`dialog-description responsive ${props.themed ? "theme" : ""} text-color`}>{props.messages.description || ""}</div>
                 <button className="dialog-btn responsive" onClick={props.action}>{`${props.messages.action} ${timer}`}</button>
             </div>
         </dialog>
@@ -165,9 +165,9 @@ function Section(props){
     switch(props.style){
         case "pallete":
             return( 
-                <div className="pallete theme container bg-color intense">
-                    <h1 className="setting-section-title responsive theme text-color">{props.title}</h1>
-                    <p className="setting-section-description responsive theme text-color">{props.description || ""}</p>
+                <div className={`pallete ${props.themed ? "theme" : ""} container bg-color intense`}>
+                    <h1 className={`setting-section-title responsive ${props.themed ? "theme" : ""} text-color`}>{props.title}</h1>
+                    <p className={`setting-section-description responsive ${props.themed ? "theme" : ""} text-color`}>{props.description || ""}</p>
                     {props.children}
                 </div>
             );
@@ -193,7 +193,7 @@ function InputField(props){
 
     return( 
         <div className="input-field">
-            <input name={props.name} required={props.required} className={`theme border-color component text-color bg-color inverse ${props.errDetector ? "err-detector" : ""} ${props.detectorCls || ""} responsive`} type={props.type} placeholder={props.placeholder || ""} onChange={(e) => {
+            <input name={props.name} required={props.required} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector ? "err-detector" : ""} ${props.detectorCls || ""} responsive`} type={props.type} placeholder={props.placeholder || ""} onChange={(e) => {
                 e.preventDefault();
                 if(!props.onChange.binded) return;
                 props.onChange.expected_condition.forEach((i, c) => {
@@ -221,7 +221,7 @@ function InputField(props){
 function InputGroupField(props){
     const [inputFields, updateInputFields] = useState(Array.from({ length: props.fieldNumber }, (_, i) => (
         <div key={i} className="sub input-field">
-            <input name={props.name[i]} required={props.required[i]} className={`theme border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
+            <input name={props.name[i]} required={props.required[i]} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
                 e.preventDefault();
                 if(!props.onChange[i].binded) return;
                 props.onChange[i].expected_condition.forEach((j, c) => {
@@ -265,7 +265,7 @@ function InputGroupField(props){
             const updatingInputFields = [...prevInputFields];
             return updatingInputFields.map((_, i) => (
                 <div key={i} className="sub input-field">
-                    <input name={props.name[i]} required={props.required[i]} className={`theme border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
+                    <input name={props.name[i]} required={props.required[i]} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
                         e.preventDefault();
                         if(!props.onChange[i].binded) return;
                         props.onChange[i].expected_condition.forEach((j, c) => {

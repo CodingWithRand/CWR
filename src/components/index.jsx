@@ -21,7 +21,7 @@ export default function IndexHomepage() {
     }, [login.isLoggedIn, cookies.get("watchedIntro")])
 
     return (
-        <>
+        <div className="page-container theme container bg-color">
             <AlertBox id="session-expired" auto detect={(login.isLoggedIn === "undefined" || login.isLoggedIn === false) && (cookies.get("login") === "undefined" || cookies.get("login") === false)} 
             messages={{
                 title: "Your session has expired.",
@@ -32,6 +32,6 @@ export default function IndexHomepage() {
                 navigator("/registration");
                 signOut(auth);
             }}/>
-        </>
+        </div>
     )
 }

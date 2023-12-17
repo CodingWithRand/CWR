@@ -89,7 +89,7 @@ function SettingContent(){
 
     switch(searchParams.get("setting")){
         case "account-settings": return <AccountSettings />
-        default: return <div className="theme text-color">Unknown setting category</div>
+        default: return <div className="theme text-color" style={{height: "100vh"}}>Unknown setting category</div>
     }  
 }
 
@@ -132,7 +132,7 @@ export default function SettingsPage(){
     }
 
     return(
-        <div className="page-container font-barlow">
+        <div className="page-container font-barlow theme container bg-color" style={{height: "auto"}}>
             <div className="setting-nav theme container bg-color intense">
                 <SettingMenu />
                 <UserProfile responsiveDevice="pc" />

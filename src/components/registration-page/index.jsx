@@ -1,6 +1,6 @@
 import "../../css/use/registration-page/index.css"
 import { useEffect, useState, useRef } from "react"
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, signInWithEmailAndPassword, signOut, updateProfile } from "@firebase/auth"
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, signInWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "@firebase/auth"
 import { doc, updateDoc, getDoc } from "@firebase/firestore"
 import { auth, firestoreDatabase } from "../../scripts/firebase";
 import { useNavigate } from "react-router-dom";
@@ -66,7 +66,7 @@ function SignUp() {
 
     return(
         <>
-            <h2 className="reg-t theme custom responsive">Create an account</h2>
+            <h2 className="reg-t responsive">Create an account</h2>
             <form className="reg-form" onClick={(e) => e.stopPropagation()} onSubmit={initiateCreatingAccountProgress}>
                 <div className="f-c">
                     <label className="field-label responsive">Username</label>
@@ -174,6 +174,12 @@ function SignIn() {
 
     const [inputType, setInputType] = useState("password");
     const [result, debug] = useState(false);
+    const [result2, debug2] = useState(false);
+    const [dialogMessages, setDM] = useState({
+        title: "",
+        subtitle: "",
+        description: ""
+    })
     const [errMsg, setErrMsg] = useState("");
 
     const navigator = useNavigate();
@@ -206,7 +212,7 @@ function SignIn() {
 
     return(
         <>
-            <h2 className="reg-t theme custom responsive">Sign In</h2>
+            <h2 className="reg-t responsive">Sign In</h2>
             <form className="reg-form" onClick={(e) => e.stopPropagation()} onSubmit={initiateSignInProgress}>
                 <div className="f-c">
                     <label className="field-label responsive">Username</label>
@@ -242,6 +248,10 @@ function SignIn() {
                     <div className="option-field">
                         <Switch mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")}/>
                         <label className="field-label responsive">Show Password</label>
+                        <span className="forget-password responsive" onClick={() => sendPasswordResetEmail(auth, prompt("Your email:")).then(() => {
+                        debug2(true);
+                        setDM((prevDM) => ({...prevDM, title: "Password reset email has been sent!", subtitle: "Please check your email inbox!", description: ""}))
+                    }).catch(() => alert("Invalid Email"))}>Forgot your password? Reset it here</span>
                     </div>
                     <button className="submit-btn responsive" type="submit">Sign In</button>
                 </div>
@@ -252,6 +262,13 @@ function SignIn() {
                 action: "OK"
             }}
             action={() => {debug(false); Functions.jobDelay(() => setErrMsg(""), 500);}} />
+            <AlertBox id="password-change-alert-box" detect={result2} messages={{
+                title: dialogMessages.title,
+                subtitle: dialogMessages.subtitle,
+                description: dialogMessages.description,
+                action: "OK"
+            }}
+            action={() => {debug2(false);}} />
         </>
     )
 }
@@ -299,15 +316,15 @@ export default function RegistrationPage(){
 
     return(
         <div className="page-container">
-            <h1 className="theme text-color h-reg responsive">Please let me know who you are</h1>
+            <h1 className="h-reg responsive">Please let me know who you are</h1>
             <ul className="registration-forms">
-                <li id="sign-in" className="reg-f hov-eff theme custom responsive font-barlow" onClick={() => {
+                <li id="sign-in" className="reg-f hov-eff responsive font-barlow" onClick={() => {
                     initiateFillingFormProgress("sign-in");
                 }}>
                     <SignIn />
                 </li>
-                <li className="theme custom text-color reg-t reg-t-or responsive">Or</li>
-                <li id="sign-up" className="reg-f hov-eff theme custom responsive font-barlow" onClick={() => {
+                <li className="text-color reg-t reg-t-or responsive">Or</li>
+                <li id="sign-up" className="reg-f hov-eff responsive font-barlow" onClick={() => {
                     initiateFillingFormProgress("sign-up");
                 }}>
                     <SignUp />

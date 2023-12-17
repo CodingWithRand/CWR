@@ -54,17 +54,17 @@ export default function AccountSettings(){
     }
 
     return <div className="setting-body">
-        <Section style="pallete" title="Profile Picture" description="Change your profile picture here">
+        <Section themed style="pallete" title="Profile Picture" description="Change your profile picture here">
             <form className="ppf setting-submitting-form" onSubmit={uploadPPF}>
                 <input className="theme text-color" type="file" id="profile-picture-upload-btn" accept="image/png, image/jpeg" onChange={(e) => clientPPFLink.current = new File([e.target.files[0]], "profile.png", { type: "image/png" })}/>
                 <input className="submit-btn" type="submit" />
             </form>
         </Section>
-        <Section style="pallete" title="Display Name" description="Change your display name here">
+        <Section themed style="pallete" title="Display Name" description="Change your display name here">
             <form className="display-name setting-submitting-form" onSubmit={changeDisplayName}>
                 <InputField 
                     name="username" required errDetector
-                    detectorCls="un" type="text"
+                    detectorCls="un" type="text" themed
                     placeholder="Your desire username here"
                     onChange={{
                         binded: true,
@@ -84,10 +84,10 @@ export default function AccountSettings(){
                 <input className="submit-btn" type="submit" />
             </form>
         </Section>
-        <Section style="pallete" title="Password" description="Change your password here">
+        <Section themed style="pallete" title="Password" description="Change your password here">
             <form className="password setting-submitting-form" onSubmit={changePassword}>
                 <InputField 
-                    name="password" type={inputType} required placeholder="Your old password here"
+                    name="password" type={inputType} themed required placeholder="Your old password here"
                     onChange={{
                         binded: true,
                         expected_condition: [0],
@@ -96,7 +96,7 @@ export default function AccountSettings(){
                     }}
                 />
                 <InputGroupField 
-                    fieldNumber={2}
+                    fieldNumber={2} themed
                     name={["password", "pass-confirm"]} required={[true, true]} errDetector={[true, true]}
                     detectorCls={["pw", "pwc"]} type={[inputType, inputType]}
                     unstaticAttributes={["type"]}
@@ -140,7 +140,7 @@ export default function AccountSettings(){
                 </div>
                 <button className="submit-btn responsive" type="submit" disabled={passConfirmed}>Submit</button>
             </form>
-            <AlertBox id="password-change-alert-box" detect={result} messages={{
+            <AlertBox themed id="password-change-alert-box" detect={result} messages={{
                 title: dialogMessages.title,
                 subtitle: dialogMessages.subtitle,
                 description: dialogMessages.description,

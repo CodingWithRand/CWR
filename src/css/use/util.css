@@ -96,6 +96,7 @@ img, div, button{ user-select: none; }
     border: solid 2px;
     border-radius: 5px;
     padding: 5px;
+    border-color: lightgray;
 }
 
 .input-field input.err-warn{

@@ -100,11 +100,7 @@ export default function Greet(){
     }
 
     useEffect(() => {
-        
-        if(document.hidden) {
-            
-            Functions.asyncDelay(2000).then(() => window.location.reload())
-        }
+        if(document.hidden) Functions.asyncDelay(2000).then(() => window.location.reload());
         const total_msg_time_taken = (msg, extendTime=0) => getTypeWrittingTime(msg).total_phrase_erasing_time + getTypeWrittingTime(msg).total_phrase_writing_time + (2 * extendTime);
         async function messageShow () {
             await Functions.jobDelay(() => { setGreetMsgSize("large"); typeWriting(orderedGreetMsg[0], 1000) }, 2000);

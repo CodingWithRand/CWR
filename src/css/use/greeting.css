@@ -1,0 +1,179 @@
+.spacify { animation: spacing 2s linear forwards; }
+@keyframes spacing {
+    0% { opacity: 0; }
+    20% { opacity: 1; background-color: white; }
+    100% { background-color: #14121a; }
+}
+
+.greeting-dialog{ position: relative; z-index: 20; display: flex; justify-content: center; align-items: center; text-align: center; }
+
+.effect-backdrop, .big-uobj{ 
+    height: 100%; 
+    width: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    position: absolute; 
+    overflow: hidden; 
+}
+.effect-backdrop > div{ position: absolute; }
+.big-uobj{ z-index: 10; }
+#oc.ort-cloud{ animation: ort-cloud ease-in 3s forwards; background-image: radial-gradient(closest-side, rgb(200, 200, 200, 1), rgb(200, 200, 200, 0));}
+
+@keyframes ort-cloud {
+    from {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        left: 50%;
+        top: 50%;
+    }
+    to { 
+        opacity: 0.1;
+        width: 80%;
+        height: 80%;
+        left: 10%;
+        top: 10%;
+    }
+}
+
+.galaxy, .big-bang{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}
+
+.galaxy > #l-1, .galaxy > #l-2, .galaxy > #l-3{ border-radius: 9999px; position: absolute; }
+.big-bang > #l-1, .big-bang > #l-2, .big-bang > #l-3, .big-bang > #l-4, .big-bang > #l-5, .big-bang > #l-6{ border-radius: 9999px; position: absolute; }
+.galaxy.active > #l-1, .galaxy.active > #l-2, .galaxy.active > #l-3{
+    animation-name: galaxy;
+    animation-duration: 2s; 
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+.big-bang.active > #l-1, .big-bang.active > #l-2, .big-bang.active > #l-3, .big-bang.active > #l-4, .big-bang.active > #l-5, .big-bang.active > #l-6{ 
+    animation-name: big-bang;
+    animation-duration: 10s; 
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+.galaxy > #l-2{ animation-delay: 0.5s; }
+.galaxy > #l-3{ animation-delay: 1s; }
+.big-bang.active > #l-1{ animation-delay: 0.5s; }
+.big-bang.active > #l-2{ animation-delay: 1s; }
+.big-bang.active > #l-3{ animation-delay: 1.5s; }
+.big-bang.active > #l-4{ animation-delay: 2s; }
+.big-bang.active > #l-5{ animation-delay: 2.5s; }
+.big-bang.active > #l-6{ animation-delay: 3s; }
+
+@keyframes galaxy {
+    0% {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    70% {
+        opacity: 0.1;
+        width: 80%;
+        height: 80%;
+    }
+    85% {
+        opacity: 0.1;
+        width: 95%;
+        height: 95%;
+    }
+    100% {
+        opacity: 0.1;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@keyframes big-bang {
+    from {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    to {
+        opacity: 1;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.galaxy.blueviolet > div{ background-color: blueviolet; }
+.galaxy.navy > div{ background-color: navy; }
+.galaxy.orangered > div{ background-color: orangered; }
+.galaxy.gold > div{ background-color: gold; }
+.big-bang > div{ background-color: white; }
+#g-1{ top: -10%; left: 1%; width: 50vmin; height: 50vmin; }
+#g-2{ bottom: -25%; right: -20%; width: 70vmin; height: 70vmin; }
+#g-3{ top: -15%; right: -5%; width: 30vmin; height: 30vmin; }
+#g-4{ bottom: -50%; left: -15%; width: 100vmin; height: 100vmin; }
+#g-5{ bottom: 20%; height: 20vmin; width: 20vmin; left: 35%; }
+#g-6{ top: 3%; height: 15vmin; width: 15vmin; right: 10%; }
+#g-7{ top: 20%; left: -15%; height: 40vmin; width: 40vmin; }
+#g-8{ top: 30%; right: 5%; height: 60vmin; width: 60vmin; }
+#b-b{ height: 200vh; width: 200vw; top: -50%; left: -50%; }
+
+.greeting-dialog{
+    width: 80%;
+    height: 80%;
+}
+
+.prompting-message{
+    color: white;
+    font-weight: bolder;
+}
+
+.prompting-message.large{
+    font-size: 3em;
+}
+
+.prompting-message.medium{
+    font-size: 1.5em;
+}
+
+.star{
+    position: absolute;
+    border-radius: 9999px;
+    opacity: 0;
+    transition: opacity linear 2s;
+}
+
+.star .atmosphere{
+    width: 100%;
+    height: 100%;
+    border-radius: 9999px;
+    opacity: 0;
+    transition: opacity linear 2s;
+}
+
+.star.lightblue{ background-color: #add8e680; }
+.star.blue{ background-color: #0000ff80; }
+.star.orangered{ background-color: #ff450080; }
+.star.gold{ background-color: #ffd70080 }
+.star.white{ background-color: #ffffff80; }
+
+.star.shine, .star .atmosphere.shine{
+    opacity: 0.5;
+}
+
+.star-cluster { 
+    width: 100%; 
+    height: 100%; 
+}
+
+.skip-intro{
+    color: gray;
+    text-decoration: underline;
+    cursor: pointer;
+    position: relative;
+    z-index: 100;
+    transition: opacity linear 5s;
+    opacity: 0;
+}

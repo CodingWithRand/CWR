@@ -1,0 +1,146 @@
+@tailwind utilities;
+
+@layer utilities{
+
+    .light-mode-icon{--icon-shadow: radial-gradient(gray 0%, transparent 60%);}
+    .dark-mode-icon{--icon-shadow: radial-gradient(rgb(50, 50, 50) 0%, transparent 75%);}
+
+    label.theme.text-color,
+    h1.theme.text-color,
+    h2.theme.text-color,
+    h3.theme.text-color,
+    h4.theme.text-color,
+    h5.theme.text-color,
+    h6.theme.text-color,
+    div.theme.text-color,
+    button.theme.text-color,
+    code.theme.text-color,
+    pre.theme.text-color,
+    a.theme.text-color,
+    option.theme.text-color,
+    li.theme.text-color,
+    ul.theme.text-color,
+    ol.theme.text-color,
+    textarea.theme.text-color,
+    input.theme.text-color,
+    p.theme.text-color
+    {
+        @apply text-black dark:text-white;
+    }
+
+    label.theme.component.bg-color.inverse,
+    h1.theme.component.bg-color.inverse,
+    h2.theme.component.bg-color.inverse,
+    h3.theme.component.bg-color.inverse,
+    h4.theme.component.bg-color.inverse,
+    h5.theme.component.bg-color.inverse,
+    h6.theme.component.bg-color.inverse,
+    div.theme.component.bg-color.inverse,
+    button.theme.component.bg-color.inverse,
+    code.theme.component.bg-color.inverse,
+    pre.theme.component.bg-color.inverse,
+    a.theme.component.bg-color.inverse,
+    option.theme.component.bg-color.inverse,
+    li.theme.component.bg-color.inverse,
+    ul.theme.component.bg-color.inverse,
+    ol.theme.component.bg-color.inverse,
+    textarea.theme.component.bg-color.inverse,
+    input.theme.component.bg-color.inverse,
+    dialog.theme.component.bg-color.inverse,
+    p.theme.component.bg-color.inverse
+    {
+        @apply bg-white dark:bg-[#0f0f0f];
+    }
+
+    label.theme.component.bg-color,
+    h1.theme.component.bg-color,
+    h2.theme.component.bg-color,
+    h3.theme.component.bg-color,
+    h4.theme.component.bg-color,
+    h5.theme.component.bg-color,
+    h6.theme.component.bg-color,
+    div.theme.component.bg-color,
+    button.theme.component.bg-color,
+    code.theme.component.bg-color,
+    pre.theme.component.bg-color,
+    a.theme.component.bg-color,
+    option.theme.component.bg-color,
+    li.theme.component.bg-color,
+    ul.theme.component.bg-color,
+    ol.theme.component.bg-color,
+    textarea.theme.component.bg-color,
+    input.theme.component.bg-color,
+    dialog.theme.component.bg-color,
+    p.theme.component.bg-color
+    {
+        @apply bg-black dark:bg-white;
+    }
+
+    div.theme.container.bg-color,
+    ul.theme.container.bg-color,
+    ol.theme.container.bg-color,
+    dialog.theme.container.bg-color
+    {
+        @apply bg-white dark:bg-neutral-900;
+    }
+
+    div.theme.container.bg-color.intense,
+    ul.theme.container.bg-color.intense,
+    ol.theme.container.bg-color.intense,
+    dialog.theme.container.bg-color.intense
+    {
+        @apply bg-neutral-200 dark:bg-neutral-950;
+    }
+
+    label.theme.border-color,
+    h1.theme.border-color,
+    h2.theme.border-color,
+    h3.theme.border-color,
+    h4.theme.border-color,
+    h5.theme.border-color,
+    h6.theme.border-color,
+    div.theme.border-color,
+    button.theme.border-color,
+    code.theme.border-color,
+    pre.theme.border-color,
+    a.theme.border-color,
+    option.theme.border-color,
+    li.theme.border-color,
+    ul.theme.border-color,
+    ol.theme.border-color,
+    textarea.theme.border-color,
+    input.theme.border-color,
+    dialog.theme.border-color,
+    p.theme.border-color
+    {
+        @apply border-gray-300 dark:border-[#282828];
+    }
+
+    label.theme.border-color.intense,
+    h1.theme.border-color.intense,
+    h2.theme.border-color.intense,
+    h3.theme.border-color.intense,
+    h4.theme.border-color.intense,
+    h5.theme.border-color.intense,
+    h6.theme.border-color.intense,
+    div.theme.border-color.intense,
+    button.theme.border-color.intense,
+    code.theme.border-color.intense,
+    pre.theme.border-color.intense,
+    a.theme.border-color.intense,
+    option.theme.border-color.intense,
+    li.theme.border-color.intense,
+    ul.theme.border-color.intense,
+    ol.theme.border-color.intense,
+    textarea.theme.border-color.intense,
+    input.theme.border-color.intense,
+    dialog.theme.border-color.intense
+    p.theme.border-color.intense
+    {
+        @apply border-black dark:border-white;
+    }
+
+    .setup-btn-icon-shadow.theme.custom{
+        @apply light-mode-icon dark:dark-mode-icon
+    }
+}

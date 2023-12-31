@@ -1,23 +1,25 @@
-import { Components, Hooks } from "../../scripts/util";
+"use client"
+
+import { Components, Hooks } from "../../global/util";
 import "../../css/use/registration-page/email-verification.css"
 import { useEffect, useState } from "react";
 import { reload, sendEmailVerification } from "@firebase/auth";
-import { auth } from "../../scripts/firebase";
-import { useNavigate } from "react-router-dom";
-import { useGlobal } from "../../scripts/global";
+import { auth } from "../../global/firebase";
+import { useGlobal } from "../../global/global";
+import { useRouter } from "next/navigation";
 
 const { Dynamic } = Components;
 const { Image } = Dynamic;
 
 export default function EmailVerifificationPage() {
-    const navigator = useNavigate();
+    const navigator = useRouter();
     const [ timer, countdown ] = useState(60);
     const [ btnState, setBtnState ] = useState(true);
 
     const { login } = useGlobal();
 
     Hooks.useDelayedEffect(() => {
-        if(login.isLoggedIn && auth.currentUser?.emailVerified) navigator("/");
+        if(login.isLoggedIn && auth.currentUser?.emailVerified) navigator.push("/");
     }, [login.isLoggedIn, auth.currentUser?.emailVerified], 100);
 
     Hooks.useDelayedEffect(() => {
@@ -25,7 +27,7 @@ export default function EmailVerifificationPage() {
         const intervalId = setInterval(() => {
             if(!user) return;
             if(user.emailVerified){
-                navigator('/');
+                navigator.push('/');
                 window.location.reload();
             }
             else reload(user).then(() => console.log('Reloaded')).catch((error) => console.error('Error while try to fetch data from database:', error));

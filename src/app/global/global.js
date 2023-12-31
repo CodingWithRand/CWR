@@ -1,3 +1,5 @@
+"use client"
+
 import { onAuthStateChanged } from "@firebase/auth";
 import { useContext, createContext, useState, useEffect } from "react";
 import { auth } from "./firebase";
@@ -15,7 +17,7 @@ export function Global({ children }){
   }, []);
   
   const [isLoggedIn, logIn] = useState(!cookies.get("login") ? false : cookies.get("login"));
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "default-os");
+  const [theme, setTheme] = useState((localStorage || localStorage.getItem("theme")) || "default-os");
   const [onExceptionPage, setOnExceptionPage] = useState(false);
   const [device, detectDevice] = useState("pc");
 

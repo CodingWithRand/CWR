@@ -1,0 +1,189 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@300&family=Montserrat:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300&display=swap");
+
+:root {
+    --trail-width: 5em
+}
+
+body {
+    margin: 0;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.bg-wrapper {
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.minimal-bg {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.minimal-bg polygon {
+    transition: opacity 1s ease-in;
+}
+
+.dice-logo {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    transform: translateY(150%);
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.reg-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 200%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.reg-box {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    transition: opacity 0.1s ease-in-out;
+}
+
+.login-pallete {
+    overflow-x: hidden;
+    position: relative;
+    width: 80vw;
+    height: 50vh;
+    background-color: white;
+    border-radius: 2em;
+    box-shadow: 0 0 5px gray;
+    z-index: 2;
+    transition: transform 2s ease-out, opacity 2s ease-out;
+}
+
+#registration-mode {
+    color: darkgray;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.init-dot {
+    position: absolute;
+    border-radius: 9999px;
+    width: 1.25em;
+    height: 1.25em;
+    background-color: rgb(25, 25, 25);
+    animation: diagnog-swoop 1s ease-in-out forwards;
+    bottom: 0;
+    right: 0;
+}
+
+.init-dot>.trail {
+    width: 0;
+    height: 30%;
+    background-image: linear-gradient(to right, rgb(25, 25, 25), rgb(200, 200, 200), transparent);
+    position: relative;
+    right: 10%;
+    top: 45%;
+    transition: width 0.4s ease-in;
+    transition-delay: 0.1s;
+    border-radius: 5px;
+    transform-origin: center left;
+    transform: rotate(180deg);
+}
+
+@keyframes diagnog-swoop {
+    0% {
+        top: -20%;
+        left: -20%;
+    }
+
+    100% {
+        top: 120%;
+        left: 120%;
+    }
+}
+
+@keyframes unstable-trail {
+    0% {
+        width: calc(var(--trail-width) - 1.5em)
+    }
+
+    10% {
+        width: calc(var(--trail-width) + 0.8em)
+    }
+
+    20% {
+        width: calc(var(--trail-width) - 0.5em)
+    }
+
+    30% {
+        width: calc(var(--trail-width) + 0.3em)
+    }
+
+    40% {
+        width: calc(var(--trail-width) + 1em)
+    }
+
+    50% {
+        width: calc(var(--trail-width) - 0.8em)
+    }
+
+    60% {
+        width: calc(var(--trail-width) + 0.7em)
+    }
+
+    70% {
+        width: calc(var(--trail-width) - 1.3em)
+    }
+
+    80% {
+        width: calc(var(--trail-width) + 0.5em)
+    }
+
+    90% {
+        width: calc(var(--trail-width) + 0.2em)
+    }
+
+    100% {
+        width: calc(var(--trail-width) - 1em)
+    }
+}
+
+@keyframes pop-up {
+    0% {
+        transform: translateY(150%)
+    }
+
+    50% {
+        transform: translateY(-25%)
+    }
+
+    100% {
+        transform: translateY(0%)
+    }
+}
+
+@keyframes shaking {
+    from {
+        transform: rotate(25deg)
+    }
+
+    to {
+        transform: rotate(-25deg)
+    }
+}

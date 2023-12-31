@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useGlobal } from "./global";
-import "../css/use/util.css";
-import "../css/use/theme.css";
-import "../css/use/responsive.css";
+import "./css/use/util.css";
+import "./css/use/theme.css";
+import "./css/use/responsive.css";
 
 async function asyncDelay(ms) { return new Promise((resolve) => setTimeout(() => resolve(), ms)); };
 async function jobDelay(callback, ms){

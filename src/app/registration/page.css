@@ -1,12 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@300&family=Montserrat:wght@300&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300&display=swap");
 
+@tailwind components;
+
 :root {
     --trail-width: 5em
 }
 
 body {
     margin: 0;
+    overflow: hidden;
 }
 
 main {
@@ -61,18 +64,6 @@ main {
     flex-direction: column;
     width: 50%;
     transition: opacity 0.1s ease-in-out;
-}
-
-.login-pallete {
-    overflow-x: hidden;
-    position: relative;
-    width: 80vw;
-    height: 50vh;
-    background-color: white;
-    border-radius: 2em;
-    box-shadow: 0 0 5px gray;
-    z-index: 2;
-    transition: transform 2s ease-out, opacity 2s ease-out;
 }
 
 #registration-mode {
@@ -185,5 +176,18 @@ main {
 
     to {
         transform: rotate(-25deg)
+    }
+}
+
+@layer components{
+    .login-pallete {
+        @apply w-[70vw] h-[70vh] sm:w-[65vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw];
+        overflow-x: hidden;
+        position: relative;
+        background-color: white;
+        border-radius: 2em;
+        box-shadow: 0 0 5px gray;
+        z-index: 2;
+        transition: transform 2s ease-out, opacity 2s ease-out;
     }
 }

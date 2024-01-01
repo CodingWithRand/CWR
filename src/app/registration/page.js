@@ -10,7 +10,6 @@ export default function RegistrationPage() {
 
     window.onresize = () => {
         const reflexive_angle = Math.atan2(1.05 * window.innerHeight, window.innerWidth) * (180/Math.PI)
-        console.log(prevReflexsiveAngle, reflexive_angle)
         setCometDeg((prevCometDeg) => prevCometDeg - (prevReflexsiveAngle - reflexive_angle));
         setPRA(reflexive_angle);
     }
@@ -54,20 +53,9 @@ export default function RegistrationPage() {
             <div className="login-pallete" style={{ transform: "translateY(-20%)", opacity: 0 }}>
                 <div className="reg-wrapper" focusing="login">
                     <div id="login" className="reg-box">
-                        {/* <h1>Log In</h1>
-                        <form>
-                            <label htmlFor="username">Username</label>
-                            <input name="username" placeholder="Your username here" />
-
-                        </form> */}
                         <SignIn />
                     </div>
                     <div id="signup" className="reg-box">
-                        {/* <h1>Sign Up</h1>
-                        <form>
-                            <label htmlFor="username">Username</label>
-                            <input name="username" placeholder="Your desired username here" />
-                        </form> */}
                         <SignUp />
                     </div>
                 </div>

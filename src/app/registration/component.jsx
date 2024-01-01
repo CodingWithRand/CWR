@@ -69,7 +69,7 @@ function SignUp() {
     return (
         <>
             <h2 className="reg-t responsive">Create an account</h2>
-            <form className="reg-form" onClick={(e) => e.stopPropagation()} onSubmit={initiateCreatingAccountProgress}>
+            <form className="reg-form" style={{ width: "100%" }} onClick={(e) => e.stopPropagation()} onSubmit={initiateCreatingAccountProgress}>
                 <div className="f-c">
                     <label className="field-label responsive">Username</label>
                     <InputField

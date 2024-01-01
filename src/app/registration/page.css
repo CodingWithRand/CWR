@@ -70,6 +70,7 @@ main {
     color: darkgray;
     text-decoration: underline;
     cursor: pointer;
+    position: relative;
 }
 
 .init-dot {
@@ -181,13 +182,9 @@ main {
 
 @layer components{
     .login-pallete {
-        @apply w-[70vw] h-[70vh] sm:w-[65vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw];
+        @apply relative z-[2] rounded-[2em] bg-white w-[70vw] h-[70vh] sm:w-[65vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw];
         overflow-x: hidden;
-        position: relative;
-        background-color: white;
-        border-radius: 2em;
         box-shadow: 0 0 5px gray;
-        z-index: 2;
         transition: transform 2s ease-out, opacity 2s ease-out;
     }
 }

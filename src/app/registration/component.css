@@ -93,7 +93,6 @@ html, body, #root{ overflow-y: auto; }
 
 .option-field{
     display: flex;
-    flex-direction: row;
     align-items: center;
     column-gap: 10px;
     margin: 1vh 0;
@@ -103,8 +102,8 @@ html, body, #root{ overflow-y: auto; }
 .f-c .submit-btn{
     background-color: lightgray;
     border-radius: 5px;
-    width: 30%;
-    padding: 1vh 0;
+    min-width: 30%;
+    padding: 1vh 1vw;
 }
 
 .f-c{
@@ -112,4 +111,17 @@ html, body, #root{ overflow-y: auto; }
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.show-pass{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.forget-password {
+    color: darkgray;
+    text-decoration: underline;
+    cursor: pointer;
 }

@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react"
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, signInWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "@firebase/auth"
 import { doc, updateDoc, getDoc } from "@firebase/firestore"
 import { auth, firestoreDatabase } from "../global/firebase";
-import { Components, Functions, Hooks } from "../global/util";
+import { Components, Functions } from "../global/util";
 import { useGlobal } from "../global/global";
 import { useRouter } from "next/navigation"
 
@@ -69,7 +69,7 @@ function SignUp() {
     return (
         <>
             <h2 className="reg-t responsive">Create an account</h2>
-            <form className="reg-form" style={{ width: "100%" }} onClick={(e) => e.stopPropagation()} onSubmit={initiateCreatingAccountProgress}>
+            <form className="reg-form" style={{ width: "80%" }} onClick={(e) => e.stopPropagation()} onSubmit={initiateCreatingAccountProgress}>
                 <div className="f-c">
                     <label className="field-label responsive">Username</label>
                     <InputField
@@ -149,9 +149,11 @@ function SignUp() {
                         ]}
                         warningMsg={[["", "Password must contain at least 8 characters"], ["", "Password does not match!"]]}
                     />
-                    <div className="option-field">
-                        <Switch mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")} />
-                        <label className="field-label responsive">Show Password</label>
+                    <div className="option-field responsive">
+                        <div className="show-pass">
+                            <Switch mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")} />
+                            <label className="field-label responsive">Show Password</label>
+                        </div>
                     </div>
                     <button className="submit-btn responsive" type="submit" disabled={regFormUnDone}>Create a new account</button>
                 </div>
@@ -195,7 +197,6 @@ function SignIn() {
             if (username === userName.current) {
                 login.logIn(true);
                 navigator.push("/");
-                window.location.reload();
             } else {
                 debug(true);
                 setErrMsg("Invalid username");
@@ -247,9 +248,11 @@ function SignIn() {
                             actions: [(e) => onFormUpdate(e, userPass)]
                         }}
                     />
-                    <div className="option-field">
-                        <Switch mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")} />
-                        <label className="field-label responsive">Show Password</label>
+                    <div className="option-field responsive">
+                        <div className="show-pass">
+                            <Switch mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")} />
+                            <label className="field-label responsive">Show Password</label>
+                        </div>
                         <span className="forget-password responsive" onClick={() => sendPasswordResetEmail(auth, prompt("Your email:")).then(() => {
                             debug2(true);
                             setDM((prevDM) => ({ ...prevDM, title: "Password reset email has been sent!", subtitle: "Please check your email inbox!", description: "" }))

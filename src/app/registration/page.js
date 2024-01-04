@@ -1,48 +1,20 @@
-"use client"
+"use server"
 
 import "./page.css"
 import "../global/css/responsive.css"
-import { SignIn, SignUp } from "./component";
-import { useEffect, useState } from "react";
+import { SignIn, SignUp, SwitchPageBtn } from "./components/client";
+import Script from "next/script";
 
-export default function RegistrationPage() {
-    const [ cometDeg, setCometDeg ] = useState(Math.atan2(window.innerHeight, window.innerWidth) * (180/Math.PI));
-    const [ prevReflexsiveAngle, setPRA ] = useState(Math.atan2(window.innerHeight, window.innerWidth) * (180/Math.PI));
-
-    window.onresize = () => {
-        const reflexive_angle = Math.atan2(1.05 * window.innerHeight, window.innerWidth) * (180/Math.PI)
-        setCometDeg((prevCometDeg) => prevCometDeg - (prevReflexsiveAngle - reflexive_angle));
-        setPRA(reflexive_angle);
-    }
-
-    useEffect(() => {
-        const init_dots_trail = document.querySelector(".init-dot > .trail");
-        const triangle_bg = document.querySelector(".minimal-bg polygon");
-        const login_pallete = document.querySelector(".login-pallete");
-        const dice_logo = document.querySelector(".dice-logo");
-        init_dots_trail.style.width = "5em";
-        setTimeout(() => init_dots_trail.style.animation = "unstable-trail 2s linear infinite", 300);
-        setTimeout(() => triangle_bg.style.opacity = 0.8, 1000);
-        setTimeout(() => {
-            login_pallete.style.transform = "translateY(0)";
-            login_pallete.style.opacity = 1;
-        }, 2000);
-        setTimeout(() => dice_logo.style.animationName = "pop-up", 4000)
-        setTimeout(() => {
-            dice_logo.style.animationName = "shaking";
-            dice_logo.style.animationIterationCount = "infinite"
-            dice_logo.style.animationDirection = "alternate"
-        }, 5000)
-    }, []);
-
+export default async function RegistrationPage() {
     return (
         <main>
+            <Script src="/vanilla-js/frontend.js"/>
             <div className="bg-wrapper">
                 <svg preserveAspectRatio="none" viewBox="0 0 100 100" className="minimal-bg">
                     <polygon points="0,0 0,100
                     100,100 0,0" fill="black" style={{ opacity: 0 }} />
                 </svg>
-                <div style={{transform: `rotate(${cometDeg}deg)`}} className="init-dot">
+                <div className="init-dot">
                     <div className="trail"></div>
                 </div>
                 <svg width="100px" height="100px" viewBox="0 0 100 100" className="dice-logo">
@@ -60,24 +32,7 @@ export default function RegistrationPage() {
                         <SignUp />
                     </div>
                 </div>
-                <span id="registration-mode" className="responsive" onClick={(e) => {
-                    const regwrapper = document.querySelector(".reg-wrapper");
-                    if(regwrapper.getAttribute("focusing") === "login"){
-                        regwrapper.style.transform = "translateX(-50%)";
-                        document.getElementById("login").style.opacity = 0;
-                        document.getElementById("signup").style.opacity = 1;
-                        regwrapper.setAttribute("focusing", "signup");
-                        e.target.textContent = "Already have an account? Login now!"
-                    }else if(regwrapper.getAttribute("focusing") === "signup"){
-                        regwrapper.style.transform = "translateX(0%)";
-                        document.getElementById("login").style.opacity = 1;
-                        document.getElementById("signup").style.opacity = 0;
-                        regwrapper.setAttribute("focusing", "login");
-                        e.target.textContent = "Don't have account? Create one!"
-                    }
-                }}>Don't have account? Create one!</span>
-
-                {/* <!-- <div class="shadow"></div> --> */}
+                <SwitchPageBtn/>
             </div>
         </main>
     )

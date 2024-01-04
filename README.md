@@ -1,2 +1,2 @@
 # Pre-release Log
-*Latest Change* - Initializing new page
+*Latest Change* - Added Login Page

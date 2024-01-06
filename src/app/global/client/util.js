@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useGlobal } from "./global";
-import "./css/util.css";
-import "./css/theme.css";
-import "./css/responsive.css";
+import "@/gss/util.css";
+import "@/gss/theme.css";
+import "@/gss/responsive.css";
 
 async function asyncDelay(ms) { return new Promise((resolve) => setTimeout(() => resolve(), ms)); };
 async function jobDelay(callback, ms){
@@ -298,6 +298,16 @@ function InputGroupField(props){
     return <div className="input-fields">{inputFields}</div>
 }
 
+function LoadingPage() {
+    return(
+        <div className="loading-bar">
+            <div className="loading-dot" id="d1"></div>
+            <div className="loading-dot" id="d2"></div>
+            <div className="loading-dot" id="d3"></div>
+        </div>
+    )
+}
+
 const Functions = {
     asyncDelay,
     jobDelay,
@@ -312,7 +322,8 @@ const Components = {
     },
     AlertBox,
     Switch,
-    Section
+    Section,
+    LoadingPage
 };
 
 const Hooks = {

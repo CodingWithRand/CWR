@@ -1,22 +1,19 @@
 "use client"
 
 import "./client.css"
-import { useEffect, useState, useRef } from "react"
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, signInWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "@firebase/auth"
+import { useState, useEffect } from "react";
 import { doc, updateDoc, getDoc } from "@firebase/firestore"
-import { auth, firestoreDatabase } from "../../global/firebase";
-import { Components, Functions } from "../../global/util";
-import { useGlobal } from "../../global/global";
+import { auth, firestoreDatabase } from "@/glient/firebase";
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
+import { Components, Functions } from "@/glient/util";
 import { useRouter } from "next/navigation"
 
-const { Switch, AlertBox, Dynamic } = Components;
-const { InputField, InputGroupField } = Dynamic;
+export default function SignUp() {
 
-const username_storage = doc(firestoreDatabase, 'util', 'availableUser');
+    const { Switch, AlertBox, Dynamic } = Components;
+    const { InputField, InputGroupField } = Dynamic;
 
-function SignUp() {
-
-    const navigator = useRouter();
+    const username_storage = doc(firestoreDatabase, 'util', 'availableUser');
 
     const [userEmail, setUserEmail] = useState("");
     const [userPass, setUserPass] = useState("");
@@ -45,7 +42,7 @@ function SignUp() {
         }
 
         createUserWithEmailAndPassword(auth, userEmail, userPass).then((userCredential) => {
-            sendEmailVerification(userCredential.user).then(() => { navigator.push("/registration/verify"); window.location.reload(); });
+            sendEmailVerification(userCredential.user).then(() => window.location.replace("/registration/verify"));
             updateProfile(userCredential.user, { displayName: userName });
             updateDoc(username_storage, { [userName]: userCredential.user.uid });
         })
@@ -167,136 +164,3 @@ function SignUp() {
         </>
     )
 }
-
-function SignIn() {
-
-    const { login } = useGlobal();
-
-    const userEmail = useRef("");
-    const userPass = useRef("");
-    const userName = useRef("");
-
-    const [inputType, setInputType] = useState("password");
-    const [result, debug] = useState(false);
-    const [result2, debug2] = useState(false);
-    const [dialogMessages, setDM] = useState({
-        title: "",
-        subtitle: "",
-        description: ""
-    })
-    const [errMsg, setErrMsg] = useState("");
-
-    const navigator = useRouter();
-
-    function initiateSignInProgress(e) {
-        e.preventDefault();
-
-        signInWithEmailAndPassword(auth, userEmail.current, userPass.current).then((userCredential) => {
-            const user = userCredential.user;
-            const username = user.displayName;
-            if (username === userName.current) {
-                login.logIn(true);
-                navigator.push("/");
-            } else {
-                debug(true);
-                setErrMsg("Invalid username");
-                signOut(auth);
-            }
-        }).catch((error) => {
-            if (error.code === "auth/invalid-login-credentials") { debug(true); setErrMsg("Email or password is incorrect!"); }
-            else { debug(true); setErrMsg("Something went wrong, please try again later"); };
-        })
-    };
-
-    function onFormUpdate(e, refValue) {
-        e.preventDefault();
-        refValue.current = e.target.value;
-    };
-
-    return (
-        <>
-            <h2 className="reg-t responsive">Sign In</h2>
-            <form className="reg-form" onClick={(e) => e.stopPropagation()} onSubmit={initiateSignInProgress}>
-                <div className="f-c">
-                    <label className="field-label responsive">Username</label>
-                    <InputField
-                        name="user" type="text" required
-                        onChange={{
-                            binded: true,
-                            expected_condition: [0],
-                            run_test: (e) => 0,
-                            actions: [(e) => onFormUpdate(e, userName)]
-                        }}
-                    />
-                    <label className="field-label responsive">Email</label>
-                    <InputField
-                        name="email" type="email" required
-                        onChange={{
-                            binded: true,
-                            expected_condition: [0],
-                            run_test: (e) => 0,
-                            actions: [(e) => onFormUpdate(e, userEmail)]
-                        }}
-                    />
-                    <label className="field-label responsive">Password</label>
-                    <InputField
-                        name="password" type={inputType} required
-                        onChange={{
-                            binded: true,
-                            expected_condition: [0],
-                            run_test: (e) => 0,
-                            actions: [(e) => onFormUpdate(e, userPass)]
-                        }}
-                    />
-                    <div className="option-field responsive">
-                        <div className="show-pass">
-                            <Switch mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")} />
-                            <label className="field-label responsive">Show Password</label>
-                        </div>
-                        <span className="forget-password responsive" onClick={() => sendPasswordResetEmail(auth, prompt("Your email:")).then(() => {
-                            debug2(true);
-                            setDM((prevDM) => ({ ...prevDM, title: "Password reset email has been sent!", subtitle: "Please check your email inbox!", description: "" }))
-                        }).catch(() => alert("Invalid Email"))}>Forgot your password? Reset it here</span>
-                    </div>
-                    <button className="submit-btn responsive" type="submit">Sign In</button>
-                </div>
-            </form>
-            <AlertBox id="sign-in-alert-box" detect={result} messages={{
-                title: "Sign in failed",
-                subtitle: errMsg,
-                action: "OK"
-            }}
-                action={() => { debug(false); Functions.jobDelay(() => setErrMsg(""), 500); }} />
-            <AlertBox id="password-change-alert-box" detect={result2} messages={{
-                title: dialogMessages.title,
-                subtitle: dialogMessages.subtitle,
-                description: dialogMessages.description,
-                action: "OK"
-            }}
-                action={() => { debug2(false); }} />
-        </>
-    )
-}
-
-function SwitchPageBtn(){
-    return(
-        <span id="registration-mode" className="responsive" onClick={(e) => {
-            const regwrapper = document.querySelector(".reg-wrapper");
-            if(regwrapper.getAttribute("focusing") === "login"){
-                regwrapper.style.transform = "translateX(-50%)";
-                document.getElementById("login").style.opacity = 0;
-                document.getElementById("signup").style.opacity = 1;
-                regwrapper.setAttribute("focusing", "signup");
-                e.target.textContent = "Already have an account? Login now!"
-            }else if(regwrapper.getAttribute("focusing") === "signup"){
-                regwrapper.style.transform = "translateX(0%)";
-                document.getElementById("login").style.opacity = 1;
-                document.getElementById("signup").style.opacity = 0;
-                regwrapper.setAttribute("focusing", "login");
-                e.target.textContent = "Don't have account? Create one!"
-            }
-        }}>Don't have account? Create one!</span>
-    )
-}
-
-export { SignIn, SignUp, SwitchPageBtn }

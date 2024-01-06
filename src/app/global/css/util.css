@@ -105,3 +105,32 @@ img, div, button{ user-select: none; }
 
 .input-field input::placeholder{ color: darkgray; }
 
+/* LoadingPage Component */
+
+.loading-bar{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: row;
+    column-gap: 1vw;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-dot{
+    width: 2vw;
+    height: 2vw;
+    border-radius: 9999px;
+    background-color: gray;
+    position: relative;
+}
+
+.loading-dot#d1{ animation: bouncing ease-in-out infinite alternate 1s 0s; }
+.loading-dot#d2{ animation: bouncing ease-in-out infinite alternate 1s 0.8s; }
+.loading-dot#d3{ animation: bouncing ease-in-out infinite alternate 1s 1.6s; }
+
+@keyframes bouncing {
+    from{ bottom: 0; }
+    to{ bottom: 1%; }
+}
+

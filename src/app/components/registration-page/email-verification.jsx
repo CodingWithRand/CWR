@@ -1,11 +1,11 @@
 "use client"
 
-import { Components, Hooks } from "../../global/util";
+import { Components, Hooks } from "../../global/client/util";
 import "../../css/use/registration-page/email-verification.css"
 import { useEffect, useState } from "react";
 import { reload, sendEmailVerification } from "@firebase/auth";
-import { auth } from "../../global/firebase";
-import { useGlobal } from "../../global/global";
+import { auth } from "../../global/client/firebase";
+import { useGlobal } from "../../global/client/global";
 import { useRouter } from "next/navigation";
 
 const { Dynamic } = Components;

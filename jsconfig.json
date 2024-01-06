@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/glient/*": ["./src/app/global/client/*"],
+      "@/gss/*": ["./src/app/global/css/*"]
     }
   }
 }

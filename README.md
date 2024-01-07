@@ -1,2 +1,2 @@
 # Pre-release Log
-*Latest Change* - Added Login Page
+*Latest Change* - Host to vercel

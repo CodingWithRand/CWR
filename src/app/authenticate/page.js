@@ -5,11 +5,14 @@ import { auth } from "@/glient/firebase";
 import "./page.css"
 import { applyActionCode } from "@firebase/auth";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function AuthenticateActionHandler({ searchParams }) {
+export default function AuthenticateActionHandler() {
     const { LoadingPage } = Components
 
-    const { mode, oobCode } = searchParams;
+    const searchParams = useSearchParams();
+    const mode = searchParams.get("mode");
+    const oobCode = searchParams.get("oobCode");
 
     const [ authicateMethodText, setAMT] = useState("")
 
@@ -34,7 +37,7 @@ export default function AuthenticateActionHandler({ searchParams }) {
                 }
                 return modeFailText;
             }))
-    })
+    }, [])
     
 
     return(

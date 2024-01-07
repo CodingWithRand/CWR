@@ -26,6 +26,14 @@
         @apply text-xs sm:text-base;
     }
 
+    .email-icon.responsive {
+        @apply w-[150px] h-[150px] sm:w-[200px] sm:h-[200px];
+    }
+
+    .notf-box.responsive {
+        @apply p-[3vh] text-sm sm:p-[5vh] sm:text-base;
+    }
+
     /* registration/page.js - Page */
 
     #registration-mode.responsive {

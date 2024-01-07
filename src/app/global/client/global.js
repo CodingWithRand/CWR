@@ -17,7 +17,7 @@ export function Global({ children }){
   }, []);
   
   const [isLoggedIn, logIn] = useState(!cookies.get("login") ? false : cookies.get("login"));
-  const [theme, setTheme] = useState((localStorage || localStorage.getItem("theme")) || "default-os");
+  const [theme, setTheme] = useState("default-os");
   const [onExceptionPage, setOnExceptionPage] = useState(false);
   const [device, detectDevice] = useState("pc");
 
@@ -44,7 +44,9 @@ export function Global({ children }){
     
     window.addEventListener("resize", detectingDevice);
     return () => window.removeEventListener("resize", detectDevice);
-  }, [])
+  }, []);
+
+  useEffect(() => setTheme(localStorage.getItem("theme")), [])
 
   return(
     <GlobalState.Provider value={{

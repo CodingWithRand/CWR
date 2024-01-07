@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+    output: 'export',
     env: {
         FIREBASE_API_KEY: "AIzaSyD9E-p_S6YuWa3UXenbPoCKWjIj7iZoAUA",
         FIREBASE_AUTH_DOMAIN: "codingwithrand.firebaseapp.com",

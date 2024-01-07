@@ -19,6 +19,6 @@ export default function SwitchPageBtn(){
                 regwrapper.setAttribute("focusing", "login");
                 e.target.textContent = "Don't have account? Create one!"
             }
-        }}>Don't have account? Create one!</span>
+        }}>Don&apos;t have account? Create one!</span>
     )
 }

@@ -34,13 +34,13 @@ function Image(props){
     
     useEffect(() => {
         if(isBinding) return;
-        if(!props.constant) setImgSrc(process.env.PUBLIC_URL + `/imgs/backend-images/theme/${props.dir || ""}${(() => {
+        if(!props.constant) setImgSrc(`/imgs/backend-images/theme/${props.dir || ""}${(() => {
                 if(theme.theme === "default-os" && props.name !== "mode.png"){
                     if(window.matchMedia('(prefers-color-scheme: dark)').matches) return "dark";
                     else return "light";
                 }else return theme.theme
             })()}-${props.name}`);
-        else setImgSrc(process.env.PUBLIC_URL + `/imgs/backend-images/${props.dir || ""}${props.name}`);
+        else setImgSrc(`/imgs/backend-images/${props.dir || ""}${props.name}`);
     }, [theme.theme, isBinding]);
 
     Hooks.useDelayedEffect(() => {
@@ -52,11 +52,11 @@ function Image(props){
               if (mutation.type === 'attributes' && mutation.attributeName === 'binding-status') {
                 if(targetElement.getAttribute('binding-status') === "true"){
                     bind(true);
-                    setImgSrc(process.env.PUBLIC_URL + `/imgs/backend-images/binded/${props.dir || ""}binded-${props.name}`);
+                    setImgSrc(`/imgs/backend-images/binded/${props.dir || ""}binded-${props.name}`);
                 }
                 else if(targetElement.getAttribute('binding-status') === "false"){
                     bind(false);
-                    setImgSrc(process.env.PUBLIC_URL + `/imgs/backend-images/theme/${props.dir || ""}${(() => {
+                    setImgSrc(`/imgs/backend-images/theme/${props.dir || ""}${(() => {
                         if(theme.theme === "default-os" && props.name !== "mode.png"){
                             if(window.matchMedia('(prefers-color-scheme: dark)').matches) return "dark";
                             else return "light";
@@ -97,10 +97,17 @@ function AlertBox(props){
     return (
         <dialog id={props.id} className={`alert-box responsive ${props.themed ? "theme" : ""} container bg-color border-color`}>
             <div className="dialog-nester responsive">
-                <h2 className={`dialog-title ${props.themed ? "theme" : ""} text-color responsive`}>{props.messages.title}</h2>
-                <label className={`dialog-subtitle responsive ${props.themed ? "theme" : ""} text-color`}>{props.messages.subtitle || ""}</label>
-                <div className={`dialog-description responsive ${props.themed ? "theme" : ""} text-color`}>{props.messages.description || ""}</div>
-                <button className="dialog-btn responsive" onClick={props.action}>{`${props.messages.action} ${timer}`}</button>
+                {(() => {
+                    if(props.children) return props.children;
+                    else return(
+                        <>
+                            <h2 className={`dialog-title ${props.themed ? "theme" : ""} text-color responsive`}>{props.messages.title}</h2>
+                            <label className={`dialog-subtitle responsive ${props.themed ? "theme" : ""} text-color`}>{props.messages.subtitle || ""}</label>
+                            <div className={`dialog-description responsive ${props.themed ? "theme" : ""} text-color`}>{props.messages.description || ""}</div>
+                            <button className="dialog-btn responsive" onClick={props.action}>{`${props.messages.action} ${timer}`}</button>
+                        </>
+                    )
+                })()}
             </div>
         </dialog>
     );

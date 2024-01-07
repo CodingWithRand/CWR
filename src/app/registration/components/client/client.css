@@ -125,3 +125,13 @@ html, body, #root{ overflow-y: auto; }
     text-decoration: underline;
     cursor: pointer;
 }
+
+.notf-box{
+    margin-top: 8vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.notf-action:disabled{ opacity: 0.5; cursor: initial; }
+.notf-action{ cursor: pointer; color: gray; }

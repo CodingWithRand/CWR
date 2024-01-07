@@ -7,6 +7,7 @@ import { auth, firestoreDatabase } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
 import { Components } from "@/glient/util";
 import { Functions } from"@/geutral/util";
+import EmailVerifificationPage from "./email-verification";
 
 export default function SignUp() {
 
@@ -24,6 +25,7 @@ export default function SignUp() {
     const [regFormUnDone, validate] = useState(true);
 
     const [signUpSuccess, setSUS] = useState(false);
+    const [emailSent, setEmailSent] = useState(false);
     const [errMsg, setErrMsg] = useState("");
 
     useEffect(() => {
@@ -42,7 +44,7 @@ export default function SignUp() {
         }
 
         createUserWithEmailAndPassword(auth, userEmail, userPass).then((userCredential) => {
-            sendEmailVerification(userCredential.user).then(() => window.location.replace("/registration/verify"));
+            sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
             updateProfile(userCredential.user, { displayName: userName });
             updateDoc(username_storage, { [userName]: userCredential.user.uid });
         })
@@ -162,6 +164,9 @@ export default function SignUp() {
                 action: "OK"
             }}
                 action={() => { setSUS(false); Functions.jobDelay(() => setErrMsg(""), 500); }} />
+            <AlertBox id="email-verification-intermission" detect={emailSent}>
+                <EmailVerifificationPage />
+            </AlertBox>
         </>
     )
 }

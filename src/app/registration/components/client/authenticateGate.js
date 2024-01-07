@@ -3,14 +3,14 @@
 import { useGlobal } from "@/glient/global"
 import { Hooks } from "@/glient/util";
 import { useState } from "react";
-import { Components } from "@/glient/util";
+import { Components } from "@/geutral/util";
 
 export default function AuthenticateGate({ children }){
     const { LoadingPage } = Components;
     const { login, authUser } = useGlobal();
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
     Hooks.useDelayedEffect(() => {
-        if(login && authUser){
+        if(login === true && authUser !== null){
             const UserAuthState = {
                 login: login,
                 authUser: authUser

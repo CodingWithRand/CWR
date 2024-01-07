@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import { doc, updateDoc, getDoc } from "@firebase/firestore"
 import { auth, firestoreDatabase } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
-import { Components, Functions } from "@/glient/util";
-import { useRouter } from "next/navigation"
+import { Components } from "@/glient/util";
+import { Functions } from"@/geutral/util";
 
 export default function SignUp() {
 
@@ -86,7 +86,8 @@ export default function SignUp() {
                                 (e) => { setUserName(""); }
                             ]
                         }}
-                        warningMsg={["", "Name doesn't satisfy the format (At least 3 character, must be English, doesn't contain special character except \"_\", and doesn't start with \"_\")"]}
+                        warningMsg={["", "Name doesn't satisfy the format"]}
+                        warningMsgDescription={"(At least 3 character, must be English, doesn't contain special character except \"_\", and doesn't start with \"_\")"}
                     />
                     <label className="field-label responsive">Email</label>
                     <InputField

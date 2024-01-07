@@ -1,5 +1,3 @@
-"use server"
-
 import "./page.css"
 import "@/gss/responsive.css"
 import SignIn from "./components/client/signin";
@@ -8,7 +6,7 @@ import SwitchPageBtn from "./components/client/switchpagebtn";
 import AuthenticateGate from "./components/client/authenticateGate";
 import Script from "next/script";
 
-export default async function RegistrationPage() {
+export default function RegistrationPage() {
 
     return (
         <AuthenticateGate>

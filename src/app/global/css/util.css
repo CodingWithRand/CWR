@@ -125,9 +125,9 @@ img, div, button{ user-select: none; }
     position: relative;
 }
 
-.loading-dot#d1{ animation: bouncing ease-in-out infinite alternate 1s 0s; }
-.loading-dot#d2{ animation: bouncing ease-in-out infinite alternate 1s 0.8s; }
-.loading-dot#d3{ animation: bouncing ease-in-out infinite alternate 1s 1.6s; }
+.loading-dot#d1{ animation: bouncing ease-in-out infinite alternate 0.5s 0s; }
+.loading-dot#d2{ animation: bouncing ease-in-out infinite alternate 0.5s 0.8s; }
+.loading-dot#d3{ animation: bouncing ease-in-out infinite alternate 0.5s 1.6s; }
 
 @keyframes bouncing {
     from{ bottom: 0; }

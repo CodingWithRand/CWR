@@ -5,11 +5,11 @@ import { Global } from '@/glient/global'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Registration Landing Page',
-  description: 'Authenticate user & Creating account here.',
+  title: 'Authenticate Action Handler Page',
+  description: 'Handling actions such as verify email, password reset, etc.',
 }
 
-export default function RegistrationPageRootLayout({ children }) {
+export default function AuthenticateActionHandlerRootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>

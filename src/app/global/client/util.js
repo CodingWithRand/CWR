@@ -1,28 +1,11 @@
+"use client"
+
 import { useEffect, useState, useRef } from "react";
 import { useGlobal } from "./global";
+import { Functions } from "@/geutral/util";
 import "@/gss/util.css";
 import "@/gss/theme.css";
 import "@/gss/responsive.css";
-
-async function asyncDelay(ms) { return new Promise((resolve) => setTimeout(() => resolve(), ms)); };
-async function jobDelay(callback, ms){
-    let timeoutId;
-    await new Promise((resolve) => {
-        timeoutId = setTimeout(() => {
-            callback();
-            resolve();
-        }, ms);
-    });
-    clearTimeout(timeoutId);
-};
-
-function syncDelay(ms) {
-    const start = Date.now();
-    let now = start;
-    while (now - start < ms) {
-        now = Date.now();
-    };
-};
 
 function useDelayedEffect(callback, dependencies, delay) {
     const savedCallback = useRef();
@@ -213,7 +196,7 @@ function InputField(props){
                 })
                 
             }}/>
-            <label className="field-warning responsive">{errText}</label>
+            <label className="field-warning responsive" title={props.warningMsgDescription}>{errText}</label>
         </div>
     );
 };
@@ -221,7 +204,7 @@ function InputField(props){
 function InputGroupField(props){
     const [inputFields, updateInputFields] = useState(Array.from({ length: props.fieldNumber }, (_, i) => (
         <div key={i} className="sub input-field">
-            <input name={props.name[i]} required={props.required[i]} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
+            <input name={props.name && props.name[i]} required={props.required && props.required[i]} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
                 e.preventDefault();
                 if(!props.onChange[i].binded) return;
                 props.onChange[i].expected_condition.forEach((j, c) => {
@@ -235,7 +218,7 @@ function InputGroupField(props){
                 })
                 
             }}/>
-            <label className={`field-warning ${props.detectorCls[i]} responsive`}></label>
+            <label className={`field-warning ${props.detectorCls[i]} responsive`} title={props.warningMsgDescription && props.warningMsgDescription[i]}></label>
         </div>
     )));
     const [errText, setErrText] = useState((() => 
@@ -265,7 +248,7 @@ function InputGroupField(props){
             const updatingInputFields = [...prevInputFields];
             return updatingInputFields.map((_, i) => (
                 <div key={i} className="sub input-field">
-                    <input name={props.name[i]} required={props.required[i]} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
+                    <input name={props.name && props.name[i]} required={props.required && props.required[i]} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
                         e.preventDefault();
                         if(!props.onChange[i].binded) return;
                         props.onChange[i].expected_condition.forEach((j, c) => {
@@ -279,7 +262,7 @@ function InputGroupField(props){
                         })
                         
                     }}/>
-                    <label className={`field-warning ${props.detectorCls[i]} responsive`}></label>
+                    <label className={`field-warning ${props.detectorCls[i]} responsive`} title={props.warningMsgDescription && props.warningMsgDescription[i]}></label>
                 </div>
             ))
         })
@@ -298,21 +281,6 @@ function InputGroupField(props){
     return <div className="input-fields">{inputFields}</div>
 }
 
-function LoadingPage() {
-    return(
-        <div className="loading-bar">
-            <div className="loading-dot" id="d1"></div>
-            <div className="loading-dot" id="d2"></div>
-            <div className="loading-dot" id="d3"></div>
-        </div>
-    )
-}
-
-const Functions = {
-    asyncDelay,
-    jobDelay,
-    syncDelay,
-};
 
 const Components = {
     Dynamic: {
@@ -323,11 +291,10 @@ const Components = {
     AlertBox,
     Switch,
     Section,
-    LoadingPage
 };
 
 const Hooks = {
     useDelayedEffect
 }
 
-export { Functions, Components, Hooks };
+export { Components, Hooks };

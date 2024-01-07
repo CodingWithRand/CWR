@@ -3,7 +3,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/glient/*": ["./src/app/global/client/*"],
-      "@/gss/*": ["./src/app/global/css/*"]
+      "@/gss/*": ["./src/app/global/css/*"],
+      "@/geutral/*": ["./src/app/global/neutral/*"]
     }
   }
 }

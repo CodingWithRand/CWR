@@ -2,10 +2,10 @@
 
 import "./client.css"
 import { useState, useRef } from "react";
-import { Components, Functions } from "@/glient/util";
+import { Components } from "@/glient/util";
+import { Functions } from"@/geutral/util";
 import { signInWithEmailAndPassword, signOut } from "@firebase/auth"
 import { useGlobal } from "@/glient/global";
-import { useRouter } from "next/navigation"
 import { auth } from "@/glient/firebase";
 
 export default function SignIn() {
@@ -28,8 +28,6 @@ export default function SignIn() {
         description: ""
     })
     const [errMsg, setErrMsg] = useState("");
-
-    const navigator = useRouter();
 
     function initiateSignInProgress(e) {
         e.preventDefault();

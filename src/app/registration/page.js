@@ -11,7 +11,7 @@ export default function RegistrationPage() {
     return (
         <AuthenticateGate>
             <main>
-                <Script src="/vanilla-js/frontend.js"/>
+                <Script src="/vanilla-js/frontend/registration.js"/>
                 <div className="bg-wrapper">
                     <svg preserveAspectRatio="none" viewBox="0 0 100 100" className="minimal-bg">
                         <polygon points="0,0 0,100

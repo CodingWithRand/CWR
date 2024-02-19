@@ -3,3 +3,18 @@
     bottom: 40%;
     text-align: center;
 }
+
+/* Client Component */
+
+.setting-submitting-form .submit-btn{
+    background-color: lightgray;
+    border-radius: 5px;
+    width: 150px;
+    padding: 1vh 0;
+}
+
+.setting-submitting-form{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}

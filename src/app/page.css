@@ -1,0 +1,276 @@
+@import url("https://fonts.googleapis.com");
+@import url("https://fonts.gstatic.com");
+@import url("https://fonts.googleapis.com/css2?family=Russo+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@200&display=swap");
+
+@tailwind components;
+@tailwind utilities;
+
+@layer components{
+
+    body{
+        @apply bg-[#F0F0F0] dark:bg-[#0F0F0F];
+        overflow: hidden;
+    }
+
+    #logo{
+        @apply hidden lg:flex;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transition: transform 1s ease-in, top 1s ease-in;
+        justify-content: center;
+        align-items: center; 
+        flex-direction: column;
+        height: 100%;
+        z-index: 2;
+    }
+
+    #navbar{
+        @apply bg-[#EAEAEA] dark:bg-[#050505];
+        position: absolute;
+        top: 0;
+        margin: 0;
+        color: white;
+        height: 3.5em;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: space-between;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        width: 100%;
+        z-index: 1;
+    }
+
+    #navbar ul{
+        @apply hidden absolute bg-[#EAEAEA] dark:bg-[#050505] m-0 p-4 top-full flex-col h-max gap-y-4 opacity-0 sm:flex sm:relative opacity-100 sm:ml-4 sm:p-0 sm:bg-transparent sm:top-0 sm:flex-row sm:h-full sm:gap-x-4;
+        list-style: none;
+        align-items: center;
+        transition: opacity 0.5s ease-in-out
+    }
+
+    #logo-text{
+        @apply font-russo text-[#2C2C2C] dark:text-[#D3D3D3];
+        position: relative;
+        font-size: 200px;
+        letter-spacing: 0.2em;
+        overflow: hidden;
+        width: 0;
+        transition: width 2s ease-out;
+    }
+
+    #logo .subtitle{
+        @apply font-spartan text-black dark:text-white;
+        font-weight: 100; 
+        transform: scale(0); 
+        font-size: 5em; 
+        letter-spacing: 0.1em; 
+        margin: 0; 
+        transition: transform 1s var(--elastic)
+    }
+
+    #menu-btn{
+        @apply flex sm:hidden;
+        column-gap: 0.5em;
+        margin-left: 1em;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    #search-bar input[type="text"]{
+        @apply border-solid border-[0.1rem] border-[#CDCDCD] bg-[#EBEBEB] dark:border-[#323232] dark:bg-[#141414] dark:text-white;
+        padding: 0.5em;
+        border-radius: 2em;
+    }
+
+    #navbar ul li a{
+        @apply text-black dark:text-white
+    }
+    #navbar ul li a:hover{
+        @apply text-[#3C3C3C] dark:text-[#D3D3D3]
+    }
+
+    #logo .line{
+        @apply light-theme-logo-line dark:dark-theme-logo-line;
+        height: 2px; 
+        width: 100%; 
+        border-radius: 5px; 
+        margin: 15px;
+    }
+
+    #logo-text .fade{
+        @apply light-theme-logo-fade dark:dark-theme-logo-fade;
+        position: absolute; 
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 1em;
+    }
+
+    #logo-text .fade.modded{
+        @apply light-theme-logo-fade-modded dark:dark-theme-logo-fade-modded;
+    }
+    
+    #menu-btn{
+        @apply text-black dark:text-white
+    }
+
+    #banner .caption{
+        @apply text-[3em] text-black dark:text-white sm:text-[5em];
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transition: transform 2s var(--elastic);
+        transform: scale(0)
+    }
+
+    #about-us .content article{
+        @apply text-black bg-white dark:bg-black dark:text-white;
+        padding: 1em;
+        border-radius: 1em;
+        width: 80%;
+        height: 40%;
+        overflow-y: auto;
+        box-shadow: 0 0 1em;
+    }
+
+    #about-us .content article .fade{
+        @apply light-theme-content-article-fade dark:dark-theme-content-article-fade;
+        position: sticky;
+        bottom: -1em;
+        left: 0;
+        width: 100%;
+        height: 5em;
+    }
+}
+
+@layer utilities{
+    .dark-theme-logo-line{
+        background-image: linear-gradient(to right, transparent, white, transparent);
+    }
+    .dark-theme-logo-fade{
+        background-image: linear-gradient(to right, transparent, rgba(15,15,15,1))
+    }
+    .dark-theme-logo-fade-modded{
+        background-image: linear-gradient(to right, transparent, rgba(5,5,5,1))
+    }
+    .dark-theme-content-article-fade{
+        background-image: linear-gradient(to bottom, transparent, black);
+    }
+    .light-theme-logo-line{
+        background-image: linear-gradient(to right, transparent, rgba(0,0,0,1), transparent)
+    }
+    .light-theme-logo-fade{
+        background-image: linear-gradient(to right, transparent, rgba(240,240,240,1))
+    }
+    .light-theme-logo-fade-modded{
+        background-image: linear-gradient(to right, transparent, rgba(230,230,230,1))
+    }
+    .light-theme-content-article-fade{
+        background-image: linear-gradient(to bottom, transparent, white);
+    }
+}
+
+:root{
+    --icon-shadow: radial-gradient(gray 0%, transparent 60%);
+}
+
+img{ user-select: none; }
+
+.setup{
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    position: absolute;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    padding: 2vw;
+}
+.setup-btn{
+    width: 35px;
+    height: 35px;
+}
+.setup-btn img{
+    height: 100% !important;
+    object-fit: cover;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+#banner{
+    height: 100vh;
+}
+#banner img{
+    width: 100%;
+}
+
+#search-bar{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin-right: 1em;
+    column-gap: 0.5em
+}
+#search-bar button[type="submit"]{
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+#search-bar button[type="submit"] img{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    top: 0; 
+    left: 0;
+}
+
+#dice{
+    display: inline-block;
+}
+
+.shake{
+    animation: shaking 1s ease-in-out alternate infinite
+}
+
+#menu-btn img{
+    cursor: pointer;
+    transition: rotate 0.5s ease-in-out;
+}
+
+#menu-btn img:hover{
+    opacity: 0.8;
+}
+
+#about-us .content{
+    padding: 0 1em;
+    margin: 1em 0;
+}
+
+#about-us .content article h1{
+    font-size: 2em;
+    margin: 0.5em 0;
+}
+
+#about-us .content{
+    display: flex;
+    flex-direction: column;
+    row-gap: 5em;
+}
+
+#about-us .content article:nth-of-type(even){
+    margin-right: 1em;
+    margin-left: auto ;
+}
+
+@keyframes shaking {
+    from{ rotate: 10deg; }
+    to{ rotate: -10deg; }
+}

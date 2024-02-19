@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useGlobal } from "./global";
-import { Functions } from "@/geutral/util";
+import Neutral from "@/geutral/util";
 import "@/gss/util.css";
 import "@/gss/theme.css";
 import "@/gss/responsive.css";
@@ -74,7 +74,7 @@ function Image(props){
         }
       }, [], 100);
     
-    return <img alt={props.alt} src={imgSrc} className={props.cls || ""} />;
+    return <img alt={props.alt} src={imgSrc} className={props.cls || undefined} width={props.width || undefined} height={props.height || undefined} />;
 };
 
 function AlertBox(props){
@@ -82,7 +82,7 @@ function AlertBox(props){
 
     useEffect(() => {
         if(props.auto){
-            if(props.detect) Functions.jobDelay(() => {
+            if(props.detect) Neutral.Functions.jobDelay(() => {
                 if(timer > 0) setTimer(prevT => {return prevT - 1});
                 else{ setTimer(0); props.action(); }
             }, 1000);
@@ -143,7 +143,7 @@ function Switch(props){
     return(
         <div id={props.id} className={`switch-area responsive ${props.cls || ""} ${delayStateClass}`} onClick={() => { 
             setSSC(prevState => {return prevState === "is-off" ? "is-on" : "is-off";});
-            Functions.jobDelay(() => setDSC(prevState => {return prevState === "is-off" ? "is-on" : "is-off";}), 200);
+            Neutral.Functions.jobDelay(() => setDSC(prevState => {return prevState === "is-off" ? "is-on" : "is-off";}), 200);
             turn(prevState => {return prevState === false ? true : false});
         }}>
             <div className={`button responsive ${switchStateClass}`}></div>
@@ -288,6 +288,57 @@ function InputGroupField(props){
     return <div className="input-fields">{inputFields}</div>
 }
 
+function ThemeChanger(){
+    const { theme } = useGlobal();
+
+    useEffect(() => {
+        switch(theme.theme){
+            case 'light':
+                document.documentElement.classList.remove("dark");
+                break;
+            case 'dark':
+                document.documentElement.classList.add("dark");
+                break;
+            case 'default-os':
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if(isDark) document.documentElement.classList.add("dark");
+                else document.documentElement.classList.remove("dark");
+                break;
+        }
+    }, [theme.theme])
+
+    Client.Hooks.useDelayedEffect(() => localStorage.setItem("theme", theme.theme), [theme.theme], 10)
+
+    function changeTheme(e){
+        e.preventDefault();
+        switch(theme.theme){
+            case 'light':
+                theme.setTheme('dark');
+                break;
+            case 'dark':
+                theme.setTheme('default-os');
+                break;
+            case 'default-os':
+                theme.setTheme('light');
+                break;
+        };
+    };
+    
+    return (
+        <button id='theme' className='setup-btn' onClick={changeTheme}>
+            <Client.Components.Dynamic.Image dir="icon/" name="mode.png" alt='theme-changer-btn-icon' cls="setup-btn-icon-shadow theme custom" />
+        </button>
+    )
+}
+
+function SuspenseComponent(props){
+    const [ onMountComponent, setOnMountComponent ] = useState(props.loadingComponent || <></>)
+    useEffect(() => {
+        if(props.condition) setOnMountComponent(props.children);
+        else if(props.timer) setTimeout(() => setOnMountComponent(props.children || <></>), props.timer);
+    }, [props.condition]);
+    return onMountComponent
+}
 
 const Components = {
     Dynamic: {
@@ -295,13 +346,19 @@ const Components = {
         InputGroupField,
         Image,
     },
+    ThemeChanger,
     AlertBox,
     Switch,
     Section,
+    SuspenseComponent
 };
 
 const Hooks = {
     useDelayedEffect
 }
 
-export { Components, Hooks };
+const Client = {
+    Components, Hooks
+}
+
+export default Client;

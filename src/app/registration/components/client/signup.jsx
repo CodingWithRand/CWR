@@ -5,13 +5,13 @@ import { useState, useEffect } from "react";
 import { doc, updateDoc, getDoc } from "@firebase/firestore"
 import { auth, firestoreDatabase } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
-import { Components } from "@/glient/util";
-import { Functions } from"@/geutral/util";
+import Client from "@/glient/util";
+import Neutral from"@/geutral/util";
 import EmailVerifificationPage from "./email-verification";
 
 export default function SignUp() {
 
-    const { Switch, AlertBox, Dynamic } = Components;
+    const { Switch, AlertBox, Dynamic } = Client.Components;
     const { InputField, InputGroupField } = Dynamic;
 
     const username_storage = doc(firestoreDatabase, 'util', 'availableUser');
@@ -163,7 +163,7 @@ export default function SignUp() {
                 subtitle: errMsg,
                 action: "OK"
             }}
-                action={() => { setSUS(false); Functions.jobDelay(() => setErrMsg(""), 500); }} />
+                action={() => { setSUS(false); Neutral.Functions.jobDelay(() => setErrMsg(""), 500); }} />
             <AlertBox id="email-verification-intermission" detect={emailSent}>
                 <EmailVerifificationPage />
             </AlertBox>

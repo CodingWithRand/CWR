@@ -1,16 +1,16 @@
 "use client"
 
 import { useGlobal } from "@/glient/global"
-import { Hooks } from "@/glient/util";
+import Client from "@/glient/util";
 import { useState } from "react";
-import { Components } from "@/geutral/util";
+import Neutral from "@/geutral/util";
 
 export default function AuthenticateGate({ children }){
-    const { LoadingPage } = Components;
+    const { LoadingPage } = Neutral.Components;
     const { login, authUser } = useGlobal();
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
-    Hooks.useDelayedEffect(() => {
-        if(login === true && authUser !== null){
+    Client.Hooks.useDelayedEffect(() => {
+        if(login.isLoggedIn === true && authUser.isAuthUser !== null){
             const UserAuthState = {
                 login: login,
                 authUser: authUser
@@ -19,7 +19,6 @@ export default function AuthenticateGate({ children }){
                 "https://cwr-education.web.app/"
             ]
             targetWebsite.forEach((url) => window.parent.postMessage({ type: "UserAuthState", result: JSON.stringify(UserAuthState), url }))
-            
             window.location.replace("/")
         }
         setShowingComponent(children);

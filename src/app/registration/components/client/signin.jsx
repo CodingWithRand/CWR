@@ -2,15 +2,15 @@
 
 import "./client.css"
 import { useState, useRef } from "react";
-import { Components } from "@/glient/util";
-import { Functions } from"@/geutral/util";
-import { signInWithEmailAndPassword, signOut } from "@firebase/auth"
+import Client from "@/glient/util";
+import Neutral from "@/geutral/util";
+import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "@firebase/auth"
 import { useGlobal } from "@/glient/global";
 import { auth } from "@/glient/firebase";
 
 export default function SignIn() {
 
-    const { Switch, AlertBox, Dynamic } = Components;
+    const { Switch, AlertBox, Dynamic } = Client.Components;
     const { InputField } = Dynamic;
 
     const { login } = useGlobal();
@@ -107,7 +107,7 @@ export default function SignIn() {
                 subtitle: errMsg,
                 action: "OK"
             }}
-                action={() => { debug(false); Functions.jobDelay(() => setErrMsg(""), 500); }} />
+                action={() => { debug(false); Neutral.Functions.jobDelay(() => setErrMsg(""), 500); }} />
             <AlertBox id="password-change-alert-box" detect={result2} messages={{
                 title: dialogMessages.title,
                 subtitle: dialogMessages.subtitle,

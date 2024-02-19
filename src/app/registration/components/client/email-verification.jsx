@@ -1,11 +1,11 @@
-import { Components, Hooks } from "@/glient/util";
+import Client from "@/glient/util";
 import "./client.css"
 import { useEffect, useState } from "react";
 import { reload, sendEmailVerification } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
 import { useGlobal } from "@/glient/global";
 
-const { Dynamic } = Components;
+const { Dynamic } = Client.Components;
 const { Image } = Dynamic;
 
 export default function EmailVerifificationPage() {
@@ -14,11 +14,11 @@ export default function EmailVerifificationPage() {
 
     const { login } = useGlobal();
 
-    Hooks.useDelayedEffect(() => {
+    Client.Hooks.useDelayedEffect(() => {
         if(login.isLoggedIn && auth.currentUser?.emailVerified) navigator("/");
     }, [login.isLoggedIn, auth.currentUser?.emailVerified], 100);
 
-    Hooks.useDelayedEffect(() => {
+    Client.Hooks.useDelayedEffect(() => {
         const user = auth.currentUser;
         const intervalId = setInterval(() => {
             if(!user) return;

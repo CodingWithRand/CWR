@@ -42,4 +42,8 @@ const Functions = {
     syncDelay,
 };
 
-export { Components, Functions }
+const Neutral = {
+    Components, Functions
+}
+
+export default Neutral

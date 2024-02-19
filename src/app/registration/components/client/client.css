@@ -120,12 +120,6 @@ html, body, #root{ overflow-y: auto; }
     column-gap: 10px;
 }
 
-.forget-password {
-    color: darkgray;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
 .notf-box{
     margin-top: 8vh;
     display: flex;

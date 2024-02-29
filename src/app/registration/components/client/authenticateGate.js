@@ -18,7 +18,9 @@ export default function AuthenticateGate({ children }){
             const targetWebsite = [
                 "https://cwr-education.web.app/"
             ]
-            targetWebsite.forEach((url) => window.parent.postMessage({ type: "UserAuthState", result: JSON.stringify(UserAuthState), url }))
+            targetWebsite.forEach((url) => {
+                window.postMessage({ type: "UserAuthState", result: JSON.stringify(UserAuthState) }, url)
+            })
             window.location.replace("/")
         }
         setShowingComponent(children);

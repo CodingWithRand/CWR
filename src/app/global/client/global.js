@@ -46,7 +46,10 @@ export function Global({ children }){
     return () => window.removeEventListener("resize", detectDevice);
   }, []);
 
-  useEffect(() => setTheme(localStorage.getItem("theme")), [])
+  useEffect(() => {
+    if(localStorage.getItem("theme") === null) localStorage.setItem("theme", theme)
+    setTheme(localStorage.getItem("theme"))
+  }, [])
 
   return(
     <GlobalState.Provider value={{

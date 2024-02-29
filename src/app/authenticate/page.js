@@ -10,7 +10,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function AuthenticateActionHandler() {
     const { LoadingPage } = Neutral.Components
-    const { AlertBox, Dynamic } = Client.Components;
+    const { AlertBox, Dynamic, Section, Switch } = Client.Components;
     const { InputGroupField } = Dynamic;
 
     const searchParams = useSearchParams();

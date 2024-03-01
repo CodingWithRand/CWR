@@ -11,16 +11,15 @@ export default function AuthenticateGate({ children }){
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
     Client.Hooks.useDelayedEffect(() => {
         if(login.isLoggedIn === true && authUser.isAuthUser !== null){
-            const UserAuthState = {
-                login: login,
-                authUser: authUser
-            }
-            const targetWebsite = [
-                "https://cwr-education.web.app/"
-            ]
-            targetWebsite.forEach((url) => {
-                window.postMessage({ type: "UserAuthState", result: JSON.stringify(UserAuthState) }, url)
-            })
+            // Considering Remove
+            // const UserAuthState = {
+            //     login: login,
+            //     authUser: authUser
+            // }
+            // const targetWebsite = [
+            //     "https://cwr-education.web.app/"
+            // ]
+            // targetWebsite.forEach((url) => window.postMessage({ type: "UserAuthState", result: JSON.stringify(UserAuthState), origin: window.location.origin }, url))
             window.location.replace("/")
         }
         setShowingComponent(children);

@@ -1,7 +1,6 @@
-"use server"
+"use client"
 
 import "./page.css";
-import { Global } from "@/glient/global";
 import { Intro, SignOutBTN } from "./components/client";
 
 

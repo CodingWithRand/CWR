@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { reload, sendEmailVerification } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
 import { useGlobal } from "@/glient/global";
+import Neutral from "@/app/global/neutral/util";
 
 const { Dynamic } = Client.Components;
 const { Image } = Dynamic;
@@ -15,7 +16,7 @@ export default function EmailVerifificationPage() {
     const { login } = useGlobal();
 
     Client.Hooks.useDelayedEffect(() => {
-        if(login.isLoggedIn && auth.currentUser?.emailVerified) navigator("/");
+        if(login.isLoggedIn && auth.currentUser?.emailVerified) window.location.replace("/");
     }, [login.isLoggedIn, auth.currentUser?.emailVerified], 100);
 
     Client.Hooks.useDelayedEffect(() => {
@@ -30,14 +31,12 @@ export default function EmailVerifificationPage() {
     
     useEffect(() => {
         (async () => {
-            await new Promise((resolve) => setTimeout(() => {
-                if(timer < 1){
-                    setBtnState(false);
-                    return;
-                };
-                countdown((prevTime) => {return prevTime - 1});
-                resolve();
-            }, 1000))
+            await Neutral.Functions.asyncDelay(1000);
+            if(timer < 1){
+                setBtnState(false);
+                return;
+            };
+            countdown((prevTime) => {return prevTime - 1});
         })();
     }, [timer])
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12217560937",
+    "project_id": "codingwithrand",
+    "storage_bucket": "codingwithrand.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12217560937:android:e40feb9816e584c354d7f8",
+        "android_client_info": {
+          "package_name": "com.vnote"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSxd5Rei9q5JYkjxiAH5_qn6jEHe1C6Fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

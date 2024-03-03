@@ -1,31 +1,23 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React, { useEffect, useRef } from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
+import React, { useEffect, useState } from 'react';
+import { useColorScheme, SafeAreaView, StatusBar } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { RegistrationPage } from './asset/components/registration';
+import { jobDelay } from './asset/scripts/util';
 import Intro from './asset/components/intro';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  const [ currentPage, setCurrentPage ] = useState<JSX.Element>();
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  useEffect(() => {
+    (async () => {
+      setCurrentPage(<Intro/>);
+      await jobDelay(() => setCurrentPage(<RegistrationPage/>), 4000);
+    })();
+  }, [])
 
   return(
     <SafeAreaView style={backgroundStyle}>
@@ -33,7 +25,8 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <Intro isDark={isDarkMode} />
+      
+      {currentPage}
     </SafeAreaView>
   )
 }

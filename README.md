@@ -1,11 +1,14 @@
-If you already have tried all the methods below, and non of them work. Please keep the `app` directory, README.md, TECHNICALMANUAL.md. and index.js. Then delete this whole directory. After that, create new react native app by running
-```bash
-# If you previously installed a global react-native-cli package, please remove it as it may cause unexpected issues:
-npm uninstall -g react-native-cli @react-native-community/cli
+# Please read [TECHNICALMANUAL.md](./TECHNICALMANUAL.md) for require information
 
-npx react-native@latest init <Project Name>
-```
-Lastly, bring those files back into the new created app.
+# ~~Depreciated~~
+> ~~If you already have tried all the methods below, and non of them work. Please keep the `app` directory, README.md, TECHNICALMANUAL.md. and index.js. Then delete this whole directory. After that, create new react native app by running~~
+>```bash
+> # If you previously installed a global react-native-cli package, please remove it as it may cause unexpected issues:
+> npm uninstall -g react-native-cli @react-native-community/cli
+>
+> npx react-native@latest init <Project Name>
+> ```
+> ~~Lastly, bring those files back into the new created app.~~
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 

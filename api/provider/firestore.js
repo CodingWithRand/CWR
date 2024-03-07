@@ -16,7 +16,8 @@ async function doc(req, res) {
                 await firestore.doc(path).set(updateData, { merge: true });
                 responseDoc = { 204: "Document updated" };
             }
-            catch (e) { responseDoc = { 400: e.code + e.message } }
+            catch (e) { responseDoc = { 400: e.code + e.message } };
+            break;
         default: responseDoc = { 404: "Unknown mode" };
     }else responseDoc = await providerResponse.firestore.doc(404, documentContent, (
         mode === 'ref' ? 'Ref' : 

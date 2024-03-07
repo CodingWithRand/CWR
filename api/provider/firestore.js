@@ -13,7 +13,7 @@ async function doc(req, res) {
         case 'read': responseDoc = await providerResponse.firestore.doc(200, documentContent.data(), 'Data'); break;
         case 'update': 
             try{ 
-                await documentContent.ref.update(updateData);
+                await firestore.doc(path).set(updateData, { merge: true });
                 responseDoc = { 204: "Document updated" };
             }
             catch (e) { responseDoc = { 400: e.code + e.message } }

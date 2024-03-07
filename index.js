@@ -10,7 +10,7 @@ const { doc } = require("./api/provider/main")
 
 server.use(bodyParser.json())
 server.use(cors({
-    origin: "https://codingwithrand.vercel.app/"
+    origin: "https://codingwithrand.vercel.app"
 }))
 
 server.use((req, res, next) => {

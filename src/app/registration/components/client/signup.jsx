@@ -40,7 +40,7 @@ export default function SignUp() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ path: "util/availableUser" })
         })
-        if (total_username_list.data()[userName]) {
+        if (total_username_list[userName]) {
             setSUS(true); setErrMsg("This username has been taken");
             return;
         }

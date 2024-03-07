@@ -3,7 +3,6 @@
 import "./client.css"
 import { useState, useEffect } from "react";
 import { doc, updateDoc, getDoc } from "@firebase/firestore"
-import axios from "axios"
 import { auth, firestoreDatabase } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
 import Client from "@/glient/util";
@@ -36,12 +35,13 @@ export default function SignUp() {
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
 
-        const username_storage = await axios.post("https://cwr-api.onrender.com/post/provider/cwr/doc/ref", { 
+        const username_storage_ref = await fetch("https://cwr-api.onrender.com/post/provider/cwr/doc/ref", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: { path: "util/availableUser" } 
+            body: JSON.stringify({ path: "util/availableUser" })
         })
-        const total_username_list = await getDoc(username_storage.data.docRef);
+        const username_storage = await username_storage_ref.json()
+        const total_username_list = await getDoc(username_storage.docRef);
         if (total_username_list.data()[userName]) {
             setSUS(true); setErrMsg("This username has been taken");
             return;

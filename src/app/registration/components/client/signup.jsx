@@ -40,6 +40,8 @@ export default function SignUp() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ path: "util/availableUser" })
         })
+        console.log(total_username_list);
+        process.stdout.write(JSON.stringify(total_username_list));
         if (total_username_list[userName]) {
             setSUS(true); setErrMsg("This username has been taken");
             return;
@@ -48,7 +50,11 @@ export default function SignUp() {
         createUserWithEmailAndPassword(auth, userEmail, userPass).then((userCredential) => {
             sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
             updateProfile(userCredential.user, { displayName: userName });
-            updateDoc(username_storage, { [userName]: userCredential.user.uid });
+            fetch("https://cwr-api.onrender.com/post/provider/cwr/doc/update", { 
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: "util/availableUser", updateData: { [userName]: userCredential.user.uid } })
+            })
         })
             .catch((error) => {
                 const errorCode = error.code;

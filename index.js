@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser")
+const cors = require("cors")
 const server = express();
 
 const response = require("./responseStatus");
@@ -8,6 +9,9 @@ const { userExist, getUserInfo } = require("./api/roblox/main");
 const { doc } = require("./api/provider/main")
 
 server.use(bodyParser.json())
+server.use(cors({
+    origin: "https://codingwithrand.vercel.app/"
+}))
 
 server.use((req, res, next) => {
     if(req.method === "GET"){

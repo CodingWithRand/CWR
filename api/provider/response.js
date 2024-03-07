@@ -3,7 +3,7 @@ const { responseStatusFilter } = require("../../util");
 module.exports = {
     firestore: {
         doc: async (status, doc, mode) => responseStatusFilter(status, {
-            "200": () => { return { 200: { [doc + mode]: doc } } },
+            "200": () => { return { 200: { ["doc" + mode]: doc } } },
             "404": () => { switch(mode){
                 case 'Ref': return { 404: "Document not found, please ensure the path is correct" }
                 case 'Snap': return { 404: "Cannot get the document, please ensure the path is correct" }

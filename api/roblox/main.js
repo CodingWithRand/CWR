@@ -10,7 +10,7 @@ module.exports = {
         if(!isNaN(Number(reqKey))){
             await middlewareFunction(async () => {
                 const apiResponse = await axios.get(`https://users.roblox.com/v1/users/${reqKey}`);
-                const processedData = await robloxResponse.exist(apiResponse, apiResponse.data, undefined);
+                const processedData = await robloxResponse.exist(apiResponse.status, apiResponse.data, undefined);
                 filteredSend(res, processedData);
             });
         }else{

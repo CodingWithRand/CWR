@@ -41,8 +41,7 @@ export default function SignUp() {
             body: JSON.stringify({ path: "util/availableUser" })
         })
         const total_username_list = await response.json()
-        console.log(total_username_list);
-        if (total_username_list[userName]) {
+        if (total_username_list.docData[userName]) {
             setSUS(true); setErrMsg("This username has been taken");
             return;
         }
@@ -54,7 +53,7 @@ export default function SignUp() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ path: "util/availableUser", updateData: { [userName]: userCredential.user.uid } })
-            })
+            }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
         })
             .catch((error) => {
                 const errorCode = error.code;

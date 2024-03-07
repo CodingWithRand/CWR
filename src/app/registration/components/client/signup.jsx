@@ -35,13 +35,11 @@ export default function SignUp() {
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
 
-        const username_storage_ref = await fetch("https://cwr-api.onrender.com/post/provider/cwr/doc/ref", { 
+        const total_username_list = await fetch("https://cwr-api.onrender.com/post/provider/cwr/doc/read", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ path: "util/availableUser" })
         })
-        const username_storage = await username_storage_ref.json()
-        const total_username_list = await getDoc(username_storage.docRef);
         if (total_username_list.data()[userName]) {
             setSUS(true); setErrMsg("This username has been taken");
             return;

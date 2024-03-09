@@ -8,7 +8,7 @@ const response = require("./responseStatus");
 const { userExist, getUserInfo } = require("./api/roblox/main");
 const { crud } = require("./api/provider/main")
 
-server.use("/post/provider/cwr/doc/:mode", cors({
+server.use("/post/provider/cwr/firestore/:mode", cors({
     origin: "https://codingwithrand.vercel.app"
 }))
 server.use(bodyParser.json())

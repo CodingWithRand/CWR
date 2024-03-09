@@ -5,7 +5,7 @@ const providerResponse = require("./response");
 async function crud(req, res) {
     const { path, collectionName, docName, writeData } = req.body;
     const mode = req.params.mode
-    const documentContent = await firestore.doc(path + "/" + collectionName + "/" + docName).get();
+    const documentContent = await firestore.doc(path).get();
     let responseJson;
     if(!docName || !collectionName) return responseJson = { 400: "Document name or collection name are missing" }
     if(documentContent.exists) switch(mode){
@@ -19,7 +19,7 @@ async function crud(req, res) {
             }
             catch (e) { responseJson = { 400: e.code + e.message } };
             break;
-        case 'create': responseJson = { 303: "Document is existed, please use 'https://cwr-api.onrender.com/post/provider/cwr/firestore/update' instead" }; break;
+        // case 'create': responseJson = { 303: "Document is existed, please use 'https://cwr-api.onrender.com/post/provider/cwr/firestore/update' instead" }; break;
         default: responseJson = { 404: "Unknown mode" }; break;
     } else if(!documentContent.exists && mode === "create") {
         try {

@@ -38,4 +38,6 @@ async function crud(req, res) {
     filteredSend(res, responseJson);
 }
 
-module.exports = crud
+module.exports = {
+    crud
+}

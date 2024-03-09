@@ -6,7 +6,7 @@ const server = express();
 
 const response = require("./responseStatus");
 const { userExist, getUserInfo } = require("./api/roblox/main");
-const { doc } = require("./api/provider/main")
+const { crud } = require("./api/provider/main")
 
 server.use("/post/provider/cwr/doc/:mode", cors({
     origin: "https://codingwithrand.vercel.app"
@@ -24,10 +24,10 @@ server.use((req, res, next) => {
     next();
 })
 
-server.get("/get/roblox/users/exist/:userKey", (req, res) => userExist(req, res))
-server.get("/get/roblox/users/info/:category/:userId", (req, res) => getUserInfo(req, res))
+server.get("/get/roblox/users/exist/:userKey", userExist)
+server.get("/get/roblox/users/info/:category/:userId", getUserInfo)
 
-server.post("/post/provider/cwr/doc/:mode", (req, res) => doc(req, res))
+server.post("/post/provider/cwr/firestore/:mode", crud)
 
 server.post("*", (req, res) => response.notFound(res))
 server.get("*", (req, res) => response.notFound(res))

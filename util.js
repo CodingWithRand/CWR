@@ -20,9 +20,12 @@ function filteredSend(res, processedData){
     const respondingBody = Object.values(processedData)[0];
     switch(respondingStatus){
         case "200": response.ok(res, respondingBody); break;
+        case "201": response.created(res, respondingBody); break;
         case "204": response.noContent(res, respondingBody); break;
+        case "303": response.seeOther(res, respondingBody); break;
         case "400": response.badRequest(res, respondingBody); break;
         case "404": response.notFound(res, respondingBody); break;
+        case "415": response.unsupportContentType(res, respondingBody); break;
     }
 }
 

@@ -23,7 +23,7 @@ async function crud(req, res) {
     } else if(!documentContent.exists && mode === "create") {
         if(!docName || !collectionName) return responseJson = { 400: "Document name or collection name are missing" }
         try {
-            await firestore.collection(path + collectionName).doc(docName).set(writeData || {}, { merge: true });
+            await firestore.collection(path + "/" + collectionName).doc(docName).set(writeData || {}, { merge: true });
             responseJson = { 201: `New document has been created in the collection "${collectionName}" of '${path}'` };
         } catch (e) { 
             responseJson = { 400: e.code + e.message };

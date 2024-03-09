@@ -98,6 +98,11 @@ export function Intro(){
 export function SignOutBTN() {
     return (
         <button onClick={() => {
+            fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null } })
+            })
             signOut(auth);
             window.location.replace("/registration");
         }}>Sign Out</button>

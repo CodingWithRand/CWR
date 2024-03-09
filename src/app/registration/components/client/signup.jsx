@@ -2,7 +2,7 @@
 
 import "./client.css"
 import { useState, useEffect } from "react";
-import { doc, updateDoc, getDoc } from "@firebase/firestore"
+import Cookies from "universal-cookie";
 import { auth, firestoreDatabase } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
 import Client from "@/glient/util";
@@ -10,7 +10,7 @@ import Neutral from"@/geutral/util";
 import EmailVerifificationPage from "./email-verification";
 
 export default function SignUp() {
-
+    const cookies = new Cookies();
     const { Switch, AlertBox, Dynamic } = Client.Components;
     const { InputField, InputGroupField } = Dynamic;
 
@@ -46,30 +46,36 @@ export default function SignUp() {
             return;
         }
 
-        createUserWithEmailAndPassword(auth, userEmail, userPass).then((userCredential) => {
+        try{
+            const userCredential = await createUserWithEmailAndPassword(auth, userEmail, userPass)
             sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
             updateProfile(userCredential.user, { displayName: userName });
-            fetch("https://cwr-api.onrender.com/post/provider/cwr/doc/update", { 
+            fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/availableUser", updateData: { [userName]: userCredential.user.uid } })
+                body: JSON.stringify({ path: "util/availableUser", writeData: { [userName]: userCredential.user.uid } })
             }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
-        })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                switch (errorCode) {
-                    case "auth/email-already-in-use":
-                        setSUS(true);
-                        setErrMsg("The email is already in use!");
-                        break;
-                    default:
-                        setSUS(true);
-                        setErrMsg("Something went wrong, please try again later");
-                        console.log(errorCode, errorMessage);
-                        break;
-                }
-            });
+            const userAuthenticatedToken = await userCredential.user.getIdTokenResult()
+            fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: { authenticated: true, token: userAuthenticatedToken } })
+            }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
+        } catch (error) {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            switch (errorCode) {
+                case "auth/email-already-in-use":
+                    setSUS(true);
+                    setErrMsg("The email is already in use!");
+                    break;
+                default:
+                    setSUS(true);
+                    setErrMsg("Something went wrong, please try again later");
+                    console.log(errorCode, errorMessage);
+                    break;
+            }
+        }
     }
 
     return (

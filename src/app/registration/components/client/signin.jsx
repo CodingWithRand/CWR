@@ -29,24 +29,30 @@ export default function SignIn() {
     })
     const [errMsg, setErrMsg] = useState("");
 
-    function initiateSignInProgress(e) {
+    async function initiateSignInProgress(e) {
         e.preventDefault();
-
-        signInWithEmailAndPassword(auth, userEmail.current, userPass.current).then((userCredential) => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, userEmail.current, userPass.current);
             const user = userCredential.user;
             const username = user.displayName;
             if (username === userName.current) {
                 login.logIn(true);
+                const userAuthenticatedToken = await userCredential.user.getIdTokenResult()
+                fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: { authenticated: true, token: userAuthenticatedToken } })
+                }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
                 window.location.replace("/");
             } else {
                 debug(true);
                 setErrMsg("Invalid username");
                 signOut(auth);
             }
-        }).catch((error) => {
+        } catch (error) {
             if (error.code === "auth/invalid-login-credentials") { debug(true); setErrMsg("Email or password is incorrect!"); }
             else { debug(true); setErrMsg("Something went wrong, please try again later"); };
-        })
+        }
     };
 
     function onFormUpdate(e, refValue) {

@@ -3,10 +3,12 @@
 import { onAuthStateChanged } from "@firebase/auth";
 import { useContext, createContext, useState, useEffect } from "react";
 import { auth } from "./firebase";
+import Cookies from "universal-cookie";
 
 const GlobalState = createContext(undefined);
 
 export function Global({ children }){
+  const cookies = new Cookies();
   const [isAuthUser, getCurrentUser] = useState();
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export function Global({ children }){
       logIn(true);
       return () => console.log('Falsy detect');
     }
-  }, [isAuthUser]);
+  }, [cookies.get("login"), isAuthUser]);
 
   useEffect(() => {
     function detectingDevice(){
@@ -43,6 +45,11 @@ export function Global({ children }){
     if(localStorage.getItem("theme") === null) localStorage.setItem("theme", theme)
     setTheme(localStorage.getItem("theme"))
   }, [])
+
+  useEffect(() => {
+    if(cookies.get("login") === undefined) cookies.set("login", "undefined");
+    else cookies.set("login", isLoggedIn);
+  }, [isLoggedIn])
 
   return(
     <GlobalState.Provider value={{

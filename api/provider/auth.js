@@ -1,9 +1,14 @@
 const responseStatus = require("../../responseStatus");
 const { auth } = require("./initialize");
 
-const syncAuth = async (req, res) => {
+const createCustomToken = async (req, res) => {
     const { uid } = req.body;
-    await auth.createCustomToken(uid)
+    try {
+        await auth.createCustomToken(uid)
+        responseStatus.noContent(res, "Token created!")
+    } catch (e) {
+        responseStatus.notFound(res, "Invalid uid!")
+    }
 }
 
 const verifyToken = async (req, res) => {
@@ -17,5 +22,6 @@ const verifyToken = async (req, res) => {
 }
 
 module.exports = {
+    createCustomToken,
     verifyToken
 }

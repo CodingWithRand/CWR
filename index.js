@@ -6,11 +6,13 @@ const server = express();
 
 const response = require("./responseStatus");
 const { userExist, getUserInfo } = require("./api/roblox/main");
-const { crud } = require("./api/provider/main")
+const { crud } = require("./api/provider/main");
+const { verifyToken } = require("./api/provider/auth");
 
-server.use("/post/provider/cwr/firestore/:mode", cors({
+server.use("/post/provider/cwr/*", cors({
     origin: "https://codingwithrand.vercel.app"
 }))
+
 server.use(bodyParser.json())
 
 server.use((req, res, next) => {
@@ -28,6 +30,7 @@ server.get("/get/roblox/users/exist/:userKey", userExist)
 server.get("/get/roblox/users/info/:category/:userId", getUserInfo)
 
 server.post("/post/provider/cwr/firestore/:mode", crud)
+server.post("/post/provider/cwr/auth/verifyToken", verifyToken)
 
 server.post("*", (req, res) => response.notFound(res))
 server.get("*", (req, res) => response.notFound(res))

@@ -97,12 +97,16 @@ export function Intro(){
 }
 export function SignOutBTN() {
     return (
-        <button onClick={() => {
-            fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null } })
-            })
+        <button onClick={async () => {
+            try {
+                const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null } })
+                });
+                const res = await req.json();
+                console.log(res);
+            } catch (e) { console.error(e) }
             signOut(auth);
             window.location.replace("/registration");
         }}>Sign Out</button>

@@ -38,11 +38,15 @@ export default function SignIn() {
             if (username === userName.current) {
                 login.logIn(true);
                 const userAuthenticatedToken = await userCredential.user.getIdTokenResult()
-                fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: { authenticated: true, token: userAuthenticatedToken } })
-                }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
+                try {
+                    const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: { authenticated: true, token: userAuthenticatedToken.token } })
+                    })
+                    const res = await req.json()
+                    console.log(res)
+                } catch (e) { console.error(e) }
                 window.location.replace("/");
             } else {
                 debug(true);

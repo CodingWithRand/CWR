@@ -35,7 +35,7 @@ export default function SignUp() {
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
 
-        const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/doc/read", { 
+        const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ path: "util/availableUser" })
@@ -59,7 +59,7 @@ export default function SignUp() {
             fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: { authenticated: true, token: userAuthenticatedToken } })
+                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: { authenticated: true, token: userAuthenticatedToken.token } })
             }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
         } catch (error) {
             const errorCode = error.code;

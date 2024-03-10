@@ -4,8 +4,8 @@ const { auth } = require("./initialize");
 const createCustomToken = async (req, res) => {
     const { uid } = req.body;
     try {
-        await auth.createCustomToken(uid)
-        responseStatus.noContent(res, "Token created!")
+        const customToken = await auth.createCustomToken(uid)
+        responseStatus.created(res, { message: "Custom token has been created!", requireJSON: true, responseJSON: { token: customToken } })
     } catch (e) {
         responseStatus.notFound(res, "Invalid uid!")
     }

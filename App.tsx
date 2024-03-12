@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useColorScheme, SafeAreaView, StatusBar } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { RegistrationPage } from './asset/components/registration';
-import { jobDelay } from './asset/scripts/util';
-import Intro from './asset/components/intro';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Credit from './asset/components/intro/credit';
+import NoteDashboard from './asset/components/index/note-dashboard';
+import RegistrationPage from './asset/components/intro/registration';
+
+const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const [ currentPage, setCurrentPage ] = useState<JSX.Element>();
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    flex: 1
   };
-
-  useEffect(() => {
-    (async () => {
-      setCurrentPage(<Intro/>);
-      await jobDelay(() => setCurrentPage(<RegistrationPage/>), 4000);
-    })();
-  }, [])
 
   return(
     <SafeAreaView style={backgroundStyle}>
@@ -25,8 +22,14 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      
-      {currentPage}
+
+      <NavigationContainer theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: "transparent" } }}>
+        <Stack.Navigator screenOptions={{ presentation: "transparentModal" }}>
+          <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
+          <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
+          <Stack.Screen name="NoteDashboard" component={NoteDashboard} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaView>
   )
 }

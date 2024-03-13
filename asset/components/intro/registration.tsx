@@ -7,6 +7,33 @@ import { horizontalScale, verticalScale, moderateScale } from "../../scripts/Met
 import auth from "@react-native-firebase/auth"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteStackParamList } from "../../scripts/native-stack-navigation-types";
+import { GoogleSignin, GoogleSigninButton, statusCodes } from "react-native-google-signin";
+
+async function signInWithGoogle() {
+    try {
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        const { idToken } = userInfo;
+
+        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    
+        await auth().signInWithCredential(googleCredential);
+
+        const currentUser = auth().currentUser;
+        console.log('User is authenticated:', currentUser);
+    } catch (error: any) {
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          console.log('Sign-in cancelled');
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          console.log('Sign-in is already in progress');
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          console.log('Play Services not available or outdated');
+        } else {
+          console.error('Error:', error);
+        }
+    }
+}
+
 async function verifyUsername(username: string) {
     const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
         method: "POST",
@@ -141,9 +168,12 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                     <TouchableHighlight onPress={() => setShowModal(true)} underlayColor="darkgrey" style={[styles.btn, { backgroundColor: 'lightgrey', width: horizontalScale(250, width) }]}>
                         <Text style={styles.btnText}>CWR provider</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => setProvider("google")} underlayColor="silver" style={[styles.btn, { backgroundColor: 'white', width: horizontalScale(250, width) }]}>
-                        <Text style={[styles.btnText, { color: "black" }]}>Google</Text>
-                    </TouchableHighlight>
+                    <GoogleSigninButton 
+                        style={{ width: horizontalScale(200, width), height: verticalScale(width > height ? 100 : 50, height) }}
+                        size={GoogleSigninButton.Size.Wide}
+                        color={GoogleSigninButton.Color.Dark}
+                        onPress={signInWithGoogle}
+                    />
                 </Animated.View> 
             </View>
         </View>

@@ -4,7 +4,7 @@
 - You must have experienced in web app development, and roughly know how the web work.
 - You must have a brief knowledge about how an API work, network, CORS, HTTP, HTTP status code, SSH, and CRUD concept.
 - These are the brief list of the technologies and computer languages we'll be using to develop the app. So you better study it (*briefly*)
-> 1. HTML
+> 1. HTML (Referring to JSX / TSX for the most)
 > 2. CSS
 > 3. JavaScript
 > 4. TypeScript
@@ -42,13 +42,38 @@ After knowing roughly how to configure and run test on the app. Here's something
     > Could not delete 'C:\Programming Projects\GitHub Repositories\vnote\node_modules\@react-native\gradle-plugin\build\kotlin\compileKotlin\cacheable\caches-jvm' * 
     ```
     You may try running `npm run android` again
-- The android SDKs we install in __Android Studio__ are
-    ### Android API 34
-    - *Android SDK Platform 34*
-    ### Android 13.0 ("Tiramisu")
-    - *Android SDK Platform 33*
-    - *Intel x86_64 Atom System Language*
-    ### *"OR"*   
-    - Create a phone device with Pixel 7 Pro hardware and Tiramisu API 33 System image
+- Following these metadata to install an android emulator in [__Android Studio__](https://developer.android.com/studio) for unit test
+
+    <table>
+        <tr>
+            <th rowspan="2" style="background-color: navy">Device Category</th>
+            <th colspan="5" style="text-align: center; background-color: magenta">Hardware Profie</th>
+            <th colspan=4 style="text-align: center; background-color: darkgreen">System Image</th>
+        </tr>
+        <tr>
+            <th style="text-align: center; background-color: magenta">Name</th>
+            <th style="font-size: x-small; background-color: magenta">Google Play Store Service Included</th>
+            <th style="background-color: magenta">Size</th>
+            <th style="background-color: magenta">Resolution</th>
+            <th style="background-color: magenta">Density</th>
+            <th style="background-color: darkgreen">Release Name</th>
+            <th style="background-color: darkgreen">API Level</th>
+            <th style="text-align: center; background-color: darkgreen">ABI</th>
+            <th style="text-align: center; background-color: darkgreen">Target</th>
+        </tr>
+        <tr>
+            <th style="background-color: blue">Phone</th>
+            <th style="background-color: hotpink">Pixel 7 Pro</th>
+            <th style="text-align: center; background-color: hotpink">Yes</th>
+            <th style="background-color: hotpink">6.71"</th>
+            <th style="background-color: hotpink">1440x3120</th>
+            <th style="background-color: hotpink">560dpi</th>
+            <th style="text-align: center; background-color: forestgreen">Tiramisu</th>
+            <th style="text-align: center; background-color: forestgreen">33</th>
+            <th style="background-color: forestgreen">x86_64</th>
+            <th style="font-size: x-small; background-color: forestgreen">Android 13 (Google Play)</th>
+        </tr>
+    </table>
 
 - This app requires environment variables (sensitive data), please contact me for them.
+- *__HIGHLY__* recommended to work or learn with a ChatBot AI (My suggestion is ChatGPT)

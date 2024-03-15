@@ -45,7 +45,7 @@ export default function SignIn() {
                     const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: { authenticated: true, token: userAuthenticatedToken.token } })
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: { authenticated: true, token: userAuthenticatedToken.token }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                     })
                     const res = await req.json()
                     console.log(res)

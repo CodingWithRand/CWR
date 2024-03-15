@@ -1,6 +1,8 @@
 import { useGlobal } from "@/app/global/client/global";
 import { originContent, interestContent } from "./articleContents/paragraphs";
 import { useEffect } from "react";
+import { signOut } from "@firebase/auth";
+import { auth } from "@/glient/firebase";
 import OriginBioCard from "./articleContents/media/origin-bio-card";
 import Client from "@/app/global/client/util";
 
@@ -11,7 +13,7 @@ export function SignOutBTN() {
                 const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null } })
+                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                 });
                 const res = await req.json();
                 console.log(res);

@@ -2,8 +2,7 @@
 
 import "./client.css"
 import { useState, useEffect } from "react";
-import Cookies from "universal-cookie";
-import { auth, firestoreDatabase } from "@/glient/firebase";
+import { auth } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
 import Client from "@/glient/util";
 import Neutral from"@/geutral/util";
@@ -41,7 +40,7 @@ export default function SignUp() {
         const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ path: "util/availableUser" })
+            body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
         })
         const total_username_list = await response.json()
         if (total_username_list.docData[userName]) {
@@ -56,13 +55,13 @@ export default function SignUp() {
             fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/availableUser", writeData: { [userName]: userCredential.user.uid } })
+                body: JSON.stringify({ path: "util/availableUser", writeData: { [userName]: userCredential.user.uid }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
             }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
             const userAuthenticatedToken = await userCredential.user.getIdTokenResult()
             fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: { authenticated: true, token: userAuthenticatedToken.token } })
+                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: { authenticated: true, token: userAuthenticatedToken.token }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
             }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
         } catch (error) {
             const errorCode = error.code;

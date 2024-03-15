@@ -24,7 +24,7 @@ export default function OriginBioCard() {
                         <Image name="channel_logo_new.png" constant alt="Avatar" width="96" height="96" className="rounded-full object-cover" style={{ aspectRatio: 96 / 96, objectFit: "cover" }} />
                     </div>
                     <div className="prose max-w-none w-full text-center">
-                        <p><i>"A young ambitious leisurely junior developer"</i></p>
+                        <p><i>&quot;A young ambitious leisurely junior developer&quot;</i></p>
                     </div>
                 </div>
                 <div className="p-6">

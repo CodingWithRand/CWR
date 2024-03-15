@@ -31,6 +31,9 @@ export default function SignIn() {
 
     async function initiateSignInProgress(e) {
         e.preventDefault();
+        userEmail.current = e.target.elements["email"].value;
+        userName.current = e.target.elements["user"].value;
+        userPass.current = e.target.elements["pass"].value;
         try {
             const userCredential = await signInWithEmailAndPassword(auth, userEmail.current, userPass.current);
             const user = userCredential.user;
@@ -71,6 +74,7 @@ export default function SignIn() {
                 <div className="f-c">
                     <label className="field-label responsive">Username</label>
                     <InputField
+                        id="user"
                         name="user" type="text" required
                         onChange={{
                             binded: true,
@@ -81,6 +85,7 @@ export default function SignIn() {
                     />
                     <label className="field-label responsive">Email</label>
                     <InputField
+                        id="email"
                         name="email" type="email" required
                         onChange={{
                             binded: true,
@@ -91,7 +96,8 @@ export default function SignIn() {
                     />
                     <label className="field-label responsive">Password</label>
                     <InputField
-                        name="password" type={inputType} required
+                        id="pass"
+                        name="pass" type={inputType} required
                         onChange={{
                             binded: true,
                             expected_condition: [0],

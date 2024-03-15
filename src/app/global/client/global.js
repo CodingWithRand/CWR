@@ -31,8 +31,12 @@ export function Global({ children }){
 
   useEffect(() => {
     function detectingDevice(){
-      if(window.innerWidth < 640) detectDevice("tablet")
-      else detectDevice("pc");
+      if(window.innerWidth < 640) detectDevice("xs")
+      else if(window.innerWidth < 768) detectDevice("sm")
+      else if(window.innerWidth < 1024) detectDevice("md")
+      else if(window.innerWidth < 1280) detectDevice("lg")
+      else if(window.innerWidth < 1536) detectDevice("xl")
+      else detectDevice("2xl");
     };
 
     detectingDevice();

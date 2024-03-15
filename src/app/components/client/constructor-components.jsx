@@ -31,7 +31,7 @@ function NavBar(){
                 };
             }
 
-            if(device.device !== "pc") setAppearance(<div id="menu-btn" onClick={menuBtn}>Menu <Client.Components.Dynamic.Image width={15} height={15} dir="icon/" name="sort-down.png" alt="triangle-icon"/></div>)
+            if(device.device === "xs") setAppearance(<div id="menu-btn" onClick={menuBtn}>Menu <Client.Components.Dynamic.Image width={15} height={15} dir="icon/" name="sort-down.png" alt="triangle-icon"/></div>)
             else setAppearance(<></>)
         }, [device.device])
 
@@ -40,14 +40,15 @@ function NavBar(){
     
     useEffect(() => {
         if(new URL(window.location.href).hash !== "#banner") window.location.replace("#banner");
-    }, [])
+    }, []);
+    
     return(
         <nav id="navbar">
             <MenuBtn />
             <ul>
-                <li><a>About us</a></li>
-                <li><a>API List</a></li>
-                <li><a>Term of Uses</a></li>
+                <li><a>About me</a></li>
+                <li><a>My Projects</a></li>
+                <li><a>Lounge</a></li>
                 <li><a>Contact</a></li>
             </ul>
             <form id="search-bar">
@@ -93,22 +94,5 @@ export function Intro(){
             <NavBar />
             <Header />
         </Client.Components.SuspenseComponent>
-    )
-}
-export function SignOutBTN() {
-    return (
-        <button onClick={async () => {
-            try {
-                const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null } })
-                });
-                const res = await req.json();
-                console.log(res);
-            } catch (e) { console.error(e) }
-            signOut(auth);
-            window.location.replace("/registration");
-        }}>Sign Out</button>
     )
 }

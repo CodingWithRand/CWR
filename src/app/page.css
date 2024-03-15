@@ -127,23 +127,46 @@
         transform: scale(0)
     }
 
-    #about-us .content article{
+    #about-me .content article{
         @apply text-black bg-white dark:bg-black dark:text-white;
         padding: 1em;
         border-radius: 1em;
         width: 80%;
-        height: 40%;
         overflow-y: auto;
         box-shadow: 0 0 1em;
     }
 
-    #about-us .content article .fade{
+    #about-me .content article .fade{
         @apply light-theme-content-article-fade dark:dark-theme-content-article-fade;
         position: sticky;
         bottom: -1em;
         left: 0;
         width: 100%;
         height: 5em;
+    }
+
+    #about-me .content{
+        @apply xs-md:responsive-content-sm md:responsive-content-md;
+        padding: 2em 1em;
+        margin: 1em 0;
+        row-gap: 5em;
+    }    
+
+    #bio-card{
+        @apply rounded-lg shadow-sm max-w-3xl p-0 max-w-[80%] max-h-full overflow-hidden bg-white dark:bg-neutral-300;
+        box-shadow: 0.5em 0.5em 2em gray;
+    }
+
+    .info-list{
+        @apply flex flex-col space-y-1
+    }
+
+    .info-list dt{
+        @apply font-medium;
+    }
+
+    .info-list dd{
+        @apply text-gray-500
     }
 }
 
@@ -172,13 +195,26 @@
     .light-theme-content-article-fade{
         background-image: linear-gradient(to bottom, transparent, white);
     }
+    .responsive-content-md{
+        display: grid;
+        grid-template-columns: 50% 50%;
+        grid-template-rows: 50vh 50vh;
+        justify-items: center;
+    }
+    .responsive-content-sm{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
+
+.link{ color: red }
 
 :root{
     --icon-shadow: radial-gradient(gray 0%, transparent 60%);
 }
 
-img{ user-select: none; }
+body{ user-select: none; }
 
 .setup{
     display: flex;
@@ -249,25 +285,59 @@ html{
     opacity: 0.8;
 }
 
-#about-us .content{
-    padding: 0 1em;
-    margin: 1em 0;
-}
-
-#about-us .content article h1{
+#about-me .content article h1{
     font-size: 2em;
     margin: 0.5em 0;
 }
 
-#about-us .content{
-    display: flex;
-    flex-direction: column;
-    row-gap: 5em;
+#about-me .content article{
+    transform: translateY(10%); 
+    opacity: 0; 
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out
 }
 
-#about-us .content article:nth-of-type(even){
-    margin-right: 1em;
-    margin-left: auto ;
+.spinning-dice{
+    position: absolute;
+    z-index: 10;
+}
+
+.spinning-dice:nth-of-type(1){ animation: circulate1 5s linear infinite, spinning 1s linear infinite;}
+.spinning-dice:nth-of-type(2){ animation: circulate1 5s 0.3s linear infinite, spinning 1s linear infinite;}
+.spinning-dice:nth-of-type(3){ animation: circulate1 5s 0.5s linear infinite, spinning 1s linear infinite;}
+.spinning-dice:nth-of-type(4){ animation: circulate1 5s 0.7s linear infinite, spinning 1s linear infinite;}
+.spinning-dice:nth-of-type(5){ animation: circulate1 5s 0.85s linear infinite, spinning 1s linear infinite;}
+
+.spinning-dice:nth-of-type(6){ animation: circulate2 5s linear infinite, spinning 1s linear infinite;}
+.spinning-dice:nth-of-type(7){ animation: circulate2 5s 0.3s linear infinite, spinning 1s linear infinite;}
+.spinning-dice:nth-of-type(8){ animation: circulate2 5s 0.5s linear infinite, spinning 1s linear infinite;}
+.spinning-dice:nth-of-type(9){ animation: circulate2 5s 0.7s linear infinite, spinning 1s linear infinite;}
+.spinning-dice:nth-of-type(10){ animation: circulate2 5s 0.85s linear infinite, spinning 1s linear infinite;}
+
+.effect-box{
+    width: 80%;
+    height: 100%;
+    position: absolute;
+}
+
+@keyframes circulate1{
+    0%{ top: -15%; right: -15%; }
+    25%{ top: 100%; right: -15%; }
+    50%{ top: 100%; right: 100%; }
+    75%{ top: -15%; right: 100%; }
+    100%{ top: -15%; right: -15%; }
+}
+
+@keyframes circulate2 {
+    0%{ top: 100%; right: 100%; }
+    25%{ top: -15%; right: 100%; }
+    50%{ top: -15%; right: -15%; }
+    75%{ top: 100%; right: -15%; }
+    100%{ top: 100%; right: 100%; }
+}
+
+@keyframes spinning{
+    from{ rotate: 0deg; }
+    to{ rotate: 360deg; }
 }
 
 @keyframes shaking {

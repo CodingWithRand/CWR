@@ -7,6 +7,16 @@ import "@/gss/util.css";
 import "@/gss/theme.css";
 import "@/gss/responsive.css";
 
+function isElementInViewport(element) {
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
+
 function useDelayedEffect(callback, dependencies, delay) {
     const savedCallback = useRef();
   
@@ -44,6 +54,7 @@ function Image(props){
     }, [theme.theme, isBinding]);
 
     Hooks.useDelayedEffect(() => {
+        if(!isBinding) return;
         const targetElement = document.querySelector(`#${props.to}[binding-status]`);
       
         if (targetElement) {
@@ -74,7 +85,7 @@ function Image(props){
         }
       }, [], 100);
     
-    return <img alt={props.alt} src={imgSrc} className={props.cls || undefined} width={props.width || undefined} height={props.height || undefined} />;
+    return <img alt={props.alt} src={imgSrc} className={props.cls || undefined} width={props.width || undefined} height={props.height || undefined} style={props.style} />;
 };
 
 function AlertBox(props){
@@ -183,7 +194,7 @@ function InputField(props){
 
     return( 
         <div className="input-field">
-            <input name={props.name} required={props.required} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector ? "err-detector" : ""} ${props.detectorCls || ""} responsive`} type={props.type} placeholder={props.placeholder || ""} onChange={(e) => {
+            <input id={props.id || undefined} name={props.name || undefined} required={props.required} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector ? "err-detector" : ""} ${props.detectorCls || ""} responsive`} type={props.type || "text"} placeholder={props.placeholder || ""} onChange={(e) => {
                 e.preventDefault();
                 if(!props.onChange.binded) return;
                 props.onChange.expected_condition.forEach((i, c) => {
@@ -211,7 +222,7 @@ function InputField(props){
 function InputGroupField(props){
     const [inputFields, updateInputFields] = useState(Array.from({ length: props.fieldNumber }, (_, i) => (
         <div key={i} className="sub input-field">
-            <input name={props.name && props.name[i]} required={props.required && props.required[i]} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i]} placeholder={props.placeholder[i] || ""} onChange={(e) => {
+            <input id={props.id && props.id[i]} name={props.name && props.name[i]} required={props.required && props.required[i]} className={`${props.themed ? "theme" : ""} border-color component text-color bg-color inverse ${props.errDetector[i] ? "err-detector" : ""} ${props.detectorCls[i] || ""} responsive`} type={props.type[i] || "text"} placeholder={props.placeholder[i] || ""} onChange={(e) => {
                 e.preventDefault();
                 if(!props.onChange[i].binded) return;
                 props.onChange[i].expected_condition.forEach((j, c) => {
@@ -357,8 +368,12 @@ const Hooks = {
     useDelayedEffect
 }
 
+const Functions = {
+    isElementInViewport
+}
+
 const Client = {
-    Components, Hooks
+    Components, Hooks, Functions
 }
 
 export default Client;

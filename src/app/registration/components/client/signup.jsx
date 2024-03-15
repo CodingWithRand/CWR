@@ -10,7 +10,6 @@ import Neutral from"@/geutral/util";
 import EmailVerifificationPage from "./email-verification";
 
 export default function SignUp() {
-    const cookies = new Cookies();
     const { Switch, AlertBox, Dynamic } = Client.Components;
     const { InputField, InputGroupField } = Dynamic;
 
@@ -32,6 +31,10 @@ export default function SignUp() {
     }, [userEmail, userPass, userName, passConfirmed]);
 
     async function initiateCreatingAccountProgress(e) {
+        setUserEmail(e.target.elements["e-mail"].value);
+        setUserName(e.target.elements["username"].value);
+        setUserPass(e.target.elements["password"].value);
+
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
 
@@ -85,6 +88,7 @@ export default function SignUp() {
                 <div className="f-c">
                     <label className="field-label responsive">Username</label>
                     <InputField
+                        id="username"
                         name="username" required errDetector
                         detectorCls="un" type="text"
                         placeholder="Your desire username here"
@@ -106,7 +110,8 @@ export default function SignUp() {
                     />
                     <label className="field-label responsive">Email</label>
                     <InputField
-                        name="email" required errDetector
+                        id="e-mail"
+                        name="e-mail" required errDetector
                         detectorCls="em" type="email"
                         placeholder="Your email here"
                         onChange={{
@@ -130,6 +135,7 @@ export default function SignUp() {
                     <label className="field-label responsive">Password</label>
                     <InputGroupField
                         fieldNumber={2}
+                        id={["password", "pass-confirm"]}
                         name={["password", "pass-confirm"]} required={[true, true]} errDetector={[true, true]}
                         detectorCls={["pw", "pwc"]} type={[inputType, inputType]}
                         unstaticAttributes={["type"]}

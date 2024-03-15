@@ -1,5 +1,6 @@
 const modules = {
     firestore: require('./firestore'),
+    auth: require('./auth'),
 }
 
 for(const module of Object.values(modules)){

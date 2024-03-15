@@ -7,7 +7,6 @@ const server = express();
 const response = require("./responseStatus");
 const { userExist, getUserInfo } = require("./api/roblox/main");
 const { crud, verifyToken, createCustomToken } = require("./api/provider/main");
-const { verifyToken, createCustomToken } = require("./api/provider/auth");
 
 server.use("/post/provider/cwr/*", cors({
     origin: "https://codingwithrand.vercel.app"

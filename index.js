@@ -6,7 +6,7 @@ const server = express();
 
 const response = require("./responseStatus");
 const { userExist, getUserInfo } = require("./api/roblox/main");
-const { crud } = require("./api/provider/main");
+const { crud, verifyToken, createCustomToken } = require("./api/provider/main");
 const { verifyToken, createCustomToken } = require("./api/provider/auth");
 
 server.use("/post/provider/cwr/*", cors({
@@ -14,6 +14,11 @@ server.use("/post/provider/cwr/*", cors({
 }))
 
 server.use(bodyParser.json())
+
+server.use("/post/provider/cwr/*", (req, res, next) => {
+    if(req.method === "POST" && req.body.adminKey === process.env.FIREBASE_PERSONAL_ADMIN_KEY) next();
+    else response.unauthorized(res, "Invalid admin key");
+})
 
 server.use((req, res, next) => {
     if(req.method === "GET"){

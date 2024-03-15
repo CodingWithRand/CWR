@@ -6,7 +6,7 @@ const server = express();
 
 const response = require("./responseStatus");
 const { userExist, getUserInfo } = require("./api/roblox/main");
-const { crud, verifyToken, createCustomToken } = require("./api/provider/main");
+const { crud, verifyToken, createCustomToken, setCustomUserClaims } = require("./api/provider/main");
 
 server.use("/post/provider/cwr/*", cors({
     origin: "https://codingwithrand.vercel.app"
@@ -36,6 +36,7 @@ server.get("/get/roblox/users/info/:category/:userId", getUserInfo)
 server.post("/post/provider/cwr/firestore/:mode", crud)
 server.post("/post/provider/cwr/auth/verifyToken", verifyToken)
 server.post("/post/provider/cwr/auth/createCustomToken", createCustomToken)
+server.post("/post/provider/cwr/auth/setCustomUserClaims", setCustomUserClaims)
 
 server.post("*", (req, res) => response.notFound(res))
 server.get("*", (req, res) => response.notFound(res))

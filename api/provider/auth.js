@@ -21,7 +21,23 @@ const verifyToken = async (req, res) => {
     }
 }
 
+const setCustomUserClaims = async (req, res) => {
+    const { uid, claims, securityStage } = req.body;
+    try {
+        switch(securityStage){
+            case "none":
+                await auth.setCustomUserClaims(uid, claims);
+                responseStatus.noContent(res, "User's claims has been set!");
+            default:
+                responseStatus.notFound(res, "Invalid security stage!");
+        }
+    } catch (e) {
+        responseStatus.badRequest(res, e.message)
+    }
+}
+
 module.exports = {
     createCustomToken,
-    verifyToken
+    verifyToken,
+    setCustomUserClaims
 }

@@ -12,7 +12,9 @@ export default function NoteDashboard({ navigation }: { navigation: NativeStackN
 
     async function promptSignOut(){
         try {
-            if(auth().currentUser?.providerData.some(provider => provider.providerId === "google.com")){
+            const userTokens = await auth().currentUser?.getIdTokenResult();
+            const userClaims = userTokens?.claims;
+            if(auth().currentUser?.providerData.some(provider => provider.providerId === "google.com") && userClaims?.authenticatedThroughProvider === "google.com") {
                 await GoogleSignin.revokeAccess();
                 await GoogleSignin.signOut();
             }

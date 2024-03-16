@@ -1,10 +1,11 @@
 import { useGlobal } from "@/app/global/client/global";
-import { originContent, interestContent } from "./articleContents/paragraphs";
+import { originContent, interestContent, learningStyle } from "./articleContents/paragraphs";
 import { useEffect } from "react";
 import { signOut } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
 import OriginBioCard from "./articleContents/media/origin-bio-card";
 import Client from "@/app/global/client/util";
+import ProgrammingInterest from "./articleContents/media/programming-interest";
 
 export function SignOutBTN() {
     return (
@@ -27,6 +28,7 @@ export function SignOutBTN() {
 function ArticleMedia({ id }){
     switch(id){
         case "origin": return <OriginBioCard />
+        case "interest": return <ProgrammingInterest />
     }
 }
 
@@ -34,7 +36,6 @@ export function Article({ id, index }) {
     const { device } = useGlobal();
 
     useEffect(() => {
-        console.log("a")
         for(const p of document.querySelectorAll(".content > article")){
             function handleShowParagraphScroll(){
                 if(Client.Functions.isElementInViewport(p)){
@@ -51,6 +52,7 @@ export function Article({ id, index }) {
         {
             id === "origin" ? originContent :
             id === "interest" ? interestContent :
+            id === "learning-style" ? learningStyle :
             <></>
         }
         <div className="fade"></div>
@@ -65,7 +67,7 @@ export function Article({ id, index }) {
                 </>
                 :
                 <>
-                    <img />
+                    <ArticleMedia id={id} />
                     {showingParagraph}
                 </>
             }

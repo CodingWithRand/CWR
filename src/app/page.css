@@ -134,6 +134,7 @@
         width: 80%;
         overflow-y: auto;
         box-shadow: 0 0 1em;
+        max-height: 80vh;
     }
 
     #about-me .content article .fade{
@@ -198,7 +199,7 @@
     .responsive-content-md{
         display: grid;
         grid-template-columns: 50% 50%;
-        grid-template-rows: 50vh 50vh;
+        grid-template-rows: repeat(3, 50vh);
         justify-items: center;
     }
     .responsive-content-sm{
@@ -208,7 +209,8 @@
     }
 }
 
-.link{ color: red }
+.outside-link{ color: red }
+.in-page-navigation{ color: rgb(0, 183, 255); }
 
 :root{
     --icon-shadow: radial-gradient(gray 0%, transparent 60%);
@@ -291,7 +293,7 @@ html{
 }
 
 #about-me .content article{
-    transform: translateY(10%); 
+    transform: translateY(-10%); 
     opacity: 0; 
     transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out
 }
@@ -299,6 +301,11 @@ html{
 .spinning-dice{
     position: absolute;
     z-index: 10;
+}
+
+.threeD-screen{
+    perspective: 1000px;
+    perspective-origin: 50% 50%
 }
 
 .spinning-dice:nth-of-type(1){ animation: circulate1 5s linear infinite, spinning 1s linear infinite;}

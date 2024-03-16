@@ -13,6 +13,7 @@ export default function Home() {
               <article className="content">
                 <Article id="origin" index={1} />
                 <Article id="interest" index={2} />
+                <Article id="learning-style" index={3} />
               </article>
           </section>
       </main>

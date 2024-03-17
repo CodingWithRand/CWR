@@ -113,9 +113,9 @@ export default function AuthenticateActionHandler() {
 
                     <div className="option-field">
                         <Switch cls="specific" mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")}/>
-                        <label className="field-label responsive">Show Password</label>
+                        <label className="field-label">Show Password</label>
                     </div>
-                    <button className="submit-btn responsive" type="submit" disabled={passConfirmed}>Submit</button>
+                    <button className="submit-btn" type="submit" disabled={passConfirmed}>Submit</button>
                 </form>
             </Section>
         )

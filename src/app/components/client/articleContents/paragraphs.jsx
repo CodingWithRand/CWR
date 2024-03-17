@@ -14,14 +14,14 @@ export const interestContent = <>
     <p>&emsp;&emsp;How did I interest in coding? It&apos;s quite a long story...</p>
     <br/>
     <p>&emsp;&emsp;It&apos;s started when I was around 12, I was interested in making my own <a className="outside-link" target="_blank" href="https://www.roblox.com">Roblox</a> game. It was really fun to try new things.</p>
-    <p>&emsp;&emsp;Everyone knows there are two parts of creating a game, <i>&quot;Designing, Creating and Modeling&quot;</i> and <i>&quot;Scripting game logic&quot;</i>. At first, I didn't quite understand how the code work at all. Just copying the tutorial, and that does it. I have to admit that I had more fun with modeling back then.</p>
+    <p>&emsp;&emsp;Everyone knows there are two parts of creating a game, <i>&quot;Designing, Creating and Modeling&quot;</i> and <i>&quot;Scripting game logic&quot;</i>. At first, I didn&apos;t quite understand how the code work at all. Just copying the tutorial, and that does it. I have to admit that I had more fun with modeling back then.</p>
     <p>&emsp;&emsp;But I kept learning the code anyway. Roblox is written in Lua, so of course the programming language to create the game is also Lua. After learning for a while, I knew basic of Lua and addition methods Roblox added.</p>
-    <p>&emsp;&emsp;Anyway, you're probably questioning me now that how did I end up interest in web development and software engineering? Well, three years past, I realized that my creativity is not enough to create a game. I didn't have cool ideas create a unique game. Pretty much lame or weird ideas that no one would interest in. (Now I have an idea to make a game that&apos;s <del>copied</del> inspired from a <a className="outside-link" target="_blank" href="https://www.youtube.com/watch?v=2pFwQiwRbcg">Minecraft series video</a>, but don't have time to develop yet.)</p>
+    <p>&emsp;&emsp;Anyway, you&apos;re probably questioning me now that how did I end up interest in web development and software engineering? Well, three years past, I realized that my creativity is not enough to create a game. I didn&apos;t have cool ideas create a unique game. Pretty much lame or weird ideas that no one would interest in. (Now I have an idea to make a game that&apos;s <del>copied</del> inspired from a <a className="outside-link" target="_blank" href="https://www.youtube.com/watch?v=2pFwQiwRbcg">Minecraft series video</a>, but don&apos;t have time to develop yet.)</p>
     <p>&emsp;&emsp;When I was around 15-16, I tried something new. I learned about web development and software development. I quite liked them. One day, I have a splendid idea...</p>
     <br/>
     <p><i><b>&emsp;&emsp;&quot;Why don&apos;t create something that would be super useful for people around world to use on the internet?&quot;</b></i></p>
     <br/>
-    <p>&emsp;&emsp;And from that day, I keep learning and learning about it. Till now, I&apos;m still learning because new technologies emerge every day. I now know a lot about software and web development, but despite that, it's still a long way to go... </p>
+    <p>&emsp;&emsp;And from that day, I keep learning and learning about it. Till now, I&apos;m still learning because new technologies emerge every day. I now know a lot about software and web development, but despite that, it&apos;s still a long way to go... </p>
     <br/><br/>
     <p>&emsp;&emsp;Question about my skills? Click <a className="in-page-navigation">here</a>!</p>
 </>

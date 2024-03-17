@@ -41,10 +41,15 @@
         flex-direction: row;
         width: 100%;
         z-index: 1;
+        align-items: center;
     }
 
     #navbar ul{
-        @apply hidden absolute bg-[#EAEAEA] dark:bg-[#050505] m-0 p-4 top-full flex-col h-max gap-y-4 opacity-0 sm:flex sm:relative opacity-100 sm:ml-4 sm:p-0 sm:bg-transparent sm:top-0 sm:flex-row sm:h-full sm:gap-x-4;
+        @apply bg-[#EAEAEA] dark:bg-[#050505] flex mx-4 p-0 top-0 flex-row h-full gap-x-4 items-center;
+    }
+
+    #navbar #menu{
+        @apply hidden absolute m-0 p-4 top-full flex-col h-max gap-y-4 opacity-0 sm:flex sm:relative opacity-100 sm:mx-4 sm:p-0 sm:top-0 sm:flex-row sm:h-full sm:gap-x-4;
         list-style: none;
         align-items: center;
         transition: opacity 0.5s ease-in-out
@@ -85,10 +90,11 @@
     }
 
     #navbar ul li a{
-        @apply text-black dark:text-white
+        @apply text-black dark:text-white;
+        transition: color 0.2s ease-in-out;
     }
     #navbar ul li a:hover{
-        @apply text-[#3C3C3C] dark:text-[#D3D3D3]
+        @apply text-[#A1A1A1] dark:text-[#A3A3A3]
     }
 
     #logo .line{
@@ -117,7 +123,7 @@
     }
 
     #banner .caption{
-        @apply text-[3em] text-black dark:text-white sm:text-[5em];
+        @apply text-[2em] text-black dark:text-white sm:text-[3em] md:text-[4em] lg:text-[5em];
         height: 100%;
         display: flex;
         justify-content: center;
@@ -128,14 +134,16 @@
     }
 
     #about-me .content article{
-        @apply text-black bg-white dark:bg-black dark:text-white;
+        @apply text-black bg-white dark:bg-black max-h-[50vh] dark:text-white sm:max-h-[80vh];
         padding: 1em;
         border-radius: 1em;
         width: 80%;
         overflow-y: auto;
         box-shadow: 0 0 1em;
-        max-height: 80vh;
     }
+
+    #about-me .content article h1{ @apply my-[0.5em] text-[1.5em] sm:text-[2em]; }
+    #about-me .content article p{ @apply text-sm sm:text-base; }
 
     #about-me .content article .fade{
         @apply light-theme-content-article-fade dark:dark-theme-content-article-fade;
@@ -285,11 +293,6 @@ html{
 
 #menu-btn img:hover{
     opacity: 0.8;
-}
-
-#about-me .content article h1{
-    font-size: 2em;
-    margin: 0.5em 0;
 }
 
 #about-me .content article{

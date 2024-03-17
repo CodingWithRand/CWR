@@ -29,14 +29,6 @@
         @apply font-barlow
     }
     
-    .forget-password{
-      color: darkgray;
-      text-decoration: underline;
-      cursor: pointer
-    }
-    
-    .forget-password:hover{color: gray;}
-    
     button, a{
       cursor: pointer;
     }

@@ -69,10 +69,10 @@ export default function SignIn() {
 
     return (
         <>
-            <h2 className="reg-t responsive">Sign In</h2>
+            <h2 className="reg-t">Sign In</h2>
             <form className="reg-form" onClick={(e) => e.stopPropagation()} onSubmit={initiateSignInProgress}>
                 <div className="f-c">
-                    <label className="field-label responsive">Username</label>
+                    <label className="field-label">Username</label>
                     <InputField
                         id="user"
                         name="user" type="text" required
@@ -83,7 +83,7 @@ export default function SignIn() {
                             actions: [(e) => onFormUpdate(e, userName)]
                         }}
                     />
-                    <label className="field-label responsive">Email</label>
+                    <label className="field-label">Email</label>
                     <InputField
                         id="email"
                         name="email" type="email" required
@@ -94,7 +94,7 @@ export default function SignIn() {
                             actions: [(e) => onFormUpdate(e, userEmail)]
                         }}
                     />
-                    <label className="field-label responsive">Password</label>
+                    <label className="field-label">Password</label>
                     <InputField
                         id="pass"
                         name="pass" type={inputType} required
@@ -105,17 +105,17 @@ export default function SignIn() {
                             actions: [(e) => onFormUpdate(e, userPass)]
                         }}
                     />
-                    <div className="option-field responsive">
+                    <div className="option-field">
                         <div className="show-pass">
                             <Switch mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")} />
-                            <label className="field-label responsive">Show Password</label>
+                            <label className="field-label">Show Password</label>
                         </div>
-                        <span className="forget-password responsive" onClick={() => sendPasswordResetEmail(auth, prompt("Your email:")).then(() => {
+                        <span className="forget-password" onClick={() => sendPasswordResetEmail(auth, prompt("Your email:")).then(() => {
                             debug2(true);
                             setDM((prevDM) => ({ ...prevDM, title: "Password reset email has been sent!", subtitle: "Please check your email inbox!", description: "" }))
                         }).catch(() => alert("Invalid Email"))}>Forgot your password? Reset it here</span>
                     </div>
-                    <button className="submit-btn responsive" type="submit">Sign In</button>
+                    <button className="submit-btn" type="submit">Sign In</button>
                 </div>
             </form>
             <AlertBox id="sign-in-alert-box" detect={result} messages={{

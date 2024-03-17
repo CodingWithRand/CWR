@@ -82,10 +82,10 @@ export default function SignUp() {
 
     return (
         <>
-            <h2 className="reg-t responsive">Create an account</h2>
+            <h2 className="reg-t">Create an account</h2>
             <form className="reg-form" style={{ width: "80%" }} onClick={(e) => e.stopPropagation()} onSubmit={initiateCreatingAccountProgress}>
                 <div className="f-c">
-                    <label className="field-label responsive">Username</label>
+                    <label className="field-label">Username</label>
                     <InputField
                         id="username"
                         name="username" required errDetector
@@ -107,7 +107,7 @@ export default function SignUp() {
                         warningMsg={["", "Name doesn't satisfy the format"]}
                         warningMsgDescription={"(At least 3 character, must be English, doesn't contain special character except \"_\", and doesn't start with \"_\")"}
                     />
-                    <label className="field-label responsive">Email</label>
+                    <label className="field-label">Email</label>
                     <InputField
                         id="e-mail"
                         name="e-mail" required errDetector
@@ -131,7 +131,7 @@ export default function SignUp() {
                         }}
                         warningMsg={["", "Email is invalid!"]}
                     />
-                    <label className="field-label responsive">Password</label>
+                    <label className="field-label">Password</label>
                     <InputGroupField
                         fieldNumber={2}
                         id={["password", "pass-confirm"]}
@@ -167,13 +167,13 @@ export default function SignUp() {
                         ]}
                         warningMsg={[["", "Password must contain at least 8 characters"], ["", "Password does not match!"]]}
                     />
-                    <div className="option-field responsive">
+                    <div className="option-field">
                         <div className="show-pass">
                             <Switch mode="action-on-off" action={() => setInputType("text")} altAction={() => setInputType("password")} />
-                            <label className="field-label responsive">Show Password</label>
+                            <label className="field-label">Show Password</label>
                         </div>
                     </div>
-                    <button className="submit-btn responsive" type="submit" disabled={regFormUnDone}>Create a new account</button>
+                    <button className="submit-btn" type="submit" disabled={regFormUnDone}>Create a new account</button>
                 </div>
             </form>
             <AlertBox id="sign-up-alert-box" detect={signUpSuccess} messages={{

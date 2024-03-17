@@ -2,44 +2,6 @@
 
 @layer utilities {
 
-    /* registration/page.js - Components */
-
-    .h-reg.responsive {
-        @apply text-2xl mt-[2em] sm:text-[2em] sm:mt-[1em] lg:text-[3em];
-    }
-
-    .reg-t.responsive {
-        @apply sm:text-xl lg:text-[1.5em];
-    }
-
-    .reg-f.responsive {
-        @apply py-[1em] sm:py-[2em];
-    }
-
-    .input-field>input.responsive,
-    .field-label.responsive,
-    .submit-btn.responsive {
-        @apply text-xs sm:text-base;
-    }
-
-    .forget-password.responsive {
-        @apply text-xs sm:text-base;
-    }
-
-    .email-icon.responsive {
-        @apply w-[150px] h-[150px] sm:w-[200px] sm:h-[200px];
-    }
-
-    .notf-box.responsive {
-        @apply p-[3vh] text-sm sm:p-[5vh] sm:text-base;
-    }
-
-    /* registration/page.js - Page */
-
-    #registration-mode.responsive {
-        @apply bottom-[-1em] left-[1em] text-xs sm:text-base
-    }
-
     /* util.jsx - AlertBox Component*/
 
     .alert-box {

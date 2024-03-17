@@ -3,6 +3,49 @@
 
 @tailwind components;
 
+@layer components{
+    #registration-mode {
+        @apply bottom-[-1em] left-[1em] text-[0.55em] sm:text-base;
+        color: darkgray;
+        text-decoration: underline;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .h-reg {
+        @apply text-2xl mt-[2em] sm:text-[2em] sm:mt-[1em] lg:text-[3em];
+    }
+
+    .reg-t {
+        @apply sm:text-xl lg:text-[1.5em];
+    }
+
+    .reg-f {
+        @apply py-[1em] sm:py-[2em];
+    }
+
+    .input-field>input,
+    .field-label,
+    .submit-btn {
+        @apply text-xs sm:text-base;
+    }
+
+    .forget-password {
+        @apply text-[0.55em] sm:text-base;
+        color: darkgray;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .email-icon {
+        @apply w-[150px] h-[150px] sm:w-[200px] sm:h-[200px];
+    }
+
+    .notf-box {
+        @apply p-[3vh] text-sm sm:p-[5vh] sm:text-base;
+    }
+}
+
 :root {
     --trail-width: 5em
 }
@@ -52,8 +95,9 @@ main {
 .reg-wrapper {
     display: flex;
     flex-direction: row;
-    width: 200%;
+    width: 212%;
     transition: transform 0.3s ease-in-out;
+    column-gap: 2rem;
 }
 
 .reg-box {
@@ -64,13 +108,6 @@ main {
     flex-direction: column;
     width: 50%;
     transition: opacity 0.1s ease-in-out;
-}
-
-#registration-mode {
-    color: darkgray;
-    text-decoration: underline;
-    cursor: pointer;
-    position: relative;
 }
 
 .init-dot {
@@ -186,5 +223,6 @@ main {
         overflow-x: hidden;
         box-shadow: 0 0 5px gray;
         transition: transform 2s ease-out, opacity 2s ease-out;
+        min-width: 245px
     }
 }

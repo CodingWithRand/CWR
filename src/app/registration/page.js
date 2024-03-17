@@ -1,5 +1,6 @@
+"use client"
+
 import "./page.css"
-import "@/gss/responsive.css"
 import SignIn from "./components/client/signin";
 import SignUp from "./components/client/signup";
 import SwitchPageBtn from "./components/client/switchpagebtn";

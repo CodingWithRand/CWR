@@ -85,7 +85,17 @@ function Image(props){
         }
       }, [], 100);
     
-    return <img alt={props.alt} src={imgSrc} className={props.cls || undefined} width={props.width || undefined} height={props.height || undefined} style={props.style} />;
+    return(
+        <img
+            alt={props.alt}
+            src={imgSrc}
+            className={props.cls || undefined}
+            width={props.width || undefined}
+            height={props.height || undefined}
+            style={props.style}
+            onClick={props.onClick || undefined}
+        />
+    )
 };
 
 function AlertBox(props){

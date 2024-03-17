@@ -6,6 +6,7 @@ import { auth } from "@/glient/firebase";
 import OriginBioCard from "./articleContents/media/origin-bio-card";
 import Client from "@/app/global/client/util";
 import ProgrammingInterest from "./articleContents/media/programming-interest";
+import LearningStyle from "./articleContents/media/learning-style";
 
 export function SignOutBTN() {
     return (
@@ -29,6 +30,7 @@ function ArticleMedia({ id }){
     switch(id){
         case "origin": return <OriginBioCard />
         case "interest": return <ProgrammingInterest />
+        case "learning-style": return <LearningStyle />
     }
 }
 

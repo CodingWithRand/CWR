@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   darkMode: 'class',
   content: [
@@ -11,7 +13,7 @@ module.exports = {
       screens: {
         'amd': '777px',
         'gmob-lsm': {'min': '500px', 'max': '640px'},
-        'nmob': {'min': '400px'},
+        
         'xs-md': {'min': '0px', 'max': '767px'}
       },
       fontFamily: {
@@ -20,6 +22,10 @@ module.exports = {
         'barlow': ['Barlow', 'sans-serif']
       }
     },
+    screens: {
+      'nmob': {'min': '400px'},
+      ...defaultTheme.screens
+    }
   },
   plugins: [],
 }

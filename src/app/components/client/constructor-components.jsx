@@ -13,9 +13,10 @@ function NavBar(){
     function MenuBtn(){
         const { device } = useGlobal();
         const [appearingComponent, setAppearance] = useState(<></>);
+        let menu;     
 
         useEffect(() => {
-            const menu = document.querySelector("#navbar ul");
+            menu = document.querySelector("#navbar #menu");
             let isOpen = false;
             function menuBtn(e) {
                 if(!isOpen) {
@@ -31,8 +32,16 @@ function NavBar(){
                 };
             }
 
-            if(device.device === "xs") setAppearance(<div id="menu-btn" onClick={menuBtn}>Menu <Client.Components.Dynamic.Image width={15} height={15} dir="icon/" name="sort-down.png" alt="triangle-icon"/></div>)
-            else setAppearance(<></>)
+            if(device.device === "xs"){
+                menu.style.display = "none"
+                menu.style.opacity = 0
+                setAppearance(<div id="menu-btn">Menu <Client.Components.Dynamic.Image width={15} height={15} dir="icon/" name="sort-down.png" alt="triangle-icon" onClick={menuBtn}/></div>)
+            }
+            else{
+                setAppearance(<></>)
+                menu.style.display = "flex"
+                menu.style.opacity = 1
+            }
         }, [device.device])
 
         return appearingComponent
@@ -45,17 +54,17 @@ function NavBar(){
     return(
         <nav id="navbar">
             <MenuBtn />
-            <ul>
+            <ul id="menu">
                 <li><a>About me</a></li>
                 <li><a>My Projects</a></li>
                 <li><a>Lounge</a></li>
                 <li><a>Contact</a></li>
             </ul>
-            <form id="search-bar">
+            <ul>
                 <Client.Components.ThemeChanger />
-                <input type="text" placeholder="Search for API" />
-                <button type="submit"><Client.Components.Dynamic.Image dir="icon/" name="search-interface-symbol.png" alt="magnifying-glass"/></button>
-            </form>
+                <li><a href="/registration?page=login">Login</a></li>
+                <li><a href="/registration?page=register">Register</a></li>
+            </ul>
         </nav>
     )
 }

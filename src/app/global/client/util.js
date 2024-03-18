@@ -94,6 +94,7 @@ function Image(props){
             height={props.height || undefined}
             style={props.style}
             onClick={props.onClick || undefined}
+            title={props.title || undefined}
         />
     )
 };

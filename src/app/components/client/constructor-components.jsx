@@ -1,15 +1,15 @@
 "use client"
 
-import { signOut } from "@firebase/auth";
-import { auth } from "@/glient/firebase";
 import { useEffect, useState } from "react"
 import { useGlobal } from "@/glient/global";
 import Script from "next/script";
 import Client from "@/glient/util"
 import Neutral from "@/geutral/util";
+import { SignOutBTN } from "./utility-components";
 
 function NavBar(){
 
+    const { authUser } = useGlobal();
     function MenuBtn(){
         const { device } = useGlobal();
         const [appearingComponent, setAppearance] = useState(<></>);
@@ -62,8 +62,18 @@ function NavBar(){
             </ul>
             <ul>
                 <Client.Components.ThemeChanger />
-                <li><a href="/registration?page=login">Login</a></li>
-                <li><a href="/registration?page=register">Register</a></li>
+                {   authUser.isAuthUser ? 
+                    <>
+                        <li><Client.Components.Dynamic.Image title={authUser.isAuthUser.displayName} alt="programmer-profile-icon" dir="icon/" width={50} height={50} name="programmer.png" cls="rounded-full cursor-pointer"/></li>
+                        <li><SignOutBTN /></li>
+                    </>
+                    :
+                    <>
+                        <li><a href="/registration?page=login">Login</a></li>
+                        <li><a href="/registration?page=register">Register</a></li>
+                    </>
+                }
+                
             </ul>
         </nav>
     )

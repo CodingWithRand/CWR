@@ -17,7 +17,6 @@ export default function Home() {
               </article>
           </section>
       </main>
-      <SignOutBTN />
       {/* 
       <a href="https://www.flaticon.com/free-icons/search" title="search icons">Search icons created by Catalin Fertu - Flaticon</a> 
       <a href="https://www.flaticon.com/free-icons/triangle" title="triangle icons">Triangle icons created by Dave Gandy - Flaticon</a>

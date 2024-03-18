@@ -89,7 +89,7 @@
         border-radius: 2em;
     }
 
-    #navbar ul li a{
+    #navbar ul li a, #navbar ul li button{
         @apply text-black dark:text-white;
         transition: color 0.2s ease-in-out;
     }
@@ -177,6 +177,20 @@
     .info-list dd{
         @apply text-gray-500
     }
+
+    div.monitor-stand{
+        @apply h-4 bg-black dark:bg-neutral-400 rounded-lg opacity-0;
+        transition: transform 0.5s var(--elastic), opacity 0.5s ease-in-out;
+        transform: translateY(-20em);
+    }
+
+    img.learning-style-cartoon-character{
+        @apply absolute bottom-[-10%] md:bottom-0 lg:h-[150px] lg:w-[150px] md:h-[125px] md:w-[125px] sm:h-[150px] sm:w-[150px] nmob:h-[125px] nmob:w-[125px] w-[100px] h-[100px] opacity-0;
+        transition: transform 0.5s 0.8s ease-in-out, opacity 0.5s 0.8s ease-in-out;
+        transform: translateY(-10%);
+    }
+
+
 }
 
 @layer utilities{
@@ -184,22 +198,22 @@
         background-image: linear-gradient(to right, transparent, white, transparent);
     }
     .dark-theme-logo-fade{
-        background-image: linear-gradient(to right, transparent, rgba(15,15,15,1))
+        background-image: linear-gradient(to right, transparent, rgb(15, 15, 15))
     }
     .dark-theme-logo-fade-modded{
-        background-image: linear-gradient(to right, transparent, rgba(5,5,5,1))
+        background-image: linear-gradient(to right, transparent, rgb(5, 5, 5))
     }
     .dark-theme-content-article-fade{
         background-image: linear-gradient(to bottom, transparent, black);
     }
     .light-theme-logo-line{
-        background-image: linear-gradient(to right, transparent, rgba(0,0,0,1), transparent)
+        background-image: linear-gradient(to right, transparent, black, transparent)
     }
     .light-theme-logo-fade{
-        background-image: linear-gradient(to right, transparent, rgba(240,240,240,1))
+        background-image: linear-gradient(to right, transparent, rgb(240, 240, 240))
     }
     .light-theme-logo-fade-modded{
-        background-image: linear-gradient(to right, transparent, rgba(230,230,230,1))
+        background-image: linear-gradient(to right, transparent, rgb(230, 230, 230))
     }
     .light-theme-content-article-fade{
         background-image: linear-gradient(to bottom, transparent, white);

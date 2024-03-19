@@ -29,6 +29,4 @@
     }
     
     setTimeout(() => document.querySelector("#banner .caption").style.transform = "scale(1)", 1000 + (window.innerWidth >= 1024 ? 3000 : 0))
-    setTimeout(() => document.body.style.overflowY = "auto", 2500 + (window.innerWidth >= 1024 ? 3000 : 0))
-    setTimeout(() => window.location.replace("#about-me"), 3000 + (window.innerWidth >= 1024 ? 3000 : 0))
 })()

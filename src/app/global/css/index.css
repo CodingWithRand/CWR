@@ -25,7 +25,7 @@
         monospace;
     }
 
-    .font-barlow div{
+    .fontBarlow div{
         @apply font-barlow
     }
     

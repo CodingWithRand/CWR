@@ -9,7 +9,7 @@ export const metadata = {
   description: 'For the user to update their settings.',
 }
 
-export default function RootLayout({ children }) {
+export default function SettingsRootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>

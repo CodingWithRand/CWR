@@ -1,0 +1,133 @@
+@tailwind components;
+
+@layer components{
+
+    body{ @apply bg-[#F0F0F0] dark:bg-[#0F0F0F]; }
+
+    #navbar{
+        @apply text-black bg-[#EAEAEA] dark:text-white dark:bg-[#050505];
+        margin: 0;
+        height: 3.5em;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+    }
+
+    #navbar ul{
+        @apply bg-[#EAEAEA] dark:bg-[#050505] flex mx-4 p-0 top-0 flex-row h-full gap-x-4 items-center;
+    }
+    
+}
+
+:root{
+    /* account-settings.jsx */
+    --fb-sa-s-id1: auto;
+}
+
+/* account-settings.jsx */
+
+.setting-submitting-form .submit-btn{
+    background-color: lightgray;
+    border-radius: 5px;
+    width: 150px;
+    padding: 1vh 0;
+    cursor: pointer;
+}
+
+.setting-submitting-form{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
+.forget-password{
+    color: darkgray;
+    text-decoration: underline;
+    cursor: pointer
+}
+
+.forget-password:hover{color: gray;}
+
+:root{
+    --responsive-grid-differ: 0vw;
+}
+
+.setting-page div{
+    overflow: hidden;
+}
+
+.setup-group{
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+}
+
+.category{
+    padding: 0 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 20px;
+    margin: 10px 0 10px 40px;
+}
+
+.category.hovered:hover{
+    color: darkgray !important;
+}
+
+.setting-nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+    padding: 10px 30px;
+    column-gap: 30px;
+}
+
+.setting-icon{
+    width: 30px;
+    height: 30px;
+}
+
+.user-profile-icon{
+    width: 50px;
+    height: 50px;
+    border-radius: 9999px;
+}
+
+.menu-btn{
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    border: solid 2px;
+    border-radius: 10px;
+}
+
+.user-profile-pallete.tablet{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+    margin: 10px;
+}
+
+.user-profile-pallete.pc{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.return-ref{
+    color: darkgray;
+    text-decoration: underline 1px;
+    padding: 20px 0;
+    width: 90%;
+    text-align: right;
+}

@@ -18,6 +18,7 @@ export default function ProgrammingInterest() {
             }
         }
         window.addEventListener("scroll", handleInterestScroll)
+        handleInterestScroll();
         return () => window.removeEventListener("scroll", handleInterestScroll);
     }, [device.device])
 

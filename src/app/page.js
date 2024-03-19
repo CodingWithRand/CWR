@@ -2,7 +2,7 @@
 
 import "./page.css";
 import { Intro } from "./components/client/constructor-components";
-import { Article, SignOutBTN } from "./components/client/utility-components";
+import { Article } from "./components/client/utility-components";
 
 export default function Home() {
   return (

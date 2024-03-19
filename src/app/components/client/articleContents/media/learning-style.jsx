@@ -23,6 +23,7 @@ export default function LearningStyle(){
             }
         }
         window.addEventListener("scroll", handleShowClassScroll)
+        handleShowClassScroll();
         return () => window.removeEventListener("scroll", handleShowClassScroll);
     }, [])
 

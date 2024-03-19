@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useGlobal } from "./global";
 import Neutral from "@/geutral/util";
+import { storage, auth } from "./firebase";
+import { getDownloadURL, ref } from "@firebase/storage";
 import "@/gss/util.css";
 import "@/gss/theme.css";
 import "@/gss/responsive.css";
@@ -362,6 +364,22 @@ function SuspenseComponent(props){
     return onMountComponent
 }
 
+export function UserPFP(){
+    const { authUser } = useGlobal();
+    const [ pfpImg, setPfpImg ] = useState();
+
+    useEffect(() => {
+        if(authUser.isAuthUser && authUser.isAuthUser.photoURL) (async () => {
+            const userProfileImageRef = ref(storage, `userProfileImage/${auth.currentUser.uid}/profile.png`);
+            const imgUrl = await getDownloadURL(userProfileImageRef);
+            setPfpImg(<img alt="user-profile-icon" src={imgUrl} className="rounded-full" width={50} height={50}/>)
+        })()
+        else setImgUrl(<Client.Components.Dynamic.Image alt="programmer-profile-icon" dir="icon/" width={50} height={50} name="programmer.png" cls="rounded-full" />)
+    }, [authUser.isAuthUser])
+
+    return pfpImg
+}
+
 const Components = {
     Dynamic: {
         InputField,
@@ -372,7 +390,8 @@ const Components = {
     AlertBox,
     Switch,
     Section,
-    SuspenseComponent
+    SuspenseComponent,
+    UserPFP
 };
 
 const Hooks = {

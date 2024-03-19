@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Client from "@/app/global/client/util";
+import Client from "@/glient/util";
 const { Dynamic } = Client.Components;
 const { Image } = Dynamic;
 
@@ -14,6 +14,7 @@ export default function OriginBioCard() {
             }
         }
         window.addEventListener("scroll", handleShowCardScroll)
+        handleShowCardScroll();
         return () => window.removeEventListener("scroll", handleShowCardScroll);
     }, [])
     return(

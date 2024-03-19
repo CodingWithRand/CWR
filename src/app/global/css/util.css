@@ -134,3 +134,14 @@ img, div, button{ user-select: none; }
     to{ bottom: 1%; }
 }
 
+/* ThemeChanger Component */
+
+.setup-btn{
+    width: 35px;
+    height: 35px;
+}
+.setup-btn img{
+    height: 100% !important;
+    object-fit: cover;
+}
+

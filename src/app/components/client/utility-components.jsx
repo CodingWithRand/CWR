@@ -1,30 +1,10 @@
 import { useGlobal } from "@/app/global/client/global";
 import { originContent, interestContent, learningStyle } from "./articleContents/paragraphs";
 import { useEffect } from "react";
-import { signOut } from "@firebase/auth";
-import { auth } from "@/glient/firebase";
 import OriginBioCard from "./articleContents/media/origin-bio-card";
 import Client from "@/app/global/client/util";
 import ProgrammingInterest from "./articleContents/media/programming-interest";
 import LearningStyle from "./articleContents/media/learning-style";
-
-export function SignOutBTN() {
-    return (
-        <button onClick={async () => {
-            try {
-                const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-                });
-                const res = await req.json();
-                console.log(res);
-            } catch (e) { console.error(e) }
-            signOut(auth);
-            window.location.replace("/registration");
-        }}>Sign Out</button>
-    )
-}
 
 function ArticleMedia({ id }){
     switch(id){
@@ -46,7 +26,8 @@ export function Article({ id, index }) {
                     window.removeEventListener("scroll", handleShowParagraphScroll);
                 }
             }
-            window.addEventListener("scroll", handleShowParagraphScroll)  
+            window.addEventListener("scroll", handleShowParagraphScroll);
+            handleShowParagraphScroll();
         }
     }, [device.device])
 

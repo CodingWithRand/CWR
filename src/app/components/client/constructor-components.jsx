@@ -5,7 +5,8 @@ import { useGlobal } from "@/glient/global";
 import Script from "next/script";
 import Client from "@/glient/util"
 import Neutral from "@/geutral/util";
-import { SignOutBTN } from "./utility-components";
+
+const { UserPFP } = Client.Components
 
 function NavBar(){
 
@@ -47,10 +48,6 @@ function NavBar(){
         return appearingComponent
     }
     
-    useEffect(() => {
-        if(new URL(window.location.href).hash !== "#banner") window.location.replace("#banner");
-    }, []);
-    
     return(
         <nav id="navbar">
             <MenuBtn />
@@ -64,8 +61,7 @@ function NavBar(){
                 <Client.Components.ThemeChanger />
                 {   authUser.isAuthUser ? 
                     <>
-                        <li><Client.Components.Dynamic.Image title={authUser.isAuthUser.displayName} alt="programmer-profile-icon" dir="icon/" width={50} height={50} name="programmer.png" cls="rounded-full cursor-pointer"/></li>
-                        <li><SignOutBTN /></li>
+                        <li><UserPFP /></li>
                     </>
                     :
                     <>
@@ -108,6 +104,7 @@ function Header(){
 }
 
 export function Intro(){
+    const { authUser } = useGlobal()
     return(
         <Client.Components.SuspenseComponent timer={100} loadingComponent={<Neutral.Components.LoadingPage />}>
             <NavBar />

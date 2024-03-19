@@ -10,7 +10,7 @@
 
     body{
         @apply bg-[#F0F0F0] dark:bg-[#0F0F0F];
-        overflow: hidden;
+        overflow-x: hidden;
     }
 
     #logo{
@@ -27,15 +27,12 @@
     }
 
     #navbar{
-        @apply bg-[#EAEAEA] dark:bg-[#050505];
+        @apply text-black bg-[#EAEAEA] dark:text-white dark:bg-[#050505];
         position: absolute;
         top: 0;
         margin: 0;
-        color: white;
         height: 3.5em;
         font-family: sans-serif;
-        display: flex;
-        justify-content: space-between;
         display: flex;
         justify-content: space-between;
         flex-direction: row;
@@ -89,8 +86,7 @@
         border-radius: 2em;
     }
 
-    #navbar ul li a, #navbar ul li button{
-        @apply text-black dark:text-white;
+    #navbar ul li{
         transition: color 0.2s ease-in-out;
     }
     #navbar ul li a:hover{
@@ -249,14 +245,6 @@ body{ user-select: none; }
     top: 0;
     left: 0;
     padding: 2vw;
-}
-.setup-btn{
-    width: 35px;
-    height: 35px;
-}
-.setup-btn img{
-    height: 100% !important;
-    object-fit: cover;
 }
 
 html{

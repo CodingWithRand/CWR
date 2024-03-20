@@ -8,7 +8,7 @@
 
 @layer components{
 
-    body{
+    html, body{
         @apply bg-[#F0F0F0] dark:bg-[#0F0F0F];
         overflow-x: hidden;
     }

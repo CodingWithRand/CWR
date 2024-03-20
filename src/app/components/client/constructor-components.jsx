@@ -104,7 +104,6 @@ function Header(){
 }
 
 export function Intro(){
-    const { authUser } = useGlobal()
     return(
         <Client.Components.SuspenseComponent timer={100} loadingComponent={<Neutral.Components.LoadingPage />}>
             <NavBar />

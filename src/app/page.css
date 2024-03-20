@@ -8,9 +8,14 @@
 
 @layer components{
 
-    html, body{
+    html{
+        overflow-x: hidden;
+    }
+
+    body{
         @apply bg-[#F0F0F0] dark:bg-[#0F0F0F];
         overflow-x: hidden;
+        height: auto;
     }
 
     #logo{

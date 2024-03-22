@@ -25,9 +25,9 @@ export default function Home() {
         <div className="credit-card">
           <h1>Powered by</h1>
           <ul>
-            <li><Image dir="icon/" name="react-2.svg" constant alt="react-logo" width={20} height={20}/>&nbsp;<a src="https://react.dev" target="_blank">React</a></li>
-            <li><Image dir="icon/" name="next-js.svg" constant alt="react-logo" width={20} height={20}/>Next.js</li>
-            <li>Vercel</li>
+            <li><Image dir="icon/" name="react-2.svg" constant alt="react-logo" width={20} height={20}/>&nbsp;<a href="https://react.dev" target="_blank">React</a></li>
+            <li><Image dir="icon/" name="next-js.svg" constant alt="next-logo" width={20} height={20}/>&nbsp;<a href="https://nextjs.org" target="_blank">Next.js</a></li>
+            <li><Image dir="icon/" name="vercel.png" constant alt="vercel-logo" width={20} height={20}/>&nbsp;<a href="https://vercel.com" target="_blank">Vercel</a></li>
             <li>Firebase</li>
           </ul>
         </div>

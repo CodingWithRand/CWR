@@ -358,13 +358,19 @@ function ThemeChanger(){
 function SuspenseComponent(props){
     const [ onMountComponent, setOnMountComponent ] = useState(props.loadingComponent || <></>)
     useEffect(() => {
-        if(props.condition) setOnMountComponent(props.children);
-        else if(props.timer) setTimeout(() => setOnMountComponent(props.children || <></>), props.timer);
+        if(props.condition){
+            setOnMountComponent(props.children);
+            document.documentElement.removeAttribute("style");
+        }
+        else if(props.timer) setTimeout(() => {
+            setOnMountComponent(props.children || <></>)
+            document.documentElement.removeAttribute("style");
+        }, props.timer);
     }, [props.condition]);
     return onMountComponent
 }
 
-export function UserPFP(){
+function UserPFP(){
     const { authUser } = useGlobal();
     const [ pfpImg, setPfpImg ] = useState();
 
@@ -379,6 +385,8 @@ export function UserPFP(){
 
     return pfpImg
 }
+
+function suspense() { document.documentElement.style.overflow = "hidden"; }
 
 const Components = {
     Dynamic: {
@@ -399,7 +407,8 @@ const Hooks = {
 }
 
 const Functions = {
-    isElementInViewport
+    isElementInViewport,
+    suspense
 }
 
 const Client = {

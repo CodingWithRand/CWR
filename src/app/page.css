@@ -196,6 +196,9 @@
         display: grid;
         grid-template-columns: 50% 50%;
     }
+
+    .credit-card h1{ @apply text-[1.25em] nmob:text-[1.5em] sm:text-[2em] }
+    .credit-card ul li{ @apply flex items-center mb-1 text-xs nmob:text-sm sm:text-base }
 }
 
 @layer utilities{
@@ -347,9 +350,6 @@ html{
     position: relative;
     z-index: 5;
 }
-
-.credit-card h1{ font-size: 2em; }
-.credit-card ul li img{ display: inline; }
 
 @keyframes circulate1{
     0%{ top: -15%; right: -15%; }

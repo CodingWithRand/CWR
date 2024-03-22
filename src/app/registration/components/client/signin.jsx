@@ -57,8 +57,8 @@ export default function SignIn() {
                 signOut(auth);
             }
         } catch (error) {
-            if (error.code === "auth/invalid-login-credentials") { debug(true); setErrMsg("Email or password is incorrect!"); }
-            else { debug(true); setErrMsg("Something went wrong, please try again later"); };
+            if (error.code === "auth/invalid-credential") { debug(true); setErrMsg("Email or password is incorrect!"); }
+            else { debug(true); setErrMsg("Something went wrong, please try again later"); console.log(error) };
         }
     };
 

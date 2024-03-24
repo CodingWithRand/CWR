@@ -61,7 +61,7 @@ function NavBar(){
                 <Client.Components.ThemeChanger />
                 {   authUser.isAuthUser ? 
                     <>
-                        <li><UserPFP /></li>
+                        <li style={{ cursor: "pointer" }} onClick={() => window.location.replace('/settings')}><UserPFP /></li>
                     </>
                     :
                     <>
@@ -105,7 +105,7 @@ function Header(){
 
 export function Intro(){
     return(
-        <Client.Components.SuspenseComponent timer={100} loadingComponent={<Neutral.Components.LoadingPage />}>
+        <Client.Components.SuspenseComponent timer={500} loadingComponent={<Neutral.Components.LoadingPage />}>
             <NavBar />
             <Header />
         </Client.Components.SuspenseComponent>

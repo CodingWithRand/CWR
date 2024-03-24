@@ -2,7 +2,10 @@
 
 @layer components{
 
-    body{ @apply bg-[#F0F0F0] dark:bg-[#0F0F0F]; }
+    body{ 
+        @apply bg-[#F0F0F0] dark:bg-[#0F0F0F]; 
+        overflow-x: hidden;
+    }
 
     #navbar{
         @apply text-black bg-[#EAEAEA] dark:text-white dark:bg-[#050505];
@@ -17,7 +20,7 @@
     }
 
     #navbar ul{
-        @apply bg-[#EAEAEA] dark:bg-[#050505] flex mx-4 p-0 top-0 flex-row h-full gap-x-4 items-center;
+        @apply bg-[#EAEAEA] dark:bg-[#050505] flex mx-2 sm:mx-4 p-0 top-0 flex-row h-full gap-x-2 sm:gap-x-4 items-center;
     }
     
 }

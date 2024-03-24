@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useGlobal } from "./global";
-import Neutral from "@/geutral/util";
 import { storage, auth } from "./firebase";
 import { getDownloadURL, ref } from "@firebase/storage";
+import Neutral from "@/geutral/util";
 import "@/gss/util.css";
 import "@/gss/theme.css";
 import "@/gss/responsive.css";
@@ -119,7 +119,7 @@ function AlertBox(props){
     }, [props.detect], 500);
 
     return (
-        <dialog id={props.id} className={`alert-box responsive ${props.themed ? "theme" : ""} container bg-color border-color`}>
+        <dialog id={props.id} className={`alert-box responsive ${props.themed ? "theme" : ""} ctn bg-color border-color`}>
             <div className="dialog-nester responsive">
                 {(() => {
                     if(props.children) return props.children;
@@ -179,7 +179,7 @@ function Section(props){
     switch(props.style){
         case "pallete":
             return( 
-                <div className={`pallete ${props.themed ? "theme" : ""} container bg-color intense`}>
+                <div className={`pallete ${props.themed ? "theme" : ""} ctn bg-color intense`}>
                     <h1 className={`setting-section-title responsive ${props.themed ? "theme" : ""} text-color`}>{props.title}</h1>
                     <p className={`setting-section-description responsive ${props.themed ? "theme" : ""} text-color`}>{props.description || ""}</p>
                     {props.children}
@@ -359,15 +359,19 @@ function SuspenseComponent(props){
     const [ onMountComponent, setOnMountComponent ] = useState(props.loadingComponent || <></>)
     useEffect(() => {
         if(props.condition){
-            setOnMountComponent(props.children);
+            setOnMountComponent(<></>);
             document.documentElement.removeAttribute("style");
         }
         else if(props.timer) setTimeout(() => {
-            setOnMountComponent(props.children || <></>)
+            console.log(props.timer)
+            setOnMountComponent(<></>)
             document.documentElement.removeAttribute("style");
         }, props.timer);
     }, [props.condition]);
-    return onMountComponent
+    return<>
+        {props.children}
+        {onMountComponent}
+    </>
 }
 
 function UserPFP(){
@@ -380,13 +384,93 @@ function UserPFP(){
             const imgUrl = await getDownloadURL(userProfileImageRef);
             setPfpImg(<img alt="user-profile-icon" src={imgUrl} className="rounded-full" width={50} height={50}/>)
         })()
-        else setImgUrl(<Client.Components.Dynamic.Image alt="programmer-profile-icon" dir="icon/" width={50} height={50} name="programmer.png" cls="rounded-full" />)
+        else setPfpImg(<Client.Components.Dynamic.Image alt="programmer-profile-icon" dir="icon/" width={50} height={50} name="programmer.png" cls="rounded-full" />)
     }, [authUser.isAuthUser])
 
     return pfpImg
 }
 
-function suspense() { document.documentElement.style.overflow = "hidden"; }
+function Media(props){
+    const { authUser } = useGlobal();
+    const [ mediaSrc, setMediaSrc ] = useState();
+    const mediaRef = useRef(null)
+    useEffect(() => {
+        if(props.firebase) (async () => {
+            const mediaSrcRef = ref(storage, `public/${props.mediaSrc}`);
+            const mediaSrcUrl = await getDownloadURL(mediaSrcRef);
+            setMediaSrc(mediaSrcUrl);
+            switch(props.mediaType){
+                case "video": mediaRef.current.load(); break;
+            }
+        })()
+    }, [authUser.isAuthUser])
+
+    switch(props.mediaType){
+        case "video": 
+            return (
+                <video
+                    ref={mediaRef} 
+                    className={props.cls || undefined} 
+                    style={props.style || undefined} 
+                    autoPlay={props.autoPlay || undefined} 
+                    muted={props.muted || undefined}
+                    loop={props.loop || undefined}
+                >
+                    <source src={mediaSrc} type="video/mp4" />
+                </video>
+            )
+        default: return <></>
+    }
+}
+
+function CWRFooter(){
+    const [ iconSize, setIconSize ] = useState(0);
+
+    useEffect(() => {
+        const handleIconSizeAlter = () => {
+            if(window.innerWidth < 400) setIconSize(12);
+            else setIconSize(20);
+        }
+        handleIconSizeAlter();
+        window.addEventListener("resize", handleIconSizeAlter);
+        return () => window.removeEventListener("resize", handleIconSizeAlter);
+    }, []);
+
+    return(
+        <footer className="footer">
+            <div className="credit-card">
+            <h1>Powered by</h1>
+            <ul>
+                <li><Image dir="icon/" name="vercel.png" constant alt="vercel-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://vercel.com" target="_blank">Vercel</a></li>
+                <li><Image dir="icon/" name="firebase-1.svg" constant alt="firebase-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://firebase.google.com" target="_blank">Firebase</a></li>
+                <li><Image dir="icon/" name="github.svg" constant alt="github-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://github.com" target="_blank">GitHub</a></li>
+                <li><Image dir="icon/" name="render.png" alt="render-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://render.com" target="_blank">Render</a></li>
+            </ul>
+            </div>
+            <div className="credit-card">
+            <h1>Created using</h1>
+            <ul>
+            <li><Image dir="icon/" name="react-2.svg" constant alt="react-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://react.dev" target="_blank">React</a></li>
+                <li><Image dir="icon/" name="nextjs-icon-background.svg" alt="next-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://nextjs.org" target="_blank">Next.js</a></li>
+                <li><Image dir="icon/" name="express.svg" alt="express-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://expressjs.com/" target="_blank">Express</a></li>
+                <li><Image dir="icon/" name="node-js.svg" constant alt="node-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://nodejs.org" target="_blank">Node.js</a></li>
+            </ul>
+            </div>
+            <div className="credit-card">
+            <h1>Medias from</h1>
+            <ul>
+                <li><Image dir="icon/" name="flaticon.png" constant alt="flaticon-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://flaticon.com" target="_blank">Flaticon</a></li>
+                <li><Image dir="icon/" name="iconduck.png" constant alt="iconduck-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://iconduck.com" target="_blank">Iconduck</a></li>
+                <li><Image dir="icon/" name="brand-freepik.svg" alt="freepik-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://freepik.com/" target="_blank">Freepik</a></li>
+                <li><Image dir="icon/" name="microsoft-designer.png" constant alt="microsoft-designer-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://designer.microsoft.com/" target="_blank">Microsoft Designer (AI Generated)</a></li>
+                <li><a href="/medias-src">View media sources list</a></li>
+            </ul>
+            </div>
+            <div className="absolute bottom-0 left-0 w-full h-full light-theme-content-article-fade pt-6 sm:pt-12 dark:h-3/4 dark:dark-theme-footer-gradient"></div>
+        </footer>
+    )
+}
+
 
 const Components = {
     Dynamic: {
@@ -399,7 +483,9 @@ const Components = {
     Switch,
     Section,
     SuspenseComponent,
-    UserPFP
+    UserPFP,
+    Media,
+    CWRFooter
 };
 
 const Hooks = {
@@ -408,7 +494,6 @@ const Hooks = {
 
 const Functions = {
     isElementInViewport,
-    suspense
 }
 
 const Client = {

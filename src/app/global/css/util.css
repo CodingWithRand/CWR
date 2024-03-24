@@ -1,3 +1,22 @@
+@tailwind components;
+
+@layer components{
+    /* Footer Component */
+
+    .footer{
+        @apply relative w-full p-4 sm:p-8 bg-[#DEDEDE] dark:bg-black dark:text-white;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .credit-card h1{ @apply text-[1.1em] nmob:text-[1.4em] sm:text-[1.7em] }
+    .credit-card ul li{ @apply flex items-center mb-1 leading-none text-[0.5em] nmob:text-[0.75em] sm:text-xs md:text-sm nmob:text-sm sm:text-base }
+    .footer .credit-card{
+        position: relative;
+        z-index: 5;
+    }
+}
+
 /* AlertBox Component */
 
 img, div, button{ user-select: none; }
@@ -115,6 +134,11 @@ img, div, button{ user-select: none; }
     column-gap: 1vw;
     justify-content: center;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: #F0F0F0;
 }
 
 .loading-dot{

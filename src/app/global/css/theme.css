@@ -76,18 +76,18 @@
         @apply bg-black dark:bg-white;
     }
 
-    div.theme.container.bg-color,
-    ul.theme.container.bg-color,
-    ol.theme.container.bg-color,
-    dialog.theme.container.bg-color
+    div.theme.ctn.bg-color,
+    ul.theme.ctn.bg-color,
+    ol.theme.ctn.bg-color,
+    dialog.theme.ctn.bg-color
     {
         @apply bg-white dark:bg-neutral-900;
     }
 
-    div.theme.container.bg-color.intense,
-    ul.theme.container.bg-color.intense,
-    ol.theme.container.bg-color.intense,
-    dialog.theme.container.bg-color.intense
+    div.theme.ctn.bg-color.intense,
+    ul.theme.ctn.bg-color.intense,
+    ol.theme.ctn.bg-color.intense,
+    dialog.theme.ctn.bg-color.intense
     {
         @apply bg-neutral-200 dark:bg-neutral-950;
     }

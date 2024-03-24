@@ -3,12 +3,13 @@ import { auth } from "@/glient/firebase";
 import { useState, useEffect } from "react";
 import { useGlobal } from "@/glient/global";
 import Client from "@/glient/util";
-import { getDownloadURL, ref } from "@firebase/storage";
-import { storage } from "@/glient/firebase";
+
+const { Dynamic } = Client.Components;
+const { Image } = Dynamic;
 
 export function Username(){
     const { authUser } = useGlobal();
-    const [ showingUsername, setShowingUsername ] = useState("erwe");
+    const [ showingUsername, setShowingUsername ] = useState();
 
     useEffect(() => {
     if(authUser.isAuthUser) {
@@ -16,7 +17,7 @@ export function Username(){
     }
     }, [authUser.isAuthUser])
 
-    return <li>{showingUsername}</li>
+    return <li className="text-sm sm:text-base">{showingUsername}</li>
 }
 
 export function SignOutBTN() {
@@ -33,6 +34,6 @@ export function SignOutBTN() {
             } catch (e) { console.error(e) }
             signOut(auth);
             window.location.replace("/registration");
-        }}>Sign Out</button>
+        }}><Image name="exit.png" dir="icon/" width={35} height={35} /></button>
     )
 }

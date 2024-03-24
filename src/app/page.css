@@ -191,14 +191,6 @@
         transform: translateY(-10%);
     }
 
-    .footer{
-        @apply relative w-full p-6 sm:p-12 bg-[#DEDEDE] dark:bg-black dark:text-white;
-        display: grid;
-        grid-template-columns: 50% 50%;
-    }
-
-    .credit-card h1{ @apply text-[1.25em] nmob:text-[1.5em] sm:text-[2em] }
-    .credit-card ul li{ @apply flex items-center mb-1 text-xs nmob:text-sm sm:text-base }
 }
 
 @layer utilities{
@@ -344,11 +336,6 @@ html{
     width: 80%;
     height: 100%;
     position: absolute;
-}
-
-.footer .credit-card{
-    position: relative;
-    z-index: 5;
 }
 
 @keyframes circulate1{

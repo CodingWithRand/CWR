@@ -7,6 +7,7 @@ import Neutral from "@/geutral/util";
 import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "@firebase/auth"
 import { useGlobal } from "@/glient/global";
 import { auth } from "@/glient/firebase";
+import { useLoadingState } from "@/glient/loading";
 
 export default function SignIn() {
 
@@ -14,6 +15,7 @@ export default function SignIn() {
     const { InputField } = Dynamic;
 
     const { login } = useGlobal();
+    const setLoadingState = useLoadingState();
 
     const userEmail = useRef("");
     const userPass = useRef("");
@@ -34,6 +36,7 @@ export default function SignIn() {
         userEmail.current = e.target.elements["email"].value;
         userName.current = e.target.elements["user"].value;
         userPass.current = e.target.elements["pass"].value;
+        setLoadingState(true);
         try {
             const userCredential = await signInWithEmailAndPassword(auth, userEmail.current, userPass.current);
             const user = userCredential.user;
@@ -60,6 +63,7 @@ export default function SignIn() {
             if (error.code === "auth/invalid-credential") { debug(true); setErrMsg("Email or password is incorrect!"); }
             else { debug(true); setErrMsg("Something went wrong, please try again later"); console.log(error) };
         }
+        setLoadingState(false);
     };
 
     function onFormUpdate(e, refValue) {

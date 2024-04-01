@@ -22,9 +22,9 @@ function syncDelay(ms) {
     };
 };
 
-function LoadingPage() {
+function LoadingPage(props) {
     return(
-        <div className="loading-bar">
+        <div className={`loading-bar ${props?.transparentBg ? "bg-[#f0f0f080]" : "bg-[#f0f0f0]"}`}>
             <div className="loading-dot" id="d1"></div>
             <div className="loading-dot" id="d2"></div>
             <div className="loading-dot" id="d3"></div>

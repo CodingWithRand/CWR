@@ -356,21 +356,21 @@ function ThemeChanger(){
 }
 
 function SuspenseComponent(props){
-    const [ onMountComponent, setOnMountComponent ] = useState(props.loadingComponent || <></>)
+    const [ onMountComponent, setOnMountComponent ] = useState(props.loadingComponent || Neutral.Components.LoadingPage);
     useEffect(() => {
         if(props.condition){
-            setOnMountComponent(<></>);
+            setOnMountComponent(null);
             document.documentElement.removeAttribute("style");
         }
         else if(props.timer) setTimeout(() => {
-            console.log(props.timer)
-            setOnMountComponent(<></>)
+            setOnMountComponent(null)
             document.documentElement.removeAttribute("style");
         }, props.timer);
     }, [props.condition]);
-    return<>
-        {props.children}
-        {onMountComponent}
+
+    return <>
+        {(onMountComponent && !props.cover) || props.children}
+        {props.cover && onMountComponent}
     </>
 }
 
@@ -471,6 +471,31 @@ function CWRFooter(){
     )
 }
 
+function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction }) {
+    const { LoadingPage } = Neutral.Components;
+    const { login, authUser } = useGlobal();
+    const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
+    useDelayedEffect(() => {
+        console.log(login.isLoggedIn, authUser.isAuthUser)
+        if(login.isLoggedIn === true && authUser.isAuthUser !== null){
+            // Considering Remove
+            // const UserAuthState = {
+            //     login: login,
+            //     authUser: authUser
+            // }
+            // const targetWebsite = [
+            //     "https://cwr-education.web.app/"
+            // ]
+            // targetWebsite.forEach((url) => window.postMessage({ type: "UserAuthState", result: JSON.stringify(UserAuthState), origin: window.location.origin }, url))
+            authenticatedAction && authenticatedAction();
+        }else{
+            unauthenticatedAction && unauthenticatedAction();
+        }
+        setShowingComponent(children);
+    }, [], 500)
+    return showingComponent
+}
+
 
 const Components = {
     Dynamic: {
@@ -485,7 +510,8 @@ const Components = {
     SuspenseComponent,
     UserPFP,
     Media,
-    CWRFooter
+    CWRFooter,
+    AuthenticateGate
 };
 
 const Hooks = {

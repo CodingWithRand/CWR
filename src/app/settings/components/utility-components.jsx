@@ -2,6 +2,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/glient/firebase";
 import { useState, useEffect } from "react";
 import { useGlobal } from "@/glient/global";
+import { useLoadingState } from "@/glient/loading";
 import Client from "@/glient/util";
 
 const { Dynamic } = Client.Components;
@@ -21,8 +22,10 @@ export function Username(){
 }
 
 export function SignOutBTN() {
+    const setLoadingState = useLoadingState();
     return (
         <button onClick={async () => {
+            setLoadingState(true);
             try {
                 const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                     method: "POST",
@@ -32,7 +35,8 @@ export function SignOutBTN() {
                 const res = await req.json();
                 console.log(res);
             } catch (e) { console.error(e) }
-            signOut(auth);
+            await signOut(auth);
+            setLoadingState(false);
             window.location.replace("/registration");
         }}><Image name="exit.png" dir="icon/" width={35} height={35} /></button>
     )

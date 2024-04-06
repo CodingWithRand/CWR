@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react"
 import { Animated, StyleSheet, Text, TouchableHighlight, Easing, View, useColorScheme, TextInput, Modal, useWindowDimensions, Alert, ActivityIndicator } from "react-native"
 import WebView from "react-native-webview"
-import { jobDelay } from "../../scripts/util"
+import { jobDelay, asyncDelay } from "../../scripts/util"
 import { TypingText } from "../util";
 import { horizontalScale, verticalScale, moderateScale } from "../../scripts/Metric"
 import auth from "@react-native-firebase/auth"
@@ -18,13 +18,42 @@ async function signInWithGoogle() {
 
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     
-        await auth().signInWithCredential(googleCredential);
+        const userCredential = await auth().signInWithCredential(googleCredential);
 
-        await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", {
+        let successfullySetClaims = false;
+        let counter = 0;
+        while(!successfullySetClaims) {
+            let fetchResponse;
+            try {
+                fetchResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                })
+                if(fetchResponse?.status === 503 || fetchResponse?.status === 502) {
+                    console.log(fetchResponse?.status)
+                    await asyncDelay(1000)
+                    if(counter === 10) break;
+                    continue
+                } else {
+                    console.log(fetchResponse?.status)
+                }
+                successfullySetClaims = true
+            } catch (error) {}
+        }
+        await userCredential.user?.getIdToken(true);
+
+        const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+            body: JSON.stringify({ uid: userCredential.user.uid, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
         })
+        const mobileAuthToken = await response.json();
+        await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ path: `util/authenticationSessions`, collectionName: userCredential.user.uid, docName: "Mobile", writeData: { authenticated: true, token: mobileAuthToken.data.token }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+        });
 
     } catch (error: any) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -75,20 +104,35 @@ async function implementMobileAuthentication(uid: string) {
         body: JSON.stringify({ uid: uid, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
     })
     const mobileAuthToken = await response.json();
-    await auth().signInWithCustomToken(mobileAuthToken.data.token);
+    const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
     await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: `util/authenticationSessions`, collectionName: uid, docName: "Mobile", writeData: { authenticated: true, token: mobileAuthToken.data.token }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+        body: JSON.stringify({ path: `util/authenticationSessions`, collectionName: userCredential.user.uid, docName: "Mobile", writeData: { authenticated: true, token: mobileAuthToken.data.token }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
     });
-    await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "password" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-    })
-    const userTokens = await auth().currentUser?.getIdTokenResult();
-    const userClaims = userTokens?.claims;
-    console.log(userClaims)
+    let successfullySetClaims = false
+    let counter = 0;
+    while(!successfullySetClaims) {
+        let fetchResponse;
+        try {
+            fetchResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "password" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+            })
+            if(fetchResponse?.status === 503 || fetchResponse?.status === 502) {
+                console.log(fetchResponse?.status)
+                await asyncDelay(1000)
+                if(counter === 10) break
+                continue
+            } else {
+                console.log(fetchResponse?.status)
+            }
+            
+            successfullySetClaims = true
+        } catch (error) {}
+    }
+    await userCredential.user?.getIdToken(true);
 }
 
 export default function RegistrationPage({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "Registration"> }) {
@@ -99,6 +143,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     const webviewState = useState<boolean>(false);
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ injectJS, setInjectJS ] = useState<string>();
+    const [ cwrRegistrationType, setCWRRegistrationType ] = useState<string>("");
     const inputUsername = useRef<string>();
     const registrationBtnsFadingAnim = new Animated.Value(0);
     const registrationPageTitle = new Animated.Value(0);
@@ -131,14 +176,8 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
         function checkUsernameInputBox(){
             const interval = setInterval(() => {
                 const usernameInput = document.querySelector("[name='username']");
-                const regBox = document.querySelector(".reg-wrapper");
-                const logIn = document.getElementById("login")
-                const regMode = document.getElementById("registration-mode");
-                if(usernameInput && regBox && logIn && regMode){
+                if(usernameInput){
                     clearInterval(interval);
-                    logIn.style.opacity = 0;
-                    regMode.innerHTML = "Already have an account? Login now!"
-                    regBox.style.transform = "translateX(-50%)";
                     usernameInput.value = "${username}";
                 }
             }, 100)
@@ -164,15 +203,13 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     const MainComponent = useMemo(() => (
         <View style={[styles.fullPageCenter, { flex: 1 }]}>
             <Animated.View style={{ width: (width > height ? horizontalScale(100, width) : horizontalScale(250, width)), height: (width > height ? height/2 : verticalScale(260, height)), display: "flex", flexDirection: "column", alignItems: "center", rowGap: 20, justifyContent: "center", transform: [{ translateY: logoTransformingAnim.translateY }, { scale: logoTransformingAnim.scale }] }}>
-            {/* <a href="https://www.flaticon.com/free-icons/essay" title="essay icons">Essay icons created by RIkas Dzihab - Flaticon</a> */}
+            {/* <a href="https://www.flaticon.com/free-icons/planing" title="planing icons">Planing icons created by iconixar - Flaticon</a> */}
             <Animated.Image
-                source={isDark ? require('../../imgs/dark-write.png') : require('../../imgs/light-write.png')}
+                source={isDark ? require('../../imgs/dark-content-management.png') : require('../../imgs/light-content-management.png')}
                 style={{ width: "100%", height: "100%", opacity: logoFadingAnim }}
             />
             <Animated.Text style={{ lineHeight: (width > height ? verticalScale(60, height) : verticalScale(45, height)), textAlignVertical: "center", fontSize: (width > height ? moderateScale(20, width) : moderateScale(40, width)), opacity: appNameFadingAnim}}>
-                V
-                <TypingText text="ersatile" delay={100} initialDelay={1500}/>
-                &nbsp;Note
+                <TypingText text="Plan Reminder" delay={100} initialDelay={1500}/>
             </Animated.Text>
             </Animated.View>
             <View style={[styles.containerBox, { width: "100%", height: verticalScale(height/(width > height ? 0.65 : 1.35), height), position: "absolute", bottom: 0, rowGap: verticalScale(width > height ? 45 : 75, height) }]}>
@@ -185,7 +222,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         style={{ width: horizontalScale(200, width), height: verticalScale(width > height ? 100 : 50, height) }}
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
-                        onPress={async () => { await signInWithGoogle(); if(auth().currentUser) navigation.replace("NoteDashboard") }}
+                        onPress={async () => { await signInWithGoogle(); if(auth().currentUser) navigation.replace("Dashboard") }}
                     />
                 </Animated.View> 
             </View>
@@ -247,7 +284,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                     useNativeDriver: true,
                 }).start()
             }, 1000)
-            if(auth().currentUser) await jobDelay(() => navigation.replace("NoteDashboard"), 3000)
+            if(auth().currentUser) await jobDelay(() => navigation.replace("Dashboard"), 3000)
             if(width > height) await jobDelay(() => {
                 Animated.timing(appNameFadingAnim, {
                     toValue: 0,
@@ -321,8 +358,10 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                                         };
                                     };
                                     setInjectJS(loginFocusJS(inputUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true })));
+                                    setCWRRegistrationType("login")
                                 } else {
                                     setInjectJS(registrationFocusJS(inputUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true, newClient: true })));
+                                    setCWRRegistrationType("register")
                                 }   
                                 setProvider("cwr");
                                 webviewState[1](true);
@@ -342,7 +381,14 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                     <ActivityIndicator size="large" style={{ position: "absolute" }} />
                 </View>
             </Modal>
-            <ProviderWebView interactingUser={inputUsername.current || ""} type={providerType} webviewState={webviewState} injectedJavaScript={injectJS} navigation={navigation}/>
+            <ProviderWebView 
+                interactingUser={inputUsername.current || ""}
+                type={providerType}
+                webviewState={webviewState}
+                injectedJavaScript={injectJS}
+                navigation={navigation}
+                cwrRegistrationType={cwrRegistrationType}
+            />
         </View>
     )
 }
@@ -352,9 +398,10 @@ type ProviderWebViewProps = {
     type: string, 
     webviewState: [ boolean, React.Dispatch<React.SetStateAction<boolean>> ], 
     injectedJavaScript?: string,
-    navigation: NativeStackNavigationProp<RouteStackParamList, "Registration">
+    navigation: NativeStackNavigationProp<RouteStackParamList, "Registration">,
+    cwrRegistrationType: string
 }
-function ProviderWebView({ interactingUser, type, webviewState, injectedJavaScript, navigation }: ProviderWebViewProps) {
+function ProviderWebView({ interactingUser, type, webviewState, injectedJavaScript, navigation, cwrRegistrationType }: ProviderWebViewProps) {
     const { width, height } = useWindowDimensions()
     const [ webviewShow, setWebviewShow ] = webviewState;
     if(type === "cwr")
@@ -365,7 +412,7 @@ function ProviderWebView({ interactingUser, type, webviewState, injectedJavaScri
                         javaScriptEnabled={true}
                         domStorageEnabled={true}
                         startInLoadingState={true}
-                        source={{ uri: 'https://codingwithrand.vercel.app/registration' }}
+                        source={{ uri: `https://codingwithrand.vercel.app/registration?page=${cwrRegistrationType}` }}
                         injectedJavaScript={injectedJavaScript}
                         onMessage={async (e) => { 
                             const postedData = JSON.parse(e.nativeEvent.data);
@@ -374,7 +421,7 @@ function ProviderWebView({ interactingUser, type, webviewState, injectedJavaScri
                                 if(postedData.newClient) Alert.alert("We have sent you a verification email for your account, please don't forget to check your inbox!")
                                 const currentUserId = await verifyUsername(interactingUser);
                                 await implementMobileAuthentication(currentUserId);
-                                navigation.replace("NoteDashboard")
+                                navigation.replace("Dashboard");
                             }
                         }}
                         style={{ flex: 1 }}

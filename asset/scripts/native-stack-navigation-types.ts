@@ -1,5 +1,5 @@
 export type RouteStackParamList = {
     Credit: undefined,
     Registration: undefined,
-    NoteDashboard: undefined
+    Dashboard: undefined
 }

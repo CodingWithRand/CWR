@@ -3,45 +3,44 @@
 ## Requirement
 - You must have experienced in web app development, and roughly know how the web work.
 - You must have a brief knowledge about how an API work, network, CORS, HTTP, HTTP status code, SSH, and CRUD concept.
+- You must have a brief knowledge about the React lifecycle, and hooks implementation.
+- You must know how to design an optimal database structure.
+- You must have a creativity to design the user interface that will enhance user experiences.
 - These are the brief list of the technologies and computer languages we'll be using to develop the app. So you better study it (*briefly*)
-> 1. HTML (Referring to JSX / TSX for the most)
-> 2. CSS
-> 3. JavaScript
-> 4. TypeScript
-> 5. JSON
 
-(*The first five on the list, you can search and learn by yourself [here](https://www.w3schools.com/)*)
+### Core Structure
+> 1. [Node.js](https://nodejs.org/dist/v20.11.1/node-v20.11.1-x64.msi)
+> 2. [React.js](https://react.dev/learn)
+> 3. [React Native](https://reactnative.dev/docs/next/getting-started)
+> 4. [Android Native](https://developer.android.com/) for native module. Most likely sticks with its *[API](https://developer.android.com/reference)*.
+> 5. [Firebase](https://firebase.google.com/docs/) for Authentication and Database systems.
 
-> 6. [Node.js](https://nodejs.org/dist/v20.11.1/node-v20.11.1-x64.msi)
-> 7. [Git](https://git-scm.com/download/win) & GitHub: Learn more about git commmands [here](https://www.w3schools.com/git/)
-> 8. Web hosting service (We use [Vercel](https://vercel.com/) & [Render](https://render.com/))
-> 9. Simple terminal commands (Bash)
-> 10. [React.js](https://react.dev/learn)
-> 11. [React Native](https://reactnative.dev/docs/next/getting-started)
-> 12. [Express.js](https://expressjs.com/)
-> 13. Environment Variable
-> 14. [Firebase](https://firebase.google.com/docs/)
+### Computer Languages
+(*You can search and learn by yourself [here](https://www.w3schools.com/)*)
+> 1. JavaScript & TypeScript - *to write on React Native and React code.*
+> 2. XML - *XML is required to write configuration in AndroidManifest. Beside that, it includes to JSX / TSX*
+> 3. CSS - *We use CSS in JS in React Native. It's used to style the page*
+> 4. JSON - *Use for altering the project configurations*
+> 5. Java - *Its fundamental is required for writting native module*
+> 6. [Groovy](https://www.tutorialspoint.com/gradle/index.htm) - *It is required to import Java package to the application, which is written in `.gradle` files*
+> 7. Bash - *The commands that are associated to the projects are required. Mostly are npm or adb commands*
+
+### Additional Technologies & Libraries
+> 1. [Git](https://git-scm.com/download/win) & [GitHub](https://github.com): Learn more about git commmands [here](https://www.w3schools.com/git/)
+> 2. Web hosting service (In this project, we use [Render](https://render.com/)) for publishing API server to request some data from firebase. 
+> 3. [Express.js](https://expressjs.com/) - it is used to create the API server as I mentioned in the previous one.
+> 4. Environment Variable - it is used to store secrets
 
 ## Manual
 
-You must have read [README.md](./README.md) and the [Setup Documentation]("https://reactnative.dev/docs/environment-setup") before this. If you haven't, please go read it first.
+You must have read [README.md](./README.md) and the [Setup Documentation](https://reactnative.dev/docs/environment-setup) before this. If you haven't, please go read it first.
 
 After knowing roughly how to configure and run test on the app. Here's something you must know.
 
-- We're mainly developing an __ANDROID__ mobile application.
+- We're mainly developing an __ANDROID__ mobile application, through an emulator.
 - Make sure you have enough free storage (At least 25 GB)
-- This app requires Java 17, so go install it [here]("https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html")
-- If you're facing the error like this
-
-    ```bash
-    error Failed to install the app. 
-    Command failed with exit code 1: gradlew.bat app:installDebug -PreactNativeDevServerPort=8081 
-    FAILURE: Build failed with an exception. 
-    * What went wrong: Execution failed for task ':gradle-plugin:compileKotlin'. 
-    > A failure occurred while executing org.jetbrains.kotlin.compilerRunner. GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction 
-    > Could not delete 'C:\Programming Projects\GitHub Repositories\vnote\node_modules\@react-native\gradle-plugin\build\kotlin\compileKotlin\cacheable\caches-jvm' * 
-    ```
-    You may try running `npm run android` again
+- This app requires Java 17, so go install it [here](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- In some cases, you may need `adb` to debug or to retrieve the secret information. So, I recommend you to take a look on it [here](https://developer.android.com/tools/adb), and follow this [guide](https://www.howtogeek.com/125769/how-to-install-and-use-abd-the-android-debug-bridge-utility/) to install it properly.
 - Following these metadata to install an android emulator in [__Android Studio__](https://developer.android.com/studio) for unit test
 
     <table>

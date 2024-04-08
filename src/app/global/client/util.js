@@ -476,17 +476,16 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
     const { login, authUser } = useGlobal();
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
     useDelayedEffect(() => {
-        console.log(login.isLoggedIn, authUser.isAuthUser)
         if(login.isLoggedIn === true && authUser.isAuthUser !== null){
             // Considering Remove
             // const UserAuthState = {
             //     login: login,
             //     authUser: authUser
             // }
-            // const targetWebsite = [
-            //     "https://cwr-education.web.app/"
-            // ]
-            // targetWebsite.forEach((url) => window.postMessage({ type: "UserAuthState", result: JSON.stringify(UserAuthState), origin: window.location.origin }, url))
+            const targetWebsite = [
+                "https://cwr-education.web.app/"
+            ]
+            targetWebsite.forEach((url) => window.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url))
             authenticatedAction && authenticatedAction();
         }else{
             unauthenticatedAction && unauthenticatedAction();

@@ -37,9 +37,6 @@ export default function SignUp() {
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
 
-        console.log(process.env);
-        for(const v of Object.keys(process.env)) console.log(v);
-
         const response = await fetch("http://localhost:3000/post/provider/cwr/firestore/read", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },

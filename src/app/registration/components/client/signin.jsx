@@ -45,10 +45,16 @@ export default function SignIn() {
                 login.logIn(true);
                 const userAuthenticatedToken = await userCredential.user.getIdTokenResult()
                 try {
+                    const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                    });
+                    const registryData = await registryDataResponse.json();
                     const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: { authenticated: true, token: userAuthenticatedToken.token }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: true, token: userAuthenticatedToken.token, at: Date() }, token: userAuthenticatedToken.token }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                     })
                     const res = await req.json()
                     console.log(res)

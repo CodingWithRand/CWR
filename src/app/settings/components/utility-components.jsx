@@ -27,10 +27,16 @@ export function SignOutBTN() {
         <button onClick={async () => {
             setLoadingState(true);
             try {
+                const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                });
+                const registryData = await registryDataResponse.json();
                 const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: false, token: null, at: undefined } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                 });
                 const res = await req.json();
                 console.log(res);

@@ -31,8 +31,6 @@ export default function SignIn() {
     })
     const [errMsg, setErrMsg] = useState("");
 
-    const parentOrigin = useRef();
-
     async function initiateSignInProgress(e) {
         e.preventDefault();
         userEmail.current = e.target.elements["email"].value;
@@ -78,12 +76,6 @@ export default function SignIn() {
         e.preventDefault();
         refValue.current = e.target.value;
     };
-
-    useEffect(() => {
-        const handleIncomingMesssage = (e) => parentOrigin.current = e.origin;
-        window.addEventListener('message', handleIncomingMesssage);
-        return () => window.removeEventListener('message', handleIncomingMesssage);
-    }, [])
 
     return (
         <>

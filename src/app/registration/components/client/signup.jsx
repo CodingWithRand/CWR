@@ -13,7 +13,7 @@ export default function SignUp() {
     const { Switch, AlertBox, Dynamic } = Client.Components;
     const { InputField, InputGroupField } = Dynamic;
 
-    const setLoadingState = useLoadingState();
+    // const setLoadingState = useLoadingState();
     const [userEmail, setUserEmail] = useState("");
     const [userPass, setUserPass] = useState("");
     const [userName, setUserName] = useState("");
@@ -26,8 +26,6 @@ export default function SignUp() {
     const [emailSent, setEmailSent] = useState(false);
     const [errMsg, setErrMsg] = useState("");
 
-    const parentOrigin = useRef();
-
     useEffect(() => {
         if (userEmail !== "" && userPass !== "" && userName !== "" && passConfirmed) validate(false);
         else validate(true);
@@ -37,7 +35,7 @@ export default function SignUp() {
         setUserEmail(e.target.elements["e-mail"].value);
         setUserName(e.target.elements["username"].value);
         setUserPass(e.target.elements["password"].value);
-        setLoadingState(true);
+        // setLoadingState(true);
 
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
@@ -50,7 +48,7 @@ export default function SignUp() {
         const total_username_list = await response.json()
         if (total_username_list.docData[userName]) {
             setSUS(true); setErrMsg("This username has been taken");
-            setLoadingState(false)
+            // setLoadingState(false)
             return;
         }
 
@@ -90,14 +88,8 @@ export default function SignUp() {
                     break;
             }
         }
-        setLoadingState(false)
+        // setLoadingState(false)
     }
-
-    useEffect(() => {
-        const handleIncomingMesssage = (e) => parentOrigin.current = (e.origin);
-        window.addEventListener('message', handleIncomingMesssage);
-        return () => window.removeEventListener('message', handleIncomingMesssage);
-    }, [])
 
     return (
         <>

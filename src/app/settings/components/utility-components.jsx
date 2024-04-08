@@ -1,6 +1,6 @@
 import { signOut } from "firebase/auth";
 import { auth } from "@/glient/firebase";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useGlobal } from "@/glient/global";
 import { useLoadingState } from "@/glient/loading";
 import Client from "@/glient/util";
@@ -23,14 +23,7 @@ export function Username(){
 
 export function SignOutBTN() {
     const setLoadingState = useLoadingState();
-    const parentOrigin = useRef();
-
-    useEffect(() => {
-        const handleIncomingMesssage = (e) => parentOrigin.current = (e.origin);
-        window.addEventListener('message', handleIncomingMesssage);
-        return () => window.removeEventListener('message', handleIncomingMesssage);
-    }, [])
-
+    
     return (
         <button onClick={async () => {
             setLoadingState(true);

@@ -15,6 +15,8 @@ server.use("/post/provider/cwr/*", cors({
 server.use(bodyParser.json())
 
 server.use("/post/provider/cwr/*", (req, res, next) => {
+    console.log(req.body.adminKey, process.env.FIREBASE_PERSONAL_ADMIN_KEY);
+    console.log(typeof req.body.adminKey, typeof process.env.FIREBASE_PERSONAL_ADMIN_KEY);
     if(req.method === "POST" && req.body.adminKey === process.env.FIREBASE_PERSONAL_ADMIN_KEY) next();
     else response.unauthorized(res, "Invalid admin key");
 })

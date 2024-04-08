@@ -35,8 +35,8 @@ export function SignOutBTN() {
                 });
                 const res = await req.json();
                 console.log(res);
-                await Neutral.Functions.asyncDelay(5000);
-            } catch (e) { console.error(e); await Neutral.Functions.asyncDelay(5000); }
+            } catch (e) { console.error(e); }
+            Neutral.Functions.asyncDelay(5000);
             await signOut(auth);
             setLoadingState(false);
             window.location.replace("/registration");

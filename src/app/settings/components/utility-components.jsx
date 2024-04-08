@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useGlobal } from "@/glient/global";
 import { useLoadingState } from "@/glient/loading";
 import Client from "@/glient/util";
+import Neutral from "@/geutral/util";
 
 const { Dynamic } = Client.Components;
 const { Image } = Dynamic;
@@ -34,6 +35,7 @@ export function SignOutBTN() {
                 });
                 const res = await req.json();
                 console.log(res);
+                await Neutral.Functions.asyncDelay(5000);
             } catch (e) { console.error(e) }
             await signOut(auth);
             setLoadingState(false);

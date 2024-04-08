@@ -52,6 +52,7 @@ export default function SignIn() {
                     })
                     const res = await req.json()
                     console.log(res)
+                    await Neutral.Functions.asyncDelay(5000);
                 } catch (e) { console.error(e) }
                 window.location.replace("/");
             } else {

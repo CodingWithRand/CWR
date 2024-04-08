@@ -16,14 +16,14 @@ export default function EmailVerifificationPage() {
     const { login } = useGlobal();
 
     Client.Hooks.useDelayedEffect(() => {
-        // if(login.isLoggedIn && auth.currentUser?.emailVerified) window.location.replace("/");
+        if(login.isLoggedIn && auth.currentUser?.emailVerified) window.location.replace("/");
     }, [login.isLoggedIn, auth.currentUser?.emailVerified], 100);
 
     Client.Hooks.useDelayedEffect(() => {
         const user = auth.currentUser;
         const intervalId = setInterval(() => {
             if(!user) return;
-            // if(user.emailVerified) window.location.replace("/")
+            if(user.emailVerified) window.location.replace("/")
             else reload(user).then(() => console.log('Reloaded')).catch((error) => console.error('Error while try to fetch data from database:', error));
         }, 1000);
         return () => clearInterval(intervalId);

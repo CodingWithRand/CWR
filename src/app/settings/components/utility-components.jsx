@@ -28,7 +28,7 @@ export function SignOutBTN() {
         <button onClick={async () => {
             setLoadingState(true);
             try {
-                const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                const req = await fetch("http://localhost:3000/post/provider/cwr/firestore/update", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: { authenticated: false, token: null }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
@@ -36,7 +36,6 @@ export function SignOutBTN() {
                 const res = await req.json();
                 console.log(res);
             } catch (e) { console.error(e); }
-            await Neutral.Functions.asyncDelay(5000);
             await signOut(auth);
             setLoadingState(false);
             window.location.replace("/registration");

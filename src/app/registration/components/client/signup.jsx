@@ -37,7 +37,7 @@ export default function SignUp() {
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
 
-        const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
+        const response = await fetch("http://localhost:3000/post/provider/cwr/firestore/read", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })

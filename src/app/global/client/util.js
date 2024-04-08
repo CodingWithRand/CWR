@@ -476,7 +476,7 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
     const { login, authUser } = useGlobal();
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
     useDelayedEffect(() => {
-        if(login.isLoggedIn === true && authUser.isAuthUser !== null){
+        if(login.isLoggedIn === true && authUser.isAuthUser !== null && authUser.isAuthUser.emailVerified){
             // Considering Remove
             // const UserAuthState = {
             //     login: login,

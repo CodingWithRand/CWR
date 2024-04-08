@@ -44,7 +44,7 @@ export function SignOutBTN() {
                 const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData.docData, [window === window.parent ? window.location.origin : parentOrigin.current]: { authenticated: false, token: null, at: undefined } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: false, token: null, at: null } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                 });
                 const res = await req.json();
                 console.log(res);

@@ -4,6 +4,7 @@ import "./client.css"
 import { useState, useEffect, useRef } from "react";
 import { auth } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
+import { useLoadingState } from "@/glient/loading";
 import Client from "@/glient/util";
 import Neutral from"@/geutral/util";
 import EmailVerifificationPage from "./email-verification";
@@ -12,6 +13,7 @@ export default function SignUp() {
     const { Switch, AlertBox, Dynamic } = Client.Components;
     const { InputField, InputGroupField } = Dynamic;
 
+    const setLoadingState = useLoadingState();
     const [userEmail, setUserEmail] = useState("");
     const [userPass, setUserPass] = useState("");
     const [userName, setUserName] = useState("");
@@ -35,6 +37,7 @@ export default function SignUp() {
         setUserEmail(e.target.elements["e-mail"].value);
         setUserName(e.target.elements["username"].value);
         setUserPass(e.target.elements["password"].value);
+        setLoadingState(true);
 
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
@@ -47,6 +50,7 @@ export default function SignUp() {
         const total_username_list = await response.json()
         if (total_username_list.docData[userName]) {
             setSUS(true); setErrMsg("This username has been taken");
+            setLoadingState(false)
             return;
         }
 
@@ -69,7 +73,7 @@ export default function SignUp() {
             fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData.docData, [window === window.parent ? window.location.origin : parentOrigin.current]: { authenticated: true, token: userAuthenticatedToken.token, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData.docData, [window.location.origin]: { authenticated: true, token: userAuthenticatedToken.token, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
             }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
         } catch (error) {
             const errorCode = error.code;
@@ -86,6 +90,7 @@ export default function SignUp() {
                     break;
             }
         }
+        setLoadingState(false)
     }
 
     useEffect(() => {

@@ -1,7 +1,7 @@
 "use client"
 
 import "./client.css"
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Client from "@/glient/util";
 import Neutral from "@/geutral/util";
 import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "@firebase/auth"

@@ -483,7 +483,7 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
             //     authUser: authUser
             // }
             const targetWebsite = [
-                "https://cwr-education.web.app/"
+                "https://cwr-education.web.app/",
             ]
             targetWebsite.forEach((url) => window.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url))
             authenticatedAction && authenticatedAction();
@@ -491,7 +491,7 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
             unauthenticatedAction && unauthenticatedAction();
         }
         setShowingComponent(children);
-    }, [], 500)
+    }, [login.isLoggedIn, authUser.isAuthUser], 500)
     return showingComponent
 }
 

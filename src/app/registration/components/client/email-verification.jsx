@@ -17,7 +17,7 @@ export default function EmailVerifificationPage() {
 
     Client.Hooks.useDelayedEffect(() => {
         if(login.isLoggedIn && auth.currentUser?.emailVerified) window.location.replace("/");
-    }, [login.isLoggedIn, auth.currentUser?.emailVerified], 100);
+    }, [login.isLoggedIn, auth.currentUser?.emailVerified], 1000);
 
     Client.Hooks.useDelayedEffect(() => {
         const user = auth.currentUser;

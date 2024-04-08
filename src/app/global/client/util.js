@@ -485,7 +485,8 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
             const targetWebsite = [
                 "https://cwr-education.web.app/",
             ]
-            targetWebsite.forEach((url) => window.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url))
+            console.log(window.parent, window.parent.origin, window.origin)
+            targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url))
             authenticatedAction && authenticatedAction();
         }else{
             unauthenticatedAction && unauthenticatedAction();

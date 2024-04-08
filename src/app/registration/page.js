@@ -11,7 +11,7 @@ import Loading from "@/glient/loading";
 export default function RegistrationPage() {
     const { AuthenticateGate } = Client.Components; 
     return (
-        <AuthenticateGate > {/** authenticatedAction={() => window.location.replace("/")} */}
+        <AuthenticateGate> {/** authenticatedAction={() => window.location.replace("/")} */}
             <Loading cover>
                 <main>
                     <Script src="/vanilla-js/frontend/registration.js"/>

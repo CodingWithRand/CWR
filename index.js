@@ -9,14 +9,12 @@ const { userExist, getUserInfo } = require("./api/roblox/main");
 const { crud, verifyToken, createCustomToken, setCustomUserClaims } = require("./api/provider/main");
 
 server.use("/post/provider/cwr/*", cors({
-    origin: "https://codingwithrand.vercel.app"
+    origin: ["https://codingwithrand.vercel.app", "https://cwr-education.web.app/"]
 }))
 
 server.use(bodyParser.json())
 
 server.use("/post/provider/cwr/*", (req, res, next) => {
-    console.log(req.body.adminKey, process.env.FIREBASE_PERSONAL_ADMIN_KEY);
-    console.log(typeof req.body.adminKey, typeof process.env.FIREBASE_PERSONAL_ADMIN_KEY);
     if(req.method === "POST" && req.body.adminKey === process.env.FIREBASE_PERSONAL_ADMIN_KEY) next();
     else response.unauthorized(res, "Invalid admin key");
 })

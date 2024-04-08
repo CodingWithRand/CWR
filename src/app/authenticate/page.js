@@ -28,11 +28,12 @@ export default function AuthenticateActionHandler() {
                     try {
                         await applyActionCode(auth, oobCode);
                         setAMT("Successfully verify your email!");
-                        await Neutral.Functions.asyncDelay(1000)
+                        await Neutral.Functions.asyncDelay(5000)
                         window.location.replace("/");
-                    } catch { 
+                    } catch(e) { 
                         setAMT("Fail to verify your email!")
-                        await Neutral.Functions.asyncDelay(1000)
+                        console.log(e)
+                        await Neutral.Functions.asyncDelay(5000)
                         window.location.replace("/");
                     }
                     break;

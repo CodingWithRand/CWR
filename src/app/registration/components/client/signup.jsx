@@ -1,7 +1,7 @@
 "use client"
 
 import "./client.css"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { auth } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
 import Client from "@/glient/util";
@@ -23,6 +23,8 @@ export default function SignUp() {
     const [signUpSuccess, setSUS] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
     const [errMsg, setErrMsg] = useState("");
+
+    const parentOrigin = useRef();
 
     useEffect(() => {
         if (userEmail !== "" && userPass !== "" && userName !== "" && passConfirmed) validate(false);
@@ -67,7 +69,7 @@ export default function SignUp() {
             fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData.docData, [window.location.origin]: { authenticated: true, token: userAuthenticatedToken.token, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData.docData, [window === window.parent ? window.location.origin : parentOrigin.current]: { authenticated: true, token: userAuthenticatedToken.token, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
             }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
         } catch (error) {
             const errorCode = error.code;
@@ -85,6 +87,12 @@ export default function SignUp() {
             }
         }
     }
+
+    useEffect(() => {
+        const handleIncomingMesssage = (e) => parentOrigin.current = (e.origin);
+        window.addEventListener('message', handleIncomingMesssage);
+        return () => window.removeEventListener('message', handleIncomingMesssage);
+    }, [])
 
     return (
         <>

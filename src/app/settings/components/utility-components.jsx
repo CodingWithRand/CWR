@@ -1,6 +1,6 @@
 import { signOut } from "firebase/auth";
 import { auth } from "@/glient/firebase";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useGlobal } from "@/glient/global";
 import { useLoadingState } from "@/glient/loading";
 import Client from "@/glient/util";
@@ -23,6 +23,14 @@ export function Username(){
 
 export function SignOutBTN() {
     const setLoadingState = useLoadingState();
+    const parentOrigin = useRef();
+
+    useEffect(() => {
+        const handleIncomingMesssage = (e) => parentOrigin.current = (e.origin);
+        window.addEventListener('message', handleIncomingMesssage);
+        return () => window.removeEventListener('message', handleIncomingMesssage);
+    }, [])
+
     return (
         <button onClick={async () => {
             setLoadingState(true);
@@ -30,13 +38,13 @@ export function SignOutBTN() {
                 const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                 });
                 const registryData = await registryDataResponse.json();
                 const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: false, token: null, at: undefined } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData.docData, [window === window.parent ? window.location.origin : parentOrigin.current]: { authenticated: false, token: null, at: undefined } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                 });
                 const res = await req.json();
                 console.log(res);

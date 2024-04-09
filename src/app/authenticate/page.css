@@ -1,7 +1,9 @@
 .authentication-action{
-    position: relative;
+    position: absolute;
     bottom: 40%;
+    width: 100%;
     text-align: center;
+    z-index: 10000;
 }
 
 /* Client Component */

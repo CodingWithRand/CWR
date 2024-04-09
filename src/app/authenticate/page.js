@@ -28,12 +28,9 @@ export default function AuthenticateActionHandler() {
                     try {
                         await applyActionCode(auth, oobCode);
                         setAMT("Successfully verify your email!");
-                        await Neutral.Functions.asyncDelay(5000)
                         window.location.replace("/");
                     } catch(e) { 
-                        setAMT("Fail to verify your email!")
-                        console.log(e)
-                        await Neutral.Functions.asyncDelay(5000)
+                        setAMT("Fail to verify your email!");
                         window.location.replace("/");
                     }
                     break;
@@ -126,7 +123,7 @@ export default function AuthenticateActionHandler() {
     return(
         <>
             <LoadingPage />
-            <div className="authentication-action">{authicateMethodText}</div>
+            <div className="authentication-action text-sm sm:text-base">{authicateMethodText}</div>
             {authenticationAlertBox}
         </>
     )

@@ -483,7 +483,7 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
             //     authUser: authUser
             // }
             const targetWebsite = [
-                "https://cwr-education.web.app/",
+                "https://cwr-education.vercel.app/",
             ]
             targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url))
             authenticatedAction && authenticatedAction();

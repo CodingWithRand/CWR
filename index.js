@@ -9,7 +9,7 @@ const { userExist, getUserInfo } = require("./api/roblox/main");
 const { crud, verifyToken, createCustomToken, setCustomUserClaims } = require("./api/provider/main");
 
 server.use("/post/provider/cwr/*", cors({
-    origin: ["https://codingwithrand.vercel.app", "https://cwr-education.web.app"]
+    origin: ["https://codingwithrand.vercel.app", "https://cwr-education.vercel.app"]
 }));
 
 server.use(bodyParser.json())

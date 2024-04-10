@@ -40,9 +40,10 @@ export default function Greet(){
         "I am the owner of this place, you may call me \"Rand\"", 
         "I'm really glad you visit my place",
         "Although, I don't know your name yet. I'm going to introduce you this place a bit...",
-        "This place contains all of my programming projects. It's pretty much like a portfolio website.",
-        "Of course, these projects are open-source. You can fork my codes in GitHub and learn them for free if you want. But not only just my programming projects are here, there are also some programming related lessons that I've created by myself.",
+        "This place contains all of my programming lessons. It's pretty much like a programming institution website.",
+        "The lessons begin with the basic programming concepts and related technology, and then move to more advanced ones.",
         "Those lessons I've created will be uploaded on YouTube which I'd explain furthermore how they work...",
+        "I've designed this website to look like a journal game, I hope you'll like it.",
         "All right, I know it's lame to read this animationed text. I'm bringing you to the next session now."
     ]
     const [ greetMsgSize, setGreetMsgSize ] = useState("");
@@ -108,10 +109,11 @@ export default function Greet(){
             await Functions.jobDelay(() => { setGreetMsgSize("large"); typeWriting(orderedGreetMsg[2], 1000) }, (total_msg_time_taken(orderedGreetMsg[1], 2000)));
             await Functions.jobDelay(() => { setGreetMsgSize("medium"); typeWriting(orderedGreetMsg[3], 3000) }, (total_msg_time_taken(orderedGreetMsg[2], 1000)));
             await Functions.jobDelay(() => typeWriting(orderedGreetMsg[4], 3500), (total_msg_time_taken(orderedGreetMsg[3], 3000)));
-            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[5], 6000), (total_msg_time_taken(orderedGreetMsg[4], 3500)));
-            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[6], 3000), (total_msg_time_taken(orderedGreetMsg[5], 6000)));
+            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[5], 4500), (total_msg_time_taken(orderedGreetMsg[4], 3500)));
+            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[6], 3000), (total_msg_time_taken(orderedGreetMsg[5], 4500)));
             await Functions.jobDelay(() => typeWriting(orderedGreetMsg[7], 2000), (total_msg_time_taken(orderedGreetMsg[6], 3000)));
-            await Functions.jobDelay(() => document.getElementById("b-b").classList.add("active"), (total_msg_time_taken(orderedGreetMsg[7], 2000)));
+            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[8], 2500), (total_msg_time_taken(orderedGreetMsg[7], 2000)));
+            await Functions.jobDelay(() => document.getElementById("b-b").classList.add("active"), (total_msg_time_taken(orderedGreetMsg[8], 2500)));
             await Functions.jobDelay(() => navigator("/registration"), 11111);
         };
         async function effectShow () {

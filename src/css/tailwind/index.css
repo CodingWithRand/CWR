@@ -5,7 +5,7 @@
 @layer base{
     html, body, #root { @apply w-screen h-screen }
     .page-container{ 
-      @apply flex flex-col items-center w-screen h-screen;
+      @apply flex flex-col relative items-center w-screen h-screen;
     }
     body {
         margin: 0;

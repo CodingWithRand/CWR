@@ -1,0 +1,11 @@
+{
+    "git": {
+      "deploymentEnabled":{
+        "main": false,
+        "planreminder": false,
+        "api": false,
+        "general-education": true,
+        "index": false
+      }
+    }
+}

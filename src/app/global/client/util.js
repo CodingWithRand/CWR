@@ -477,15 +477,6 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
     useDelayedEffect(() => {
         if(login.isLoggedIn === true && authUser.isAuthUser !== null && authUser.isAuthUser.emailVerified){
-            // Considering Remove
-            // const UserAuthState = {
-            //     login: login,
-            //     authUser: authUser
-            // }
-            const targetWebsite = [
-                "https://cwr-education.vercel.app/",
-            ]
-            targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url))
             authenticatedAction && authenticatedAction();
         }else{
             unauthenticatedAction && unauthenticatedAction();

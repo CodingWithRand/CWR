@@ -12,7 +12,16 @@ import { useMemo } from "react";
 export default function RegistrationPage() {
     const { AuthenticateGate } = Client.Components; 
     return (
-        <AuthenticateGate authenticatedAction={() => window.location.replace("/")}>
+        <AuthenticateGate authenticatedAction={() => {
+                const targetWebsite = [
+                    "https://cwr-education.vercel.app/",
+                ];
+                window.addEventListener("message", (event) => {
+                    if(targetWebsite.some(url => event.origin === url)) indexedDB.deleteDatabase("firebaseLocalStorageDb");
+                });
+                targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
+                window.location.replace("/");
+            }}>
             <Loading cover>
                 {
                     useMemo(() => (

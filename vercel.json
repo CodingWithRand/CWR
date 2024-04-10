@@ -2,7 +2,7 @@
     "git": {
       "deploymentEnabled":{
         "main": false,
-        "vnote": false,
+        "planreminder": false,
         "api": false,
         "general-education": false,
         "index": true

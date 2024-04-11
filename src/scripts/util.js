@@ -91,8 +91,8 @@ function Image(props){
         }
       }, [], 100);
     
-    return <img alt={props.alt} src={imgSrc} className={props.cls || ""} />;
-};
+    return <img alt={props.alt} src={imgSrc} className={props.cls || ""} />
+}
 
 function AlertBox(props){
     const [timer, setTimer] = useState(props.auto === true ? 3 : "");

@@ -72,12 +72,42 @@ function SignOut(props){
     const navigator = useNavigate();
 
     return (
-        <button id='signout' className='setup-btn' onClick={() => {signOut(auth); navigator("/registration"); window.location.reload();}}
+        <button id='signout' className='setup-btn' onClick={async () => {
+            const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+            });
+            const registryData = await registryDataResponse.json();
+            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: false, token: null, at: null } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+            });
+            signOut(auth);
+            navigator("/registration");
+            window.location.reload();
+        }}
             onMouseEnter={() => onHoverSetupBtn("signout")} 
             onMouseLeave={() => onHoverSetupBtn("signout")}
         >
             <Image dir="icon/" name="exit.png" alt="signout-btn-icon" cls="setup-btn-icon-shadow theme custom" />
-            <OptionTitle noTitle={props.noTitle} className='setup-desc theme text-color' style={{width: `${props.parentSize / props.childNumber}px`}}>Sign Out</OptionTitle>
+            <OptionTitle noTitle={props.noTitle} style={{width: `${props.parentSize / props.childNumber}px`}}>Sign Out</OptionTitle>
+        </button>
+    )
+}
+
+function BgMusicController(props){
+    const [ videoState, setVideoState ] = useState("unmuted");
+    useEffect(() => {
+        const player = document.getElementById('youtubePlayer');
+        if(videoState === "unmuted") player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"unMute","args":""}), "*");
+        else player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"mute","args":""}), "*");
+    }, [videoState])
+    return (
+        <button onClick={() => setVideoState(videoState === "unmuted" ? "muted" : "unmuted")}>
+            <Image dir="icon/" name={videoState === "unmuted" ? "audio.png" : "muted.png"} alt="bg-music-controller-btn-icon" cls="setup-btn-icon-shadow theme custom"/>
+            <OptionTitle noTitle={props.noTitle} style={{width: `${props.parentSize / props.childNumber}px`}}>{`Music: ${videoState}`}</OptionTitle>
         </button>
     )
 }
@@ -117,13 +147,14 @@ function ToolKit(){
             </button>
             <div className='tool-kit' style={{width: `${isAnimating.tkSize}px`}}>
                 <SignOut parentSize={isAnimating.tkSize} childNumber={setting_btn_number}/>
+                <BgMusicController parentSize={isAnimating.tkSize} childNumber={setting_btn_number}/>
                 <MoreSettings parentSize={isAnimating.tkSize} childNumber={setting_btn_number}/>
             </div>
         </>
     )
 }
 
-export { ThemeChanger, SignOut }
+export { ThemeChanger, SignOut, BgMusicController }
 
 export function SetUp(){
     const { exceptionPage } = useGlobal();

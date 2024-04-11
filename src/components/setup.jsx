@@ -100,12 +100,16 @@ function SignOut(props){
 function BgMusicController(props){
     const [ videoState, setVideoState ] = useState("unmuted");
     useEffect(() => {
+        console.log(videoState)
         const player = document.getElementById('youtubePlayer');
         if(videoState === "unmuted") player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"unMute","args":""}), "*");
         else player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"mute","args":""}), "*");
     }, [videoState])
     return (
-        <button onClick={() => setVideoState(videoState === "unmuted" ? "muted" : "unmuted")}>
+        <button id="bgm-controller" className='setup-btn' onClick={() => setVideoState(videoState === "unmuted" ? "muted" : "unmuted")}
+            onMouseEnter={() => { if(!props.noTitle) onHoverSetupBtn("bgm-controller") }} 
+            onMouseLeave={() => { if(!props.noTitle) onHoverSetupBtn("bgm-controller") }}
+        >
             <Image dir="icon/" name={videoState === "unmuted" ? "audio.png" : "muted.png"} alt="bg-music-controller-btn-icon" cls="setup-btn-icon-shadow theme custom"/>
             <OptionTitle noTitle={props.noTitle} style={{width: `${props.parentSize / props.childNumber}px`}}>{`Music: ${videoState}`}</OptionTitle>
         </button>

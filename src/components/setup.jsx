@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/use/setup.css';
-import { Components } from '../scripts/util';
+import { Components, Hooks } from '../scripts/util';
 import { useGlobal } from '../scripts/global';
 import { signOut } from '@firebase/auth';
 import { auth } from '../scripts/firebase';
@@ -98,19 +98,19 @@ function SignOut(props){
 }
 
 function BgMusicController(props){
-    const [ videoState, setVideoState ] = useState("muted");
-    useEffect(() => {
+    const [ videoState, setVideoState ] = useState("unmuted");
+    Hooks.useDelayedEffect(() => {
         const player = document.getElementById('youtubePlayer');
-        if(videoState === "unmuted") player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"playVideo","args":""}), "*");
-        else player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"pauseVideo","args":""}), "*");
-    }, [videoState])
+        if(videoState === "unmuted") player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"unMute","args":""}), "*");
+        else player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"mute","args":""}), "*");
+    }, [videoState], 500)
     return (
         <button id="bgm-controller" className='setup-btn' onClick={() => setVideoState(videoState === "unmuted" ? "muted" : "unmuted")}
             onMouseEnter={() => { if(!props.noTitle) onHoverSetupBtn("bgm-controller") }} 
             onMouseLeave={() => { if(!props.noTitle) onHoverSetupBtn("bgm-controller") }}
         >
             <Image dir="icon/" name={videoState === "unmuted" ? "audio.png" : "muted.png"} alt="bg-music-controller-btn-icon" cls="setup-btn-icon-shadow theme custom"/>
-            <OptionTitle noTitle={props.noTitle} style={{width: `${props.parentSize / props.childNumber}px`}}>{`Music: ${videoState}`}</OptionTitle>
+            <OptionTitle noTitle={props.noTitle}>{`Music: ${videoState}`}</OptionTitle>
         </button>
     )
 }
@@ -150,7 +150,6 @@ function ToolKit(){
             </button>
             <div className='tool-kit' style={{width: `${isAnimating.tkSize}px`}}>
                 <SignOut parentSize={isAnimating.tkSize} childNumber={setting_btn_number}/>
-                <BgMusicController parentSize={isAnimating.tkSize} childNumber={setting_btn_number}/>
                 <MoreSettings parentSize={isAnimating.tkSize} childNumber={setting_btn_number}/>
             </div>
         </>
@@ -163,6 +162,7 @@ export function SetUp(){
     return (
         <div className='setup'>
             <ThemeChanger />
+            <BgMusicController />
             <ToolKit />
         </div>
     );

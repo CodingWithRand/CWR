@@ -8,7 +8,7 @@ img{ user-select: none; }
     display: flex;
     flex-direction: row;
     column-gap: 10px;
-    position: absolute;
+    position: fixed;
     z-index: 20;
     top: 0;
     left: 0;

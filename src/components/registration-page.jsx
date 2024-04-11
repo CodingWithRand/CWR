@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { Functions, Hooks } from "../scripts/util";
 import { useGlobal } from "../scripts/global";
 import { signInWithCustomToken } from "firebase/auth";
+import { BgMusicController } from "./setup";
 
 
 export default function RegistrationPage(){
     const navigator = useNavigate();
+    const { login } = useGlobal();
     const [ registrationIframe, setRegistrationIframe ] = useState();
 
     Hooks.useDelayedEffect(() => {
@@ -75,6 +77,9 @@ export default function RegistrationPage(){
 
     return(
         <div className="page-container">
+            <div className="setup">
+                <BgMusicController />
+            </div>
             <h1 className="h-reg responsive">Please let me know who you are</h1>
             {registrationIframe}
         </div>

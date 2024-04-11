@@ -5,12 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { Functions } from '../scripts/util';
 import { useSearchParams } from 'react-router-dom';
 import { useGlobal } from '../scripts/global';
+import { BgMusicController } from './setup';
 
 const { Dynamic } = Components;
 const { Image } = Dynamic;
 
 export default function LoadingScreen() {
-
+  const { login } = useGlobal();
   const navigator = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -312,6 +313,9 @@ export default function LoadingScreen() {
 
   return (
     <div className="page-container">
+      <div className="setup">
+          <BgMusicController />
+      </div>
       <div className='screen'>
         <div className="perspective-field">
           <div className='dice' style={{

@@ -34,6 +34,7 @@ function Stars() {
 }
 
 export default function Greet(){
+    const { login } = useGlobal();
     const navigator = useNavigate();
     const orderedGreetMsg = [
         "Greeting Traveler...", 

@@ -5,6 +5,7 @@ import { signOut } from "@firebase/auth";
 import { auth } from "../scripts/firebase";
 import { useEffect } from "react";
 import Cookies from "universal-cookie";
+import { SetUp } from "./setup";
 
 const { AlertBox } = Components
 

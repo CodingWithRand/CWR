@@ -58,7 +58,6 @@ function App() {
   return (
     <Global>
       <PageRouter />
-      <SetUp/>
       {/*
         Image icon special thanks to...
         <a href="https://www.flaticon.com/free-icons/dark" title="dark icons">Dark icons created by rizky adhitya pradana - Flaticon</a>

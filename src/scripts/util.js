@@ -58,7 +58,7 @@ function Image(props){
                 }else return theme.theme
             })()}-${props.name}`);
         else setImgSrc(process.env.PUBLIC_URL + `/imgs/backend-images/${props.dir || ""}${props.name}`);
-    }, [theme.theme, isBinding]);
+    }, [theme.theme, isBinding, props.name]);
 
     Hooks.useDelayedEffect(() => {
         const targetElement = document.querySelector(`#${props.to}[binding-status]`);

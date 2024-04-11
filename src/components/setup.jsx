@@ -86,7 +86,7 @@ function SignOut(props){
             });
             signOut(auth);
             navigator("/registration");
-            window.location.reload();
+            // window.location.reload();
         }}
             onMouseEnter={() => onHoverSetupBtn("signout")} 
             onMouseLeave={() => onHoverSetupBtn("signout")}
@@ -98,12 +98,11 @@ function SignOut(props){
 }
 
 function BgMusicController(props){
-    const [ videoState, setVideoState ] = useState("unmuted");
+    const [ videoState, setVideoState ] = useState("muted");
     useEffect(() => {
-        console.log(videoState)
         const player = document.getElementById('youtubePlayer');
-        if(videoState === "unmuted") player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"unMute","args":""}), "*");
-        else player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"mute","args":""}), "*");
+        if(videoState === "unmuted") player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"playVideo","args":""}), "*");
+        else player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"pauseVideo","args":""}), "*");
     }, [videoState])
     return (
         <button id="bgm-controller" className='setup-btn' onClick={() => setVideoState(videoState === "unmuted" ? "muted" : "unmuted")}
@@ -161,8 +160,6 @@ function ToolKit(){
 export { ThemeChanger, SignOut, BgMusicController }
 
 export function SetUp(){
-    const { exceptionPage } = useGlobal();
-    if(exceptionPage.onExceptionPage) return <></>;
     return (
         <div className='setup'>
             <ThemeChanger />

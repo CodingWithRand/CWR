@@ -16,7 +16,6 @@ export function Global({ children }){
   
   const [isLoggedIn, logIn] = useState(!cookies.get("login") ? false : cookies.get("login"));
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "default-os");
-  const [onExceptionPage, setOnExceptionPage] = useState(false);
   const [device, detectDevice] = useState("pc");
 
   useEffect(() => {
@@ -49,7 +48,6 @@ export function Global({ children }){
       theme: {theme, setTheme},
       login: {isLoggedIn, logIn},
       authUser: {isAuthUser},
-      exceptionPage: {onExceptionPage, setOnExceptionPage},
       device: {device, detectDevice}
     }}>
       {children}

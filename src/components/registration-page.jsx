@@ -10,10 +10,9 @@ import { signInWithCustomToken } from "firebase/auth";
 export default function RegistrationPage(){
     const navigator = useNavigate();
     const [ registrationIframe, setRegistrationIframe ] = useState();
-    const { login, exceptionPage } = useGlobal();
 
     Hooks.useDelayedEffect(() => {
-        if(login.isLoggedIn && auth.currentUser?.emailVerified){ navigator("/"); window.location.reload(); }
+        if(login.isLoggedIn && auth.currentUser?.emailVerified){ navigator("/"); }//window.location.reload(); }
         else setRegistrationIframe(
             <iframe
                 id="registration-iframe"
@@ -31,8 +30,6 @@ export default function RegistrationPage(){
             }, 400)
         })();
     }, []);
-
-    useEffect(() => { exceptionPage.setOnExceptionPage(true) }, [])
 
     useEffect(() => {
         const registrationResponseMessageHandle = async (e) => {
@@ -68,7 +65,7 @@ export default function RegistrationPage(){
                     await signInWithCustomToken(auth, thisSiteToken.data.token);
                 }catch(e){
                     console.error(e);
-                    window.location.reload();
+                    //window.location.reload();
                 }
             }
         }

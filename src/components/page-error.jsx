@@ -1,10 +1,4 @@
-import { useEffect } from "react";
-import { useGlobal } from "../scripts/global";
-
 export function NotFound(){
-  const { exceptionPage } = useGlobal();
-  useEffect(() => { exceptionPage.setOnExceptionPage(true) }, [])
-
   return (
       <div className="page-container">
         <h1 className="theme text-color">404 - Page Not Found</h1>
@@ -14,9 +8,6 @@ export function NotFound(){
 };
 
 export function NoPermission(){
-  const { exceptionPage } = useGlobal();
-  useEffect(() => { exceptionPage.setOnExceptionPage(true) }, [])
-
   return (
       <div className="page-container">
         <h1 className="theme text-color">You don't have permission to view this page</h1>

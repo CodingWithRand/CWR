@@ -14,15 +14,11 @@ export default function LoadingScreen() {
   const navigator = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { login, exceptionPage } = useGlobal();
-
-  useEffect(() => { exceptionPage.setOnExceptionPage(true) }, []);
-
   useEffect(() => {
     if(searchParams.get('loadingState') === 'proceeded'){
       if(login.isLoggedIn){
         navigator(`/${searchParams.get("redirectFrom") || ""}`);
-        window.location.reload();
+        // window.location.reload();
       }
       else navigator('/greeting');
     };

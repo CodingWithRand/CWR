@@ -48,8 +48,6 @@ export default function Greet(){
     ]
     const [ greetMsgSize, setGreetMsgSize ] = useState("");
     const [ greetMsg, setGreetMsg ] = useState("");
-    const { exceptionPage, login } = useGlobal();
-    useEffect(() => { exceptionPage.setOnExceptionPage(true) }, []);
     Hooks.useDelayedEffect(() => {
         if(login.isLoggedIn && auth.currentUser?.emailVerified){ navigator("/"); window.location.reload(); };
     }, [login.isLoggedIn], 100);

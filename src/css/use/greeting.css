@@ -176,4 +176,5 @@
     z-index: 100;
     transition: opacity linear 5s;
     opacity: 0;
+    pointer-events: none;
 }

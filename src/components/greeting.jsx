@@ -1,9 +1,31 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useGlobal } from "../scripts/global";
 import "../css/use/greeting.css"
 import { Functions, Hooks } from "../scripts/util";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../scripts/firebase";
+import { BgMusicController } from "./setup";
+
+const useDocumentShowingState = () => {
+    const mountedRef = useRef(false)
+    const isShowing = useCallback(() => mountedRef.current, [])
+  
+    useEffect(() => {
+      mountedRef.current = true;
+      const dh = () => {
+        if(document.hidden){
+            mountedRef.current = false;
+        }else{
+            mountedRef.current = true;
+        }
+      };
+      window.addEventListener('visibilitychange', dh);
+      dh();
+      return () => window.removeEventListener('visibilitychange', dh);
+    }, [])
+  
+    return isShowing
+}
 
 function Stars() {
     const stars = useMemo(() => Array.from({ length: 100 }, (_, i) => { 
@@ -34,6 +56,7 @@ function Stars() {
 }
 
 export default function Greet(){
+    const isShowing = useDocumentShowingState();
     const { login } = useGlobal();
     const navigator = useNavigate();
     const orderedGreetMsg = [
@@ -50,7 +73,7 @@ export default function Greet(){
     const [ greetMsgSize, setGreetMsgSize ] = useState("");
     const [ greetMsg, setGreetMsg ] = useState("");
     Hooks.useDelayedEffect(() => {
-        if(login.isLoggedIn && auth.currentUser?.emailVerified){ navigator("/"); window.location.reload(); };
+        if(login.isLoggedIn && auth.currentUser?.emailVerified){ navigator("/"); };
     }, [login.isLoggedIn], 100);
     
 
@@ -66,7 +89,7 @@ export default function Greet(){
     }
 
     async function typeWriting(msg, extendTime=0){
-
+        
         async function writeCharacter(l, delay) {
             return new Promise((resolve) => {
                 Functions.jobDelay(() => {
@@ -91,52 +114,76 @@ export default function Greet(){
 
         for(const l of msg) {
             const delay = l === "." ? 200 : 50;
-            await writeCharacter(l, delay);
+            if(isShowing()) await writeCharacter(l, delay);
+            else return;
         };
 
         await Functions.asyncDelay(extendTime);
-        for(let i = 0; i<Array.from(msg).length; i++) await eraseCharacter(50)
+        for(let i = 0; i<Array.from(msg).length; i++){
+            if(isShowing()) await eraseCharacter(50);
+            else return;
+        }
         await Functions.asyncDelay(extendTime);
     }
 
     useEffect(() => {
-        if(document.hidden) Functions.asyncDelay(2000).then(() => window.location.reload());
-        const total_msg_time_taken = (msg, extendTime=0) => getTypeWrittingTime(msg).total_phrase_erasing_time + getTypeWrittingTime(msg).total_phrase_writing_time + (2 * extendTime);
-        async function messageShow () {
-            await Functions.jobDelay(() => { setGreetMsgSize("large"); typeWriting(orderedGreetMsg[0], 1000) }, 2000);
-            await Functions.jobDelay(() => { setGreetMsgSize("medium"); typeWriting(orderedGreetMsg[1], 2000) }, (total_msg_time_taken(orderedGreetMsg[0], 1000)));
-            await Functions.jobDelay(() => { setGreetMsgSize("large"); typeWriting(orderedGreetMsg[2], 1000) }, (total_msg_time_taken(orderedGreetMsg[1], 2000)));
-            await Functions.jobDelay(() => { setGreetMsgSize("medium"); typeWriting(orderedGreetMsg[3], 3000) }, (total_msg_time_taken(orderedGreetMsg[2], 1000)));
-            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[4], 3500), (total_msg_time_taken(orderedGreetMsg[3], 3000)));
-            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[5], 4500), (total_msg_time_taken(orderedGreetMsg[4], 3500)));
-            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[6], 3000), (total_msg_time_taken(orderedGreetMsg[5], 4500)));
-            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[7], 2000), (total_msg_time_taken(orderedGreetMsg[6], 3000)));
-            await Functions.jobDelay(() => typeWriting(orderedGreetMsg[8], 2500), (total_msg_time_taken(orderedGreetMsg[7], 2000)));
-            await Functions.jobDelay(() => document.getElementById("b-b").classList.add("active"), (total_msg_time_taken(orderedGreetMsg[8], 2500)));
-            await Functions.jobDelay(() => navigator("/registration"), 11111);
-        };
-        async function effectShow () {
-            await Functions.jobDelay(() => document.querySelector("#oc")?.classList.add("ort-cloud"), 1500);
-            await Functions.jobDelay(() => document.getElementById("g-1")?.classList.add("active"), 4000);
-            await Functions.jobDelay(() => document.getElementById("g-2")?.classList.add("active"), 4500);
-            await Functions.jobDelay(() => {
-                const skipBtn = document.querySelector(".skip-intro")
-                skipBtn.style.opacity = 1;
-                skipBtn.setAttribute("href", "/registration");
-            }, 5000);
-            await Functions.jobDelay(() => document.getElementById("g-3")?.classList.add("active"), 7500);
-            await Functions.jobDelay(() => document.getElementById("g-4")?.classList.add("active"), 8000);
-            await Functions.jobDelay(() => document.getElementById("g-5")?.classList.add("active"), 8800);
-            await Functions.jobDelay(() => document.getElementById("g-6")?.classList.add("active"), 9000);
-            await Functions.jobDelay(() => document.getElementById("g-7")?.classList.add("active"), 10000);
-            await Functions.jobDelay(() => document.getElementById("g-8")?.classList.add("active"), 15000);
-        };
-
-        messageShow(); effectShow();
-    }, [document.hidden]);
+        let effectTimeout = [];
+        let messageTimeout = [];
+        const handleVisibilityChange = () => {
+            if(document.hidden){
+                for(const timeout of messageTimeout) clearTimeout(timeout);
+                for(const timeout of effectTimeout) clearTimeout(timeout);
+                for(let i = 1; i<9; i++) document.getElementById(`g-${i}`).classList.remove("active");
+                document.getElementById("oc").classList.remove("ort-cloud");
+                document.querySelector(".skip-intro").style.opacity = 0;
+                document.querySelector(".skip-intro").style.pointerEvents = "none";
+                setGreetMsgSize("");
+                setGreetMsg("");
+            }else{
+                setGreetMsgSize("");
+                setGreetMsg("");
+                const total_msg_time_taken = (msg, extendTime=0) => getTypeWrittingTime(msg).total_phrase_erasing_time + getTypeWrittingTime(msg).total_phrase_writing_time + (2 * extendTime);
+                messageTimeout = [
+                    setTimeout(() => { setGreetMsgSize("large"); typeWriting(orderedGreetMsg[0], 1000); }, 2000),
+                    setTimeout(() => { setGreetMsgSize("medium"); typeWriting(orderedGreetMsg[1], 2000); }, (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000))),
+                    setTimeout(() => { setGreetMsgSize("large"); typeWriting(orderedGreetMsg[2], 1000); }, (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000))),
+                    setTimeout(() => { setGreetMsgSize("medium"); typeWriting(orderedGreetMsg[3], 3000); }, (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000) + total_msg_time_taken(orderedGreetMsg[2], 1000))),
+                    setTimeout(() => typeWriting(orderedGreetMsg[4], 3500), (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000) + total_msg_time_taken(orderedGreetMsg[2], 1000) + total_msg_time_taken(orderedGreetMsg[3], 3000))),
+                    setTimeout(() => typeWriting(orderedGreetMsg[5], 4500), (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000) + total_msg_time_taken(orderedGreetMsg[2], 1000) + total_msg_time_taken(orderedGreetMsg[3], 3000) + total_msg_time_taken(orderedGreetMsg[4], 3500))),
+                    setTimeout(() => typeWriting(orderedGreetMsg[6], 3000), (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000) + total_msg_time_taken(orderedGreetMsg[2], 1000) + total_msg_time_taken(orderedGreetMsg[3], 3000) + total_msg_time_taken(orderedGreetMsg[4], 3500) + total_msg_time_taken(orderedGreetMsg[5], 4500))),
+                    setTimeout(() => typeWriting(orderedGreetMsg[7], 2000), (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000) + total_msg_time_taken(orderedGreetMsg[2], 1000) + total_msg_time_taken(orderedGreetMsg[3], 3000) + total_msg_time_taken(orderedGreetMsg[4], 3500) + total_msg_time_taken(orderedGreetMsg[5], 4500) + total_msg_time_taken(orderedGreetMsg[6], 3000))),
+                    setTimeout(() => typeWriting(orderedGreetMsg[8], 2500), (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000) + total_msg_time_taken(orderedGreetMsg[2], 1000) + total_msg_time_taken(orderedGreetMsg[3], 3000) + total_msg_time_taken(orderedGreetMsg[4], 3500) + total_msg_time_taken(orderedGreetMsg[5], 4500) + total_msg_time_taken(orderedGreetMsg[6], 3000) + total_msg_time_taken(orderedGreetMsg[7], 2000))),
+                    setTimeout(() => document.getElementById("b-b").classList.add("active"), (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000) + total_msg_time_taken(orderedGreetMsg[2], 1000) + total_msg_time_taken(orderedGreetMsg[3], 3000) + total_msg_time_taken(orderedGreetMsg[4], 3500) + total_msg_time_taken(orderedGreetMsg[5], 4500) + total_msg_time_taken(orderedGreetMsg[6], 3000) + total_msg_time_taken(orderedGreetMsg[7], 2000) + total_msg_time_taken(orderedGreetMsg[8], 2500))),
+                    setTimeout(() => navigator("/registration"), (2000 + total_msg_time_taken(orderedGreetMsg[0], 1000) + total_msg_time_taken(orderedGreetMsg[1], 2000) + total_msg_time_taken(orderedGreetMsg[2], 1000) + total_msg_time_taken(orderedGreetMsg[3], 3000) + total_msg_time_taken(orderedGreetMsg[4], 3500) + total_msg_time_taken(orderedGreetMsg[5], 4500) + total_msg_time_taken(orderedGreetMsg[6], 3000) + total_msg_time_taken(orderedGreetMsg[7], 2000) + total_msg_time_taken(orderedGreetMsg[8], 2500) + 11111))
+                ];
+                effectTimeout = [
+                    setTimeout(() => document.querySelector("#oc").classList.add("ort-cloud"), 1500),
+                    setTimeout(() => document.getElementById("g-1").classList.add("active"), 6500),
+                    setTimeout(() => document.getElementById("g-2").classList.add("active"), 11000),
+                    setTimeout(() => {
+                        const skipBtn = document.querySelector(".skip-intro")
+                        skipBtn.style.opacity = 1;
+                        skipBtn.style.pointerEvents = "auto";
+                    }, 16000),
+                    setTimeout(() => document.getElementById("g-3").classList.add("active"), 23500),
+                    setTimeout(() => document.getElementById("g-4").classList.add("active"), 31500),
+                    setTimeout(() => document.getElementById("g-5").classList.add("active"), 40300),
+                    setTimeout(() => document.getElementById("g-6").classList.add("active"), 49300),
+                    setTimeout(() => document.getElementById("g-7").classList.add("active"), 59300),
+                    setTimeout(() => document.getElementById("g-8").classList.add("active"), 74300)
+                ];
+            }
+        }
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        handleVisibilityChange();
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, []);
 
     return(
         <div className="page-container font-barlow spacify" style={{ justifyContent: "center" }}>
+            <div className="setup">
+                <BgMusicController />
+            </div>
             <div className="effect-backdrop">
                 <div className="star-cluster">
                     <Stars />
@@ -196,7 +243,7 @@ export default function Greet(){
             <div className="greeting-dialog">
                 <div className={`prompting-message ${greetMsgSize}`}>{greetMsg}</div>
             </div>
-            <a className="skip-intro">Skip intro</a>
+            <Link to="/registration"><a className="skip-intro">Skip intro</a></Link>
         </div>
     )
 }

@@ -143,4 +143,8 @@
     .setup-btn-icon-shadow.theme.custom{
         @apply light-mode-icon dark:dark-mode-icon
     }
+
+    .loading-bar-border.theme.custom{
+        @apply border-neutral-900 dark:border-white;
+    }
 }

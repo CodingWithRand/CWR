@@ -17,6 +17,7 @@ export function Global({ children }){
   const [isLoggedIn, logIn] = useState(!cookies.get("login") ? false : cookies.get("login"));
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "default-os");
   const [device, detectDevice] = useState("pc");
+  const [scriptLoaded, setScriptLoaded] = useState(false);
 
   useEffect(() => {
     if(!isAuthUser) logIn(false);
@@ -48,7 +49,8 @@ export function Global({ children }){
       theme: {theme, setTheme},
       login: {isLoggedIn, logIn},
       authUser: {isAuthUser},
-      device: {device, detectDevice}
+      device: {device, detectDevice},
+      scriptLoaded: {scriptLoaded, setScriptLoaded}
     }}>
       {children}
     </GlobalState.Provider>

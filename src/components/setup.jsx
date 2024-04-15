@@ -18,7 +18,7 @@ function onHoverSetupBtn(btnId){
 
 function OptionTitle(props){
     if(props.noTitle) return <></>
-    else return <div className='setup-desc theme text-color' style={props.style}>{props.children}</div>
+    else return <div className='setup-desc' style={props.style}>{props.children}</div>
 }
 
 function ThemeChanger(props){
@@ -91,7 +91,7 @@ function SignOut(props){
             onMouseEnter={() => onHoverSetupBtn("signout")} 
             onMouseLeave={() => onHoverSetupBtn("signout")}
         >
-            <Image dir="icon/" name="exit.png" alt="signout-btn-icon" cls="setup-btn-icon-shadow theme custom" />
+            <Image constant dir="icon/" name="exit.png" alt="signout-btn-icon" cls="setup-btn-icon-shadow theme custom" />
             <OptionTitle noTitle={props.noTitle} style={{width: `${props.parentSize / props.childNumber}px`}}>Sign Out</OptionTitle>
         </button>
     )
@@ -101,30 +101,36 @@ function BgMusicController(props){
     const [ videoState, setVideoState ] = useState("unmuted");
     Hooks.useDelayedEffect(() => {
         const player = document.getElementById('youtubePlayer');
-        if(videoState === "unmuted") player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"unMute","args":""}), "*");
+        if(videoState === "unmuted"){
+            player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"playVideo","args":""}), "*");
+            player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"unMute","args":""}), "*");
+        }
         else player.contentWindow.postMessage(JSON.stringify({"event":"command","func":"mute","args":""}), "*");
-    }, [videoState], 500)
+    }, [videoState], 1000);
+    useEffect(() => {
+        if(!localStorage.getItem("bgm")) localStorage.setItem("bgm", "unmuted");
+        setVideoState(localStorage.getItem("bgm"));
+    }, [])
     return (
-        <button id="bgm-controller" className='setup-btn' onClick={() => setVideoState(videoState === "unmuted" ? "muted" : "unmuted")}
+        <button id="bgm-controller" className='setup-btn' onClick={() => { setVideoState(videoState === "unmuted" ? "muted" : "unmuted"); localStorage.setItem("bgm", videoState === "unmuted" ? "muted" : "unmuted") }}
             onMouseEnter={() => { if(!props.noTitle) onHoverSetupBtn("bgm-controller") }} 
             onMouseLeave={() => { if(!props.noTitle) onHoverSetupBtn("bgm-controller") }}
         >
-            <Image dir="icon/" name={videoState === "unmuted" ? "audio.png" : "muted.png"} alt="bg-music-controller-btn-icon" cls="setup-btn-icon-shadow theme custom"/>
+            <Image constant={!props.theme} dir="icon/" name={videoState === "unmuted" ? "audio.png" : "muted.png"} alt="bg-music-controller-btn-icon" cls="setup-btn-icon-shadow theme custom"/>
             <OptionTitle noTitle={props.noTitle}>{`Music: ${videoState}`}</OptionTitle>
         </button>
     )
 }
 
 function MoreSettings(props){
-    const { authUser } = useGlobal();
     const navigator = useNavigate();
 
     return (
-        <button id='more' className='setup-btn' onClick={() => {navigator(`users/${authUser.isAuthUser.displayName}/settings`);}}
+        <button id='more' className='setup-btn' onClick={() => {navigator(`account/settings`);}}
             onMouseEnter={() => onHoverSetupBtn("more")} 
             onMouseLeave={() => onHoverSetupBtn("more")}
         >
-            <Image dir="icon/" name="dots.png" alt="more-settings-btn-icon" cls="setup-btn-icon-shadow theme custom" />
+            <Image constant dir="icon/" name="dots.png" alt="more-settings-btn-icon" cls="setup-btn-icon-shadow theme custom" />
             <div className='setup-desc theme text-color' style={{width: `${props.parentSize / props.childNumber}px`}}>More</div>
         </button>
     )
@@ -145,8 +151,8 @@ function ToolKit(){
                 onMouseLeave={() => onHoverSetupBtn("settings")} 
                 onClick={() => animate(prevState => ({tkSize: prevState.tkSize === setting_btn_number * 35 ? 0 : setting_btn_number * 35 , setting: prevState.setting === "animate" ? '' : "animate"}))}
             >
-                <Image dir="icon/" name="setting.png" alt="setting-btn-icon" cls={`setup-btn-icon-shadow theme custom setting ${isAnimating.setting}`} />
-                <div className='setup-desc theme text-color'>Settings</div>
+                <Image constant dir="icon/" name="setting.png" alt="setting-btn-icon" cls={`setup-btn-icon-shadow theme custom setting ${isAnimating.setting}`} />
+                <div className='setup-desc'>Settings</div>
             </button>
             <div className='tool-kit' style={{width: `${isAnimating.tkSize}px`}}>
                 <SignOut parentSize={isAnimating.tkSize} childNumber={setting_btn_number}/>

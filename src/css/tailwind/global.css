@@ -3,10 +3,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300&display=swap");
 
 @layer base{
-    html, body, #root { @apply w-screen h-screen }
+    html, body, #root { @apply w-screen h-auto }
     .page-container{ 
-      @apply flex flex-col relative items-center w-screen h-screen;
+      @apply flex flex-col relative items-center w-screen h-screen z-[1];
     }
+
     body {
         margin: 0;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,7 +15,7 @@
           sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-      }
+    }
       
     code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -22,5 +23,14 @@
     }
     .font-barlow div{
         font-family: 'Barlow', sans-serif;
+    }
+    canvas {
+      @apply bg-white dark:bg-neutral-900;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 }

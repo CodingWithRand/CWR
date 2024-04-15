@@ -304,3 +304,13 @@ label.theme.border-color.intense,
 :is(.dark .setup-btn-icon-shadow.theme.custom){
   --icon-shadow: radial-gradient(rgb(50, 50, 50) 0%, transparent 75%);
 }
+
+.loading-bar-border.theme.custom{
+  --tw-border-opacity: 1;
+  border-color: rgb(23 23 23 / var(--tw-border-opacity));
+}
+
+:is(.dark .loading-bar-border.theme.custom){
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}

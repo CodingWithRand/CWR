@@ -107,3 +107,6 @@ img, div, button{ user-select: none; }
 
 .input-field input::placeholder{ color: darkgray; }
 
+/* HyperspaceTeleportationBackground Component */
+
+.p5Canvas{ transition: opacity 0.5s linear; }

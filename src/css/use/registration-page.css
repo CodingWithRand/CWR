@@ -15,103 +15,25 @@ html, body, #root{ overflow-y: auto; }
     font-family: 'League Spartan', sans-serif;
     font-family: 'Montserrat', sans-serif;
     transition: transform 1s var(--ease-out-cubic), opacity 1s var(--ease-out-cubic);
-    opacity: 0;
-    transform: translateY(-15vh);
+    color: white;
     text-align: center;
-}
-
-.h-reg.animate{
-    transform: translateY(0vh);
-    opacity: 1;
-}
-
-.registration-forms{
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    transition: opacity 1s linear;
-    opacity: 0;
-}
-
-.registration-forms.animate{ opacity: 1; }
-
-.reg-t-or{ background-color: var(--reg-btn-bg-color); }
-
-.registration-forms li{
-    width: 100%;
-    text-align: center;
-}
-
-.registration-forms li:nth-of-type(even){
-    padding: 0;
-    cursor: initial;
-}
-
-.reg-t{ font-family: 'Barlow', sans-serif; }
-
-#sign-in{ background-image: linear-gradient(to bottom, transparent, var(--reg-btn-bg-color)); }
-
-.reg-f > .reg-t{ color: rgb(150, 150, 150); }
-
-#sign-up{ background-image: linear-gradient(to bottom, var(--reg-btn-bg-color), transparent); }
-
-.hov-eff{ 
-    transition: transform 0.2s ease-out;
-    cursor: pointer;
-}
-
-.hov-eff:hover > .reg-t{
-    transform: scale3d(1.1, 1.1, 1.1);
-    color: var(--reg-btn-txt-color);
-}
-
-.reg-form{
-    transition: margin 0.5s var(--fastout-slowin), opacity 0.5s linear;
-    overflow: auto;
-    margin: 0;
-    height: 0;
-    position: relative;
-    z-index: 10;
-    opacity: 0;
-    display: flex;
-    justify-content: center;
-}
-
-.reg-form.animate.exp{
-    padding: 2vh 0;
-    height: fit-content;
-}
-
-.reg-form.animate.rev{ opacity: 1; }
-
-.submit-btn:disabled{ opacity: 0.5; }
-
-.submit-btn:hover:not(:disabled){
-    background-color: darkgray;
-    cursor: pointer;
-    opacity: 1;
-}
-
-.option-field{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    column-gap: 10px;
-    margin: 1vh 0;
-    width: 100%;
-}
-
-.f-c .submit-btn{
-    background-color: lightgray;
-    border-radius: 5px;
-    width: 30%;
-    padding: 1vh 0;
-}
-
-.f-c{
     width: 80%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding: 1rem;
+    text-shadow: 0 0 0.75rem white;
+    transform: translateY(-25vh);
+}
+
+.h-reg.animate, #registration-iframe.animate{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#registration-iframe{
+    background-color: white;
+    width: 80%; 
+    height: 80%;
+    border-radius: 100px;
+    border: 10px solid black;
+    transition: transform 1s var(--ease-out-cubic), opacity 1s var(--ease-out-cubic);
+    transform: translateY(100vh);
 }

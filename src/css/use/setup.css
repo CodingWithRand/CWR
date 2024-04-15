@@ -41,6 +41,7 @@ img{ user-select: none; }
     margin: 5px 0;
     font-size: xx-small;
     transition: opacity ease-in-out 0.5s;
+    color: white;
 }
 
 .tool-kit .setup-desc{ 

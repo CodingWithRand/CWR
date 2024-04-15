@@ -53,8 +53,14 @@ function Image(props){
         if(isBinding) return;
         if(!props.constant) setImgSrc(process.env.PUBLIC_URL + `/imgs/backend-images/theme/${props.dir || ""}${(() => {
                 if(theme.theme === "default-os" && props.name !== "mode.png"){
-                    if(window.matchMedia('(prefers-color-scheme: dark)').matches) return "dark";
-                    else return "light";
+                    if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+                        document.documentElement.classList.add("dark");
+                        return "dark";
+                    }
+                    else{
+                        document.documentElement.classList.remove("dark");
+                        return "light";
+                    }
                 }else return theme.theme
             })()}-${props.name}`);
         else setImgSrc(process.env.PUBLIC_URL + `/imgs/backend-images/${props.dir || ""}${props.name}`);
@@ -91,7 +97,7 @@ function Image(props){
         }
       }, [], 100);
     
-    return <img alt={props.alt} src={imgSrc} className={props.cls || ""} />
+    return <img alt={props.alt || undefined} src={imgSrc} className={props.cls || undefined} style={props.style || undefined} />
 }
 
 function AlertBox(props){
@@ -298,6 +304,31 @@ function InputGroupField(props){
     return <div className="input-fields">{inputFields}</div>
 }
 
+function HyperspaceTeleportationBackground() {
+    const { scriptLoaded } = useGlobal();
+    useEffect(() => {
+        if(scriptLoaded.scriptLoaded) return;
+        const hyperspaceTeleportationScript = document.createElement('script');
+        hyperspaceTeleportationScript.id = "hyperspaceTeleportationScript";
+        hyperspaceTeleportationScript.src = `${process.env.PUBLIC_URL}/hyperspaceTeleportation.js`;
+        hyperspaceTeleportationScript.async = true;
+        const p5Script = document.createElement('script');
+        p5Script.id = "p5Script";
+        p5Script.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js";
+        p5Script.async = true;
+        const animationContainer = document.getElementById("animation-container");
+        animationContainer.appendChild(p5Script);
+        animationContainer.appendChild(hyperspaceTeleportationScript);
+        Functions.asyncDelay(1000).then(() => document.querySelector(".p5Canvas").removeAttribute("style"))
+        animationContainer.removeChild(p5Script);
+        animationContainer.removeChild(hyperspaceTeleportationScript);
+        scriptLoaded.setScriptLoaded(true);
+    }, []);
+    return <div id="animation-container">
+        <button id="animation-controller" style={{ pointerEvents: "none" }} />
+    </div>
+}
+
 const Functions = {
     asyncDelay,
     jobDelay,
@@ -312,7 +343,8 @@ const Components = {
     },
     AlertBox,
     Switch,
-    Section
+    Section,
+    HyperspaceTeleportationBackground
 };
 
 const Hooks = {

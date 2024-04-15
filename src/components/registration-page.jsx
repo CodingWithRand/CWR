@@ -6,7 +6,7 @@ import { Functions, Hooks } from "../scripts/util";
 import { useGlobal } from "../scripts/global";
 import { signInWithCustomToken } from "firebase/auth";
 import { BgMusicController } from "./setup";
-
+import { Components } from "../scripts/util";
 
 export default function RegistrationPage(){
     const navigator = useNavigate();
@@ -14,12 +14,25 @@ export default function RegistrationPage(){
     const [ registrationIframe, setRegistrationIframe ] = useState();
 
     Hooks.useDelayedEffect(() => {
-        if(login.isLoggedIn && auth.currentUser?.emailVerified){ navigator("/"); }//window.location.reload(); }
+        if(login.isLoggedIn && auth.currentUser?.emailVerified){ 
+            (async () => {
+                await Functions.jobDelay(() => {
+                    try { document.querySelector('.h-reg').classList.remove("animate"); }
+                    catch (error) { console.error(error); };
+                }, 400)
+                await Functions.jobDelay(() => {
+                    try { 
+                        document.querySelector('#registration-iframe').classList.remove("animate");
+                        document.querySelector("#animation-controller").click(); 
+                    }
+                    catch (error) { console.error(error); };
+                }, 1000)
+            })().then(() => navigator("/"));
+        }
         else setRegistrationIframe(
             <iframe
                 id="registration-iframe"
                 src="https://codingwithrand.vercel.app/registration"
-                style={{ position: "absolute", width: "100%", height: "100%" }}
             />
         )
     }, [login.isLoggedIn], 100);
@@ -30,6 +43,10 @@ export default function RegistrationPage(){
                 try { document.querySelector('.h-reg').classList.add("animate"); }
                 catch (error) { console.error(error); };
             }, 400)
+            await Functions.jobDelay(() => {
+                try { document.querySelector('#registration-iframe').classList.add("animate"); }
+                catch (error) { console.error(error); };
+            }, 1000)
         })();
     }, []);
 
@@ -76,12 +93,13 @@ export default function RegistrationPage(){
     }, [])
 
     return(
-        <div className="page-container">
+        <div className="page-container" style={{ justifyContent: "center", overflow: "hidden", backgroundImage: 'url("/imgs/backend-images/spaceship-cockpit.png")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPositionX: 'center' }}>
             <div className="setup">
                 <BgMusicController />
             </div>
             <h1 className="h-reg responsive">Please let me know who you are</h1>
             {registrationIframe}
+            <Components.HyperspaceTeleportationBackground />
         </div>
     );
 };

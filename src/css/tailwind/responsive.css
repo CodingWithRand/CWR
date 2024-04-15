@@ -28,36 +28,12 @@
         @apply translate-x-[200px] gmob-lsm:translate-x-[270px] sm:translate-x-[400px] amd:translate-x-[520px];
     }
 
-    /* registration-page/index.jsx */
+    /* registration-page.jsx */
 
     .h-reg.responsive {
         @apply text-2xl mt-[2em] sm:text-[2em] sm:mt-[1em] lg:text-[3em];
     }
 
-    .reg-t.responsive {
-        @apply sm:text-xl lg:text-[1.5em];
-    }
-
-    .reg-f.responsive {
-        @apply py-[1em] sm:py-[2em];
-    }
-
-    .input-field>input.responsive,
-    .field-label.responsive,
-    .submit-btn.responsive {
-        @apply text-xs sm:text-base;
-    }
-
-
-    /* registration-page/email-verification.jsx */
-
-    .email-icon.responsive {
-        @apply w-[150px] h-[150px] sm:w-[200px] sm:h-[200px];
-    }
-
-    .notf-box.responsive {
-        @apply p-[3vh] text-sm sm:p-[5vh] sm:text-base;
-    }
 
     /* util.jsx - AlertBox Component*/
 
@@ -182,69 +158,19 @@
         @apply text-sm sm:text-base
     }
 
-    /* settings/index.jsx */
-
-    .setting-page {
-        @apply block w-full;
-    }
-
-    .setting-categories {
-        @apply translate-x-[-100%] transition-transform duration-500 ease-in-out h-screen absolute z-10 top-0 bg-neutral-100 dark:bg-neutral-800;
-    }
-
-    .setting-content {
-        @apply m-10
-    }
-
-    @media (min-width: 640px) {
-        .setting-categories {
-            @apply border-solid border-r-2 border-neutral-400 h-full block static bg-transparent dark:bg-transparent;
-        }
-
-        .setting-content {
-            @apply m-8
-        }
-
-        .setting-page {
-            @apply grid my-[30px];
-            --responsive-grid-differ: 20vw;
-            grid-template-columns: calc(20vw + var(--responsive-grid-differ)) calc(80vw - var(--responsive-grid-differ));
-            grid-template-rows: 100%;
-        }
-
-        .setting-categories {
-            @apply transition-none translate-x-0;
-        }
-    }
-
-    @media (min-width: 768px) and (max-width: 1024px) {
-        .setting-page {
-            --responsive-grid-differ: 10vw;
-        }
-    }
-
-    @media (min-width: 1024px) and (max-width: 1280px) {
-        .setting-page {
-            --responsive-grid-differ: 5vw;
-        }
-    }
-
-    @media (min-width: 1280px) {
-        .setting-page {
-            --responsive-grid-differ: 0vw;
-        }
-    }
-
-    /* settings/account-settings.jsx */
-    @media (max-width: 900px) {
-        .ppf-submitting-form {
-            display: flex;
-            flex-direction: column;
-            row-gap: 10px;
-        }
-    }
 
     .forget-password.responsive {
         @apply text-xs sm:text-base;
+    }
+
+    /* greeting.jsx */
+    .prompting-message.large.responsive{
+        @apply text-[1.5em] nmob:text-[2em] sm:text-[3em] lg:text-[5em]
+    }
+    .prompting-message.medium.responsive{
+        @apply text-[1em] nmob:text-[1.25em] sm:text-[1.5em] lg:text-[3em]
+    }
+    .prompting-message.responsive{
+        @apply p-4 nmob:p-8 lg:p-12;
     }
 }

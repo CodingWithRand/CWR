@@ -14,21 +14,7 @@ export default function RegistrationPage(){
     const [ registrationIframe, setRegistrationIframe ] = useState();
 
     Hooks.useDelayedEffect(() => {
-        if(login.isLoggedIn && auth.currentUser?.emailVerified){ 
-            (async () => {
-                await Functions.jobDelay(() => {
-                    try { document.querySelector('.h-reg').classList.remove("animate"); }
-                    catch (error) { console.error(error); };
-                }, 400)
-                await Functions.jobDelay(() => {
-                    try { 
-                        document.querySelector('#registration-iframe').classList.remove("animate");
-                        document.querySelector("#animation-controller").click(); 
-                    }
-                    catch (error) { console.error(error); };
-                }, 1000)
-            })().then(() => navigator("/"));
-        }
+        if(login.isLoggedIn && auth.currentUser?.emailVerified) navigator("/");
         else setRegistrationIframe(
             <iframe
                 id="registration-iframe"
@@ -54,7 +40,19 @@ export default function RegistrationPage(){
         const registrationResponseMessageHandle = async (e) => {
             const responseRegistration = e.data;
             if(responseRegistration.authenticationProgressFinished){
+                await Functions.jobDelay(() => {
+                    try { document.querySelector('.h-reg').classList.remove("animate"); }
+                    catch (error) { console.error(error); };
+                }, 400)
+                await Functions.jobDelay(() => {
+                    try { 
+                        document.querySelector('#registration-iframe').classList.remove("animate");
+                    }
+                    catch (error) { console.error(error); };
+                }, 1000)
                 setRegistrationIframe(null);
+                document.querySelector("#animation-controller").click();
+                setTimeout(() => document.querySelector("main").remove(), 2000);
                 try{
                     document.getElementById("registration-iframe").contentWindow.postMessage({}, "https://codingwithrand.vercel.app");
                     const usersResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {

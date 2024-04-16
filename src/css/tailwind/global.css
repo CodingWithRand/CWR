@@ -33,4 +33,5 @@
       height: 100%;
       object-fit: cover;
     }
+    dialog{ @apply fixed z-[9999] top-[35%] }
 }

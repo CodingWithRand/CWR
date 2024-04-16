@@ -1,14 +1,27 @@
-.effect-backdrop, .big-uobj{ 
+.effect-backdrop{ 
     height: 100%; 
     width: 100%; 
     display: flex; 
     justify-content: center; 
     align-items: center; 
     position: absolute; 
-    overflow: hidden; 
+    overflow: hidden;
 }
+
+.big-uobj, #stages{
+    height: 100%;
+    width: 100%;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    position: absolute; 
+    overflow: visible;
+    top: 0;
+    left: 0;
+    transition: width 1s ease-out, height 1s ease-out, top 1s ease-out, left 1s ease-out;
+}
+
 .effect-backdrop > div{ position: absolute; }
-.big-uobj{ z-index: 10; }
 
 .galaxy, .big-bang{
     display: flex;
@@ -85,14 +98,16 @@
 .galaxy.orangered > div{ background-color: orangered; }
 .galaxy.gold > div{ background-color: gold; }
 .big-bang > div{ background-color: white; }
-#g-1{ top: -10%; left: 1%; width: 50vmin; height: 50vmin; }
-#g-2{ bottom: -25%; right: -20%; width: 70vmin; height: 70vmin; }
-#g-3{ top: -15%; right: -5%; width: 30vmin; height: 30vmin; }
-#g-4{ bottom: -50%; left: -15%; width: 100vmin; height: 100vmin; }
-#g-5{ bottom: 20%; height: 20vmin; width: 20vmin; left: 35%; }
-#g-6{ top: 3%; height: 15vmin; width: 15vmin; right: 10%; }
-#g-7{ top: 20%; left: -15%; height: 40vmin; width: 40vmin; }
-#g-8{ top: 30%; right: 5%; height: 60vmin; width: 60vmin; }
+
+#g-1{ width: 50vmin; height: 50vmin; top: -10%; left: 1%;}
+#g-2{ width: 70vmin; height: 70vmin; bottom: -25%; right: -20%; }
+#g-3{ width: 30vmin; height: 30vmin; top: -15%; right: -5%; }
+#g-4{ width: 100vmin; height: 100vmin; bottom: -50%; left: -15%; }
+#g-5{ height: 20vmin; width: 20vmin; bottom: 20%; left: 35%; }
+#g-6{ height: 15vmin; width: 15vmin; top: 3%; right: 10%; }
+#g-7{ height: 40vmin; width: 40vmin; top: 20%; width: 40vmin; }
+#g-8{ height: 60vmin; width: 60vmin; top: 30%; width: 60vmin; }
+
 #b-b{ height: 200vh; width: 200vw; top: -50%; left: -50%; }
 
 .star{
@@ -123,4 +138,16 @@
 .star-cluster { 
     width: 100%; 
     height: 100%; 
+    transition: width 1s ease-out, height 1s ease-out;
+}
+
+.stage{
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    background-color: white;
+    box-shadow: 0 0 1rem white;
+    border-radius: 9999px;
+    pointer-events: all;
+    z-index: 5;
 }

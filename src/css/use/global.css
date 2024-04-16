@@ -486,6 +486,12 @@ canvas {
   object-fit: cover;
 }
 
+dialog {
+  position: fixed;
+  top: 35%;
+  z-index: 9999;
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;

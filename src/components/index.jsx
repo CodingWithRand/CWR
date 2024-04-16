@@ -9,7 +9,8 @@ import Cookies from "universal-cookie";
 import { SetUp } from "./setup";
 import "../css/use/index.css";
 
-const { AlertBox } = Components
+const { AlertBox, Dynamic } = Components
+const { Image } = Dynamic
 
 function Stars() {
     const stars = useMemo(() => Array.from({ length: 1000 }, (_, i) => { 
@@ -60,6 +61,45 @@ function universalExpand(){
     document.querySelector(".big-uobj").style.left = "50%";
 }
 
+function closeAllSinfs(exceptSinf=undefined){
+    for(const sinf of document.querySelectorAll(".stage-info")){
+        if(exceptSinf && exceptSinf === sinf) continue;
+        sinf.removeAttribute("style");
+        setTimeout(() => sinf.close(), 500);
+    };
+}
+
+function Stage(props){
+    return(
+        <div className={`stage ${props.status}`}>
+            <dialog id={`sinf-${props.index}`} className="stage-info">
+                <div className="dialog-box">
+                    <h1>{`Stage ${props.index}`}</h1>
+                    <h3>{props.name}</h3>
+                    <p>{props.desc}</p>
+                </div>
+                <Image constant dir="/" name="hud-scifi-panel.png" alt="stage-info-panel" cls="stage-info-panel"/>
+            </dialog>
+            <button 
+                onClick={async (event) => {
+                    event.stopPropagation();
+                    closeAllSinfs(document.getElementById(`sinf-${props.index}`));
+                    if(document.getElementById(`sinf-${props.index}`).open){
+                        document.getElementById(`sinf-${props.index}`).removeAttribute("style");
+                        setTimeout(() => document.getElementById(`sinf-${props.index}`).close(), 500);
+                    }
+                    else{
+                        document.getElementById(`sinf-${props.index}`).show();
+                        document.getElementById(`sinf-${props.index}`).style.opacity = 1;
+                        document.getElementById(`sinf-${props.index}`).style.transform = "translate(-50%, -100%)";
+                    }
+                }}  
+                id={`s-${props.index}`}
+            />
+        </div>
+    )
+}
+
 export default function IndexHomepage() {
     const cookies = new Cookies();
     const navigator = useNavigate();
@@ -100,7 +140,7 @@ export default function IndexHomepage() {
     return (
         <>
             <div className="page-container" style={{ backgroundColor: "rgb(20,18,26)" }}>
-                <div className="effect-backdrop">
+                <div className="effect-backdrop" onClick={closeAllSinfs}>
                     <div className="star-cluster">
                         <Stars />
                     </div>
@@ -109,49 +149,49 @@ export default function IndexHomepage() {
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <button id="s-1" className="stage" />
+                            <Stage status="current" index={1} name="The Beginning" desc="The beginning of the programming universe."/>
                         </div>
                         <div id="g-2" className="galaxy blueviolet">
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <button id="s-2" className="stage" />
+                            <Stage status="inactive" index={2} name="Untitled" desc="Coming soon!"/>
                         </div>
                         <div id="g-3" className="galaxy navy">
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <button id="s-3" className="stage" />
+                            <Stage status="inactive" index={3} name="Untitled" desc="Coming soon!"/>
                         </div>
                         <div id="g-4" className="galaxy navy">
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <button id="s-4" className="stage" />
+                            <Stage status="inactive" index={4} name="Untitled" desc="Coming soon!"/>
                         </div>
                         <div id="g-5" className="galaxy orangered">
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <button id="s-5" className="stage" />
+                            <Stage status="inactive" index={5} name="Untitled" desc="Coming soon!"/>
                         </div>
                         <div id="g-6" className="galaxy orangered">
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <button id="s-6" className="stage" />
+                            <Stage status="inactive" index={6} name="Untitled" desc="Coming soon!"/>
                         </div>
                         <div id="g-7" className="galaxy orangered">
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <button id="s-7" className="stage" />
+                            <Stage status="inactive" index={7} name="Untitled" desc="Coming soon!"/>
                         </div>
                         <div id="g-8" className="galaxy gold">
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <button id="s-8" className="stage" />
+                            <Stage status="inactive" index={8} name="Untitled" desc="Coming soon!"/>
                         </div>
                         <div id="b-b" className="big-bang">
                             <div id="l-1"></div>

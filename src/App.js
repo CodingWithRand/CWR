@@ -9,6 +9,7 @@ import './css/use/responsive.css';
 import './css/use/theme.css';
 import Greet from "./components/greeting";
 import AccountSettings from "./components/account-settings";
+import StagesManager from "./components/stages/stages-manager";
 
 function PageRouter() {
 
@@ -22,16 +23,13 @@ function PageRouter() {
 
     switch(path){
       case "/": title = "Home Page"; break;
+      case "/homepage": title = "Home Page"; break;
       case "/greeting": title = "Greeting Traveler..."; break;
       case "/registration": title = "Registration Page"; break;
       case "/intro": title = "Introduction"; break;
+      case "/account/settings": title = "Account Settings"; break;
       default: title = "404 Not found"; break;
     };
-
-    if(title === "404 Not found"){
-      if(path.match(/^\/users\/(.+)/)) title = "User's Dashboard";
-      else title = "404 Not found";
-    }
 
     document.title = title;
 
@@ -45,6 +43,7 @@ function PageRouter() {
       <Route exact path="/intro" element={<LoadingScreen />} />
       <Route exact path="/registration" element={<RegistrationPage />} />
       <Route exact path="/account/settings" element={<AccountSettings />}/>
+      <Route exact path="/stage/:stageName/:sectionName/:page" element={<StagesManager />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

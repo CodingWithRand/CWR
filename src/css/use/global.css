@@ -488,8 +488,36 @@ canvas {
 
 dialog {
   position: fixed;
-  top: 35%;
   z-index: 9999;
+}
+
+.crossite-iframe{
+  background-color: white;
+  width: 80%;
+  height: 80%;
+  border-radius: 100px;
+  border: 10px solid black;
+  transition: opacity 1s var(--ease-out-cubic), -webkit-transform 1s var(--ease-out-cubic);
+  transition: transform 1s var(--ease-out-cubic), opacity 1s var(--ease-out-cubic);
+  transition: transform 1s var(--ease-out-cubic), opacity 1s var(--ease-out-cubic), -webkit-transform 1s var(--ease-out-cubic);
+  opacity: 0;
+  -webkit-transform: translateY(100vh);
+          transform: translateY(100vh);
+}
+
+.crossite-iframe.animate{
+  opacity: 1;
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+}
+
+.spaceship-cockpit-panel{
+  justify-content: center;
+  overflow: hidden;
+  background-image: url("../../../public/imgs/backend-images/spaceship-cockpit.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position-x: center;
 }
 
 *, ::before, ::after {

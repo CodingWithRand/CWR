@@ -3,6 +3,7 @@ import { useGlobal } from "./global";
 import "../css/use/util.css";
 import "../css/use/theme.css";
 import "../css/use/responsive.css";
+import { useLocation } from "react-router-dom";
 
 async function asyncDelay(ms) { return new Promise((resolve) => setTimeout(() => resolve(), ms)); };
 async function jobDelay(callback, ms){
@@ -43,7 +44,27 @@ function useDelayedEffect(callback, dependencies, delay) {
       return () => clearTimeout(timerId);
     }, [...dependencies, delay]);
 }
-  
+
+async function getRegistryData(userId){
+    const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+    });
+    const registryData = await registryDataResponse.json();
+    return registryData.docData;
+}
+
+async function createNewCustomToken(userId){
+    const newTokenResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: userId, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+    })
+    const newToken = await newTokenResponse.json();
+    return newToken.data.token;
+}
+
 function Image(props){
     const { theme } = useGlobal();
     const [imgSrc, setImgSrc] = useState("");
@@ -306,6 +327,7 @@ function InputGroupField(props){
 
 function HyperspaceTeleportationBackground() {
     const { scriptLoaded } = useGlobal();
+    const location = useLocation();
     useEffect(() => {
         if(scriptLoaded.scriptLoaded) return;
         const hyperspaceTeleportationScript = document.createElement('script');
@@ -323,7 +345,7 @@ function HyperspaceTeleportationBackground() {
         animationContainer.removeChild(p5Script);
         animationContainer.removeChild(hyperspaceTeleportationScript);
         scriptLoaded.setScriptLoaded(true);
-    }, []);
+    }, [location]);
     return <div id="animation-container">
         <button id="animation-controller" style={{ pointerEvents: "none" }} />
     </div>
@@ -333,6 +355,8 @@ const Functions = {
     asyncDelay,
     jobDelay,
     syncDelay,
+    getRegistryData,
+    createNewCustomToken
 };
 
 const Components = {

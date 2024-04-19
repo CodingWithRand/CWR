@@ -33,5 +33,27 @@
       height: 100%;
       object-fit: cover;
     }
-    dialog{ @apply fixed z-[9999] top-[35%] }
+    dialog{ @apply fixed z-[9999] }
+    .crossite-iframe{
+      background-color: white;
+      width: 80%; 
+      height: 80%;
+      border-radius: 100px;
+      border: 10px solid black;
+      transition: transform 1s var(--ease-out-cubic), opacity 1s var(--ease-out-cubic);
+      opacity: 0;
+      transform: translateY(100vh);
+    }
+    .crossite-iframe.animate{
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .spaceship-cockpit-panel{
+      justify-content: center;
+      overflow: hidden;
+      background-image: url("../../../public/imgs/backend-images/spaceship-cockpit.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position-x: center;
+    }
 }

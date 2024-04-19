@@ -1,5 +1,5 @@
 import "../css/use/registration-page.css"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { auth } from "../scripts/firebase";
 import { useNavigate } from "react-router-dom";
 import { Functions, Hooks } from "../scripts/util";
@@ -11,16 +11,47 @@ import { Components } from "../scripts/util";
 export default function RegistrationPage(){
     const navigator = useNavigate();
     const { login } = useGlobal();
-    const [ registrationIframe, setRegistrationIframe ] = useState();
 
     Hooks.useDelayedEffect(() => {
-        if(login.isLoggedIn && auth.currentUser?.emailVerified) navigator("/");
-        else setRegistrationIframe(
-            <iframe
-                id="registration-iframe"
-                src="https://codingwithrand.vercel.app/registration"
-            />
-        )
+        if(login.isLoggedIn && auth.currentUser?.emailVerified){
+            navigator("/");
+            window.location.reload();
+        }else{
+            (async () => {
+                try{
+                    const usersResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+                    });
+                    const users = await usersResponse.json();
+                    const userId = users.docData[localStorage.getItem("clientUsername")];
+                    const userAuthenticatedStatesResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+                    });
+                    const userAuthenticatedStates = await userAuthenticatedStatesResponse.json();
+                    const thisSiteState = userAuthenticatedStates.docData[window.location.origin];
+
+                    let authenticationToken;
+                    if(thisSiteState?.authenticated) authenticationToken = await Functions.createNewCustomToken(userId)
+
+                    if(authenticationToken){
+                        await signInWithCustomToken(auth, authenticationToken);
+                        const registryData = await Functions.getRegistryData(userId);
+                        await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: Date() } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+                        })
+                        navigator("/");
+                    };
+                }catch(e){
+                    console.error(e)
+                }
+            })();
+        }
     }, [login.isLoggedIn], 100);
 
     useEffect(() => {
@@ -50,11 +81,10 @@ export default function RegistrationPage(){
                     }
                     catch (error) { console.error(error); };
                 }, 1000)
-                setRegistrationIframe(null);
                 document.querySelector("#animation-controller").click();
                 setTimeout(() => document.querySelector("main").remove(), 2000);
                 try{
-                    document.getElementById("registration-iframe").contentWindow.postMessage({}, "https://codingwithrand.vercel.app");
+                    document.getElementById("registration-iframe").contentWindow.postMessage({ action: "resetFirebaseAuth" }, "https://codingwithrand.vercel.app");
                     const usersResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -62,27 +92,17 @@ export default function RegistrationPage(){
                     });
                     const users = await usersResponse.json();
                     const userId = users.docData[responseRegistration.clientUsername]
-                    const thisSiteTokenResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ uid: users.docData[responseRegistration.clientUsername], adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-                    })
-                    const thisSiteToken = await thisSiteTokenResponse.json();
-                    const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-                    });
-                    const registryData = await registryDataResponse.json();
+                    const newToken = await Functions.createNewCustomToken(userId);
+                    await signInWithCustomToken(auth, newToken);
+                    const registryData = await Functions.getRegistryData(userId);
                     await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: true, token: thisSiteToken.data.token, at: Date() } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: Date() } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
                     })
-                    await signInWithCustomToken(auth, thisSiteToken.data.token);
+                    localStorage.setItem("clientUsername", auth.currentUser.displayName);
                 }catch(e){
                     console.error(e);
-                    //window.location.reload();
                 }
             }
         }
@@ -91,12 +111,16 @@ export default function RegistrationPage(){
     }, [])
 
     return(
-        <div className="page-container" style={{ justifyContent: "center", overflow: "hidden", backgroundImage: 'url("/imgs/backend-images/spaceship-cockpit.png")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPositionX: 'center' }}>
+        <div className="page-container spaceship-cockpit-panel">
             <div className="setup">
                 <BgMusicController />
             </div>
             <h1 className="h-reg responsive">Please let me know who you are</h1>
-            {registrationIframe}
+            <iframe
+                id="registration-iframe"
+                className="crossite-iframe"
+                src="https://codingwithrand.vercel.app/registration"
+            />
             <Components.HyperspaceTeleportationBackground />
         </div>
     );

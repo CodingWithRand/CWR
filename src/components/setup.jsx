@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/use/setup.css';
-import { Components, Hooks } from '../scripts/util';
+import { Components, Functions, Hooks } from '../scripts/util';
 import { useGlobal } from '../scripts/global';
 import { signOut } from '@firebase/auth';
 import { auth } from '../scripts/firebase';
@@ -40,8 +40,6 @@ function ThemeChanger(props){
         }
     }, [theme.theme])
 
-    useEffect(() => localStorage.setItem("theme", theme.theme), [theme.theme])
-
     function changeTheme(){
         switch(theme.theme){
             case 'light':
@@ -73,20 +71,15 @@ function SignOut(props){
 
     return (
         <button id='signout' className='setup-btn' onClick={async () => {
-            const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-            });
-            const registryData = await registryDataResponse.json();
+            const registryData = await Functions.getRegistryData(auth.currentUser.uid);
             await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: false, token: null, at: null } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: false, at: null } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
             });
-            signOut(auth);
+            await signOut(auth);
             navigator("/registration");
-            // window.location.reload();
+            window.location.reload();
         }}
             onMouseEnter={() => onHoverSetupBtn("signout")} 
             onMouseLeave={() => onHoverSetupBtn("signout")}

@@ -1,9 +1,9 @@
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useGlobal } from "../scripts/global";
 import { Components } from "../scripts/util";
 import { signOut } from "@firebase/auth";
 import { auth } from "../scripts/firebase";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Functions } from "../scripts/util";
 import Cookies from "universal-cookie";
 import { SetUp } from "./setup";
@@ -61,6 +61,67 @@ function universalExpand(){
     document.querySelector(".big-uobj").style.left = "50%";
 }
 
+function scrollableUniverse(){
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let startScrollLeft = 0;
+    let startScrollTop = 0;
+
+    const scrollContainer = document.querySelector('.effect-backdrop');
+
+    function handleContainerMouseDown(e){
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startScrollLeft = scrollContainer.scrollLeft;
+        startScrollTop = scrollContainer.scrollTop;
+    }
+
+    function handleDocumentMouseMove(e){
+        if (!isDragging) return;
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        scrollContainer.scrollLeft = startScrollLeft - deltaX;
+        scrollContainer.scrollTop = startScrollTop - deltaY;
+    }
+
+    function handleDocumentScrollEnd() { isDragging = false };
+
+    function handleContainerTouchStart(e) {
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startScrollLeft = scrollContainer.scrollLeft;
+        startScrollTop = scrollContainer.scrollTop;
+    }
+
+    function handleContainerTouchMove(e) {
+        if (!isDragging) return;
+        const deltaX = e.touches[0].clientX - startX;
+        const deltaY = e.touches[0].clientY - startY;
+        scrollContainer.scrollLeft = startScrollLeft - deltaX;
+        scrollContainer.scrollTop = startScrollTop - deltaY;
+        e.preventDefault(); // Prevent page scroll on touchmove
+    }
+
+    scrollContainer.removeEventListener('mousedown', handleContainerMouseDown);
+    document.removeEventListener('mousemove', handleDocumentMouseMove);
+    document.removeEventListener('mouseup', handleDocumentScrollEnd);
+
+    scrollContainer.removeEventListener('touchstart', handleContainerTouchStart);
+    document.removeEventListener('touchmove', handleContainerTouchMove);
+    document.removeEventListener('touchend', handleDocumentScrollEnd);
+
+    scrollContainer.addEventListener('mousedown', handleContainerMouseDown);
+    document.addEventListener('mousemove', handleDocumentMouseMove);
+    document.addEventListener('mouseup', handleDocumentScrollEnd);
+
+    scrollContainer.addEventListener('touchstart', handleContainerTouchStart);
+    document.addEventListener('touchmove', handleContainerTouchMove);
+    document.addEventListener('touchend', handleDocumentScrollEnd);
+}
+
 function closeAllSinfs(exceptSinf=undefined){
     for(const sinf of document.querySelectorAll(".stage-info")){
         if(exceptSinf && exceptSinf === sinf) continue;
@@ -70,11 +131,12 @@ function closeAllSinfs(exceptSinf=undefined){
 }
 
 function Stage(props){
+    const navigator = useNavigate();
     return(
         <div className={`stage ${props.status}`}>
             <dialog id={`sinf-${props.index}`} className="stage-info">
                 <div className="dialog-box">
-                    <h1>{`Stage ${props.index}`}</h1>
+                    <h1 onClick={() => navigator(`/stage/${props.name.toLowerCase().replace(/ /g, "-")}/${props.sectionNames[props.currentSectionProgress || 0].toLowerCase().replace(/ /g, "-") || ""}/1`)}>{`Stage ${props.index} (${props.currentSectionProgress || 0}/${props.totalSections || "NA"})`}</h1>
                     <h3>{props.name}</h3>
                     <p>{props.desc}</p>
                 </div>
@@ -103,6 +165,7 @@ function Stage(props){
 export default function IndexHomepage() {
     const cookies = new Cookies();
     const navigator = useNavigate();
+    const location = useLocation();
     const { login } = useGlobal();
 
     useEffect(() => {
@@ -111,6 +174,8 @@ export default function IndexHomepage() {
             navigator("/intro?redirectFrom=homepage");
         }
     }, [login.isLoggedIn, cookies.get("watchedIntro")])
+
+    useEffect(scrollableUniverse, [location])
 
     useEffect(() => {
         let effectTimeout = [];
@@ -149,7 +214,7 @@ export default function IndexHomepage() {
                             <div id="l-1"></div>
                             <div id="l-2"></div>
                             <div id="l-3"></div>
-                            <Stage status="current" index={1} name="The Beginning" desc="The beginning of the programming universe."/>
+                            <Stage status="current" index={1} name="The Beginning" sectionNames={["Foundation of Programming", "Tools, Languages & Technologies", "Types & Contexts"]} totalSections={3} desc="The beginning of the programming universe."/>
                         </div>
                         <div id="g-2" className="galaxy blueviolet">
                             <div id="l-1"></div>

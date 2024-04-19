@@ -23,17 +23,7 @@ html, body, #root{ overflow-y: auto; }
     transform: translateY(-25vh);
 }
 
-.h-reg.animate, #registration-iframe.animate{
+.h-reg.animate{
     opacity: 1;
     transform: translateY(0);
-}
-
-#registration-iframe{
-    background-color: white;
-    width: 80%; 
-    height: 80%;
-    border-radius: 100px;
-    border: 10px solid black;
-    transition: transform 1s var(--ease-out-cubic), opacity 1s var(--ease-out-cubic);
-    transform: translateY(100vh);
 }

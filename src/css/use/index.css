@@ -195,3 +195,8 @@
     margin: 0 1rem;
 }
 .stage-info .stage-info-panel{ min-width: 20rem; min-height: 12rem; }
+
+.stage.completed .dialog-box h1{
+    color: greenyellow;
+    text-shadow: 0 0 1rem yellowgreen;
+}

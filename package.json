@@ -15,7 +15,7 @@
     "react": "^18",
     "react-dom": "^18",
     "universal-cookie": "^6.1.1",
-    "vercel": "^33.0.2"
+    "vercel": "^34.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",

@@ -1,7 +1,7 @@
 "use client"
 
 import "./client.css"
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { auth } from "@/glient/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, updateProfile } from "@firebase/auth"
 import { useLoadingState } from "@/glient/loading";
@@ -24,6 +24,8 @@ export default function SignUp() {
     const [signUpSuccess, setSUS] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
     const [errMsg, setErrMsg] = useState("");
+    
+    const setLoadingState = useLoadingState();
 
     useEffect(() => {
         if (userEmail !== "" && userPass !== "" && userName !== "" && passConfirmed) validate(false);
@@ -38,38 +40,34 @@ export default function SignUp() {
         if (userEmail === "" || userPass === "" || userName === "" || !passConfirmed) return
         e.preventDefault();
 
-        const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-        })
-        const total_username_list = await response.json()
-        if (total_username_list.docData[userName]) {
-            setSUS(true); setErrMsg("This username has been taken");
-            return;
-        }
+        setLoadingState(true);
 
         try{
+            const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+            })
+            const total_username_list = await response.json()
+            if (total_username_list.docData[userName]) {
+                setSUS(true); setErrMsg("This username has been taken");
+                setLoadingState(false)
+                return;
+            }
             const userCredential = await createUserWithEmailAndPassword(auth, userEmail, userPass)
             sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
             updateProfile(userCredential.user, { displayName: userName });
-            fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", { 
+            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ path: "util/availableUser", writeData: { [userName]: userCredential.user.uid }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-            }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
-            const userAuthenticatedToken = await userCredential.user.getIdTokenResult()
-            const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+            })
+            const registryData = await Neutral.Functions.getRegistryData(userCredential.user.uid);
+            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-            });
-            const registryData = await registryDataResponse.json();
-            fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData.docData, [window.location.origin]: { authenticated: true, token: userAuthenticatedToken.token, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-            }).then((res) => res.json().then((data) => console.log(data))).catch((error) => console.log(error))
+                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData, [window.location.origin]: { authenticated: true, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+            })
         } catch (error) {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -85,6 +83,7 @@ export default function SignUp() {
                     break;
             }
         }
+        setLoadingState(false);
     }
 
     return (

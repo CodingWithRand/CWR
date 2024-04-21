@@ -50,6 +50,8 @@ export function Global({ children }){
     setTheme(localStorage.getItem("theme"))
   }, [])
 
+  useEffect(() => localStorage.setItem("theme", theme), [theme])
+
   useEffect(() => {
     if(cookies.get("login") === undefined) cookies.set("login", "undefined");
     else cookies.set("login", isLoggedIn);

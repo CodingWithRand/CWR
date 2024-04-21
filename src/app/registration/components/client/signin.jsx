@@ -43,30 +43,27 @@ export default function SignIn() {
             const username = user.displayName;
             if (username === userName.current) {
                 login.logIn(true);
-                const userAuthenticatedToken = await userCredential.user.getIdTokenResult()
                 try {
-                    const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+                    const registryData = await Neutral.Functions.getRegistryData(user.uid)
+                    await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-                    });
-                    const registryData = await registryDataResponse.json();
-                    const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: true, token: userAuthenticatedToken.token, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: true, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                     })
-                    const res = await req.json()
-                    console.log(res)
                 } catch (e) { console.error(e); }
-                window.location.replace("/");
+                await Neutral.Functions.asyncDelay(1000);
+                if(window === window.parent) window.location.replace("/");
             } else {
                 debug(true);
                 setErrMsg("Invalid username");
                 signOut(auth);
             }
         } catch (error) {
-            if (error.code === "auth/invalid-credential") { debug(true); setErrMsg("Email or password is incorrect!"); }
+            if (error.code === "auth/invalid-credential") { 
+                debug(true); 
+                setErrMsg("Email or password is incorrect!"); 
+            }
+            else if (error.code === "auth/too-many-requests") { debug(true); setErrMsg("Too many sign in attempts requested, please try again later"); }
             else { debug(true); setErrMsg("Something went wrong, please try again later"); console.log(error) };
         }
         setLoadingState(false);
@@ -76,6 +73,8 @@ export default function SignIn() {
         e.preventDefault();
         refValue.current = e.target.value;
     };
+
+    useEffect(() => console.log(result, errMsg), [])
 
     return (
         <>

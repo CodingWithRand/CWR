@@ -331,8 +331,6 @@ function ThemeChanger(){
         }
     }, [theme.theme])
 
-    Client.Hooks.useDelayedEffect(() => localStorage.setItem("theme", theme.theme), [theme.theme], 10)
-
     function changeTheme(e){
         e.preventDefault();
         switch(theme.theme){
@@ -486,6 +484,15 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
     return showingComponent
 }
 
+function PreventCrossSiteComponent({ children }){
+    const [ component, setComponent ] = useState();
+    useEffect(() => {
+        if(window === window.parent) setComponent(children);
+        else setComponent(<></>);
+    }, []);
+    return component
+}
+
 
 const Components = {
     Dynamic: {
@@ -501,7 +508,8 @@ const Components = {
     UserPFP,
     Media,
     CWRFooter,
-    AuthenticateGate
+    AuthenticateGate,
+    PreventCrossSiteComponent
 };
 
 const Hooks = {

@@ -5,20 +5,21 @@ const LoadingState = createContext(undefined);
 
 export default function Loading({ children, cover, loadingPage }){
     const [ loadingState, setLoadingState ] = useState(false);
-    const [ showingComponent, setShowingComponent ] = useState(children);
 
     useEffect(() => {
-        if(cover && loadingState) setShowingComponent(<>
-            {loadingPage || <Neutral.Components.LoadingPage transparentBg />}
-            {children}
-        </>);
-        else if(!cover && loadingState) setShowingComponent(<Neutral.Components.LoadingPage transparentBg />)
-        else if(!loadingState) setShowingComponent(children)
+        if(loadingState) document.querySelector("#page-parent > main").style.display = "none";
+        else document.querySelector("#page-parent > main").removeAttribute("style");
     }, [loadingState])
 
     return(
         <LoadingState.Provider value={setLoadingState}>
-           {showingComponent}
+            <div id="page-parent">
+                {
+                    cover && loadingState ? loadingPage || <Neutral.Components.LoadingPage transparentBg /> :
+                    !cover && loadingState ? <Neutral.Components.LoadingPage transparentBg /> : <></>
+                }
+                {children}
+            </div>
         </LoadingState.Provider>
     )
 }

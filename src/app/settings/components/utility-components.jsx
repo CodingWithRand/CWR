@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useGlobal } from "@/glient/global";
 import { useLoadingState } from "@/glient/loading";
 import Client from "@/glient/util";
+import Neutral from "@/app/global/neutral/util";
 
 const { Dynamic } = Client.Components;
 const { Image } = Dynamic;
@@ -23,28 +24,19 @@ export function Username(){
 
 export function SignOutBTN() {
     const setLoadingState = useLoadingState();
-    
-    return (
-        <button onClick={async () => {
-            setLoadingState(true);
-            try {
-                const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-                });
-                const registryData = await registryDataResponse.json();
-                const req = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: false, token: null, at: null } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-                });
-                const res = await req.json();
-                console.log(res);
-            } catch (e) { console.error(e); }
+
+    return <button onClick={async () => {
+        setLoadingState(true);
+        try {
+            const registryData = await Neutral.Functions.getRegistryData(auth.currentUser.uid);
+            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: false, at: null } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+            });
             await signOut(auth);
-            setLoadingState(false);
-            window.location.replace("/registration");
-        }}><Image name="exit.png" dir="icon/" width={35} height={35} /></button>
-    )
+        } catch (e) { console.error(e); }
+        setLoadingState(false);
+        window.location.replace("/registration");
+    }}><Image name="exit.png" dir="icon/" width={35} height={35} /></button>
 }

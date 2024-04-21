@@ -22,6 +22,26 @@ function syncDelay(ms) {
     };
 };
 
+async function getRegistryData(userId){
+    const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+    });
+    const registryData = await registryDataResponse.json();
+    return registryData.docData;
+}
+
+async function createNewCustomToken(userId){
+    const newTokenResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: userId, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+      })
+      const newToken = await newTokenResponse.json();
+      return newToken.data.token;
+}
+
 function LoadingPage(props) {
     return(
         <div className={`loading-bar ${props?.transparentBg ? "bg-[#f0f0f080]" : "bg-[#f0f0f0]"}`}>
@@ -40,6 +60,8 @@ const Functions = {
     asyncDelay,
     jobDelay,
     syncDelay,
+    getRegistryData,
+    createNewCustomToken
 };
 
 const Neutral = {

@@ -10,6 +10,7 @@ import Loading from "@/glient/loading";
 import { auth } from "../global/client/firebase";
 import { signInWithCustomToken } from "firebase/auth";
 import Neutral from "../global/neutral/util";
+import AuthenticationManagementPanel from "./components/account-settings/authentication-management-panel";
 
 export default function SettingPage() {
   const { AuthenticateGate } = Client.Components; 
@@ -24,7 +25,6 @@ export default function SettingPage() {
         window.addEventListener("message", async (event) => {
           if(targetWebsite.some(url => url === event.origin)){
             if(event.data.action === "signalAuthenticate" && event.data.username){
-              console.log("reauthenticate", event.data.parentWindowTheme);
               if(event.data.parentWindowTheme === "dark" || event.data.parentWindowTheme === "default-os") document.documentElement.classList.add("dark");
               const usersResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
                   method: "POST",
@@ -70,6 +70,7 @@ export default function SettingPage() {
           <UpdateProfilePicture />
           <UpdateUsername />
           <UpdatePassword />
+          <AuthenticationManagementPanel />
         </main>
       </Loading>
     </AuthenticateGate>

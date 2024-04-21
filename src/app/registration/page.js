@@ -9,20 +9,33 @@ import Script from "next/script";
 import Loading from "@/glient/loading";
 import Neutral from "@/geutral/util";
 import { useGlobal } from "@/glient/global";
+import { signOut } from "firebase/auth";
+import { auth } from "../global/client/firebase";
 
 export default function RegistrationPage() {
     const { AuthenticateGate } = Client.Components; 
     const { authUser } = useGlobal();
     return (
         <AuthenticateGate authenticatedAction={async () => {
-            const targetWebsite = [
-                "https://cwr-education.vercel.app",
-            ];
-            window.addEventListener("message", (event) => {
-                if(targetWebsite.some(url => url === event.origin) && event.data.action === "resetFirebaseAuth") indexedDB.deleteDatabase("firebaseLocalStorageDb");
+            if(window !== window.parent){
+                const targetWebsite = [
+                    "https://cwr-education.vercel.app",
+                ];
+                window.addEventListener("message", (event) => {
+                    if(targetWebsite.some(url => url === event.origin) && event.data.action === "resetFirebaseAuth") indexedDB.deleteDatabase("firebaseLocalStorageDb");
+                });
+                await Neutral.Functions.asyncDelay(500);
+                targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
+            }
+        }} isolateAction={async () => {
+            const userAuthenticatedStatesResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
             });
-            await Neutral.Functions.asyncDelay(500);
-            targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
+            const userAuthenticatedStates = await userAuthenticatedStatesResponse.json();
+            const thisSiteStates = userAuthenticatedStates.docData[window.location.origin];
+            if(!thisSiteStates.authenticated) signOut(auth);
         }}>
             <Loading cover>
                 <main>

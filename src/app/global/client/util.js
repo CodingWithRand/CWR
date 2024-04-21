@@ -469,10 +469,11 @@ function CWRFooter(){
     )
 }
 
-function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction }) {
+function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction, isolateAction }) {
     const { LoadingPage } = Neutral.Components;
     const { login, authUser } = useGlobal();
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
+    useDelayedEffect(() => isolateAction && isolateAction(), [], 500)
     useDelayedEffect(() => {
         if(login.isLoggedIn === true && authUser.isAuthUser !== null && authUser.isAuthUser.emailVerified){
             authenticatedAction && authenticatedAction();

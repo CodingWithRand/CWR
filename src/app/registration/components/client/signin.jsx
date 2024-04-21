@@ -1,7 +1,7 @@
 "use client"
 
 import "./client.css"
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Client from "@/glient/util";
 import Neutral from "@/geutral/util";
 import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "@firebase/auth"
@@ -44,11 +44,12 @@ export default function SignIn() {
             if (username === userName.current) {
                 login.logIn(true);
                 try {
+                    const ip = await Neutral.Functions.getClientIp();
                     const registryData = await Neutral.Functions.getRegistryData(user.uid)
                     await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: {...registryData.docData, [window.location.origin]: { authenticated: true, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
                     })
                 } catch (e) { console.error(e); }
                 await Neutral.Functions.asyncDelay(1000);
@@ -73,8 +74,6 @@ export default function SignIn() {
         e.preventDefault();
         refValue.current = e.target.value;
     };
-
-    useEffect(() => console.log(result, errMsg), [])
 
     return (
         <>

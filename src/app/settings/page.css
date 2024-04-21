@@ -23,6 +23,11 @@
         @apply bg-[#EAEAEA] dark:bg-[#050505] flex mx-2 sm:mx-4 p-0 top-0 flex-row h-full gap-x-2 sm:gap-x-4 items-center;
     }
     
+    .session-info { @apply text-black dark:text-white }
+    .session-info h3{
+        @apply text-[20px] sm:text-[30px]
+    }
+
 }
 
 :root{

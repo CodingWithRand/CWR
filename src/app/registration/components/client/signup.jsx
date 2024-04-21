@@ -63,10 +63,11 @@ export default function SignUp() {
                 body: JSON.stringify({ path: "util/availableUser", writeData: { [userName]: userCredential.user.uid }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
             })
             const registryData = await Neutral.Functions.getRegistryData(userCredential.user.uid);
+            const ip = await Neutral.Functions.getClientIp();
             await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData, [window.location.origin]: { authenticated: true, at: Date() } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
+                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData, [window.location.origin]: { authenticated: true, at: { place: ip, time: Date() }} }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
             })
         } catch (error) {
             const errorCode = error.code;

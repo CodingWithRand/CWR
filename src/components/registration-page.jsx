@@ -7,6 +7,7 @@ import { useGlobal } from "../scripts/global";
 import { signInWithCustomToken } from "firebase/auth";
 import { BgMusicController } from "./setup";
 import { Components } from "../scripts/util";
+import { signOut } from "@firebase/auth";
 
 export default function RegistrationPage(){
     const navigator = useNavigate();
@@ -14,8 +15,20 @@ export default function RegistrationPage(){
 
     Hooks.useDelayedEffect(() => {
         if(login.isLoggedIn && auth.currentUser?.emailVerified){
-            navigator("/");
-            window.location.reload();
+            (async () => {
+                const userAuthenticatedStatesResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+                });
+                const userAuthenticatedStates = await userAuthenticatedStatesResponse.json();
+                const thisSiteStates = userAuthenticatedStates.docData[window.location.origin];
+                if(!thisSiteStates.authenticated) signOut(auth);
+                else{
+                    navigator("/");
+                    window.location.reload();
+                }
+            })();
         }else{
             (async () => {
                 try{
@@ -40,10 +53,11 @@ export default function RegistrationPage(){
                     if(authenticationToken){
                         await signInWithCustomToken(auth, authenticationToken);
                         const registryData = await Functions.getRegistryData(userId);
+                        const ip = await Functions.getClientIp();
                         await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: Date() } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+                            body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
                         })
                         navigator("/");
                     };
@@ -93,13 +107,14 @@ export default function RegistrationPage(){
                     const users = await usersResponse.json();
                     const userId = users.docData[responseRegistration.clientUsername]
                     const newToken = await Functions.createNewCustomToken(userId);
-                    await signInWithCustomToken(auth, newToken);
                     const registryData = await Functions.getRegistryData(userId);
+                    const ip = await Functions.getClientIp();
                     await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: Date() } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
                     })
+                    await signInWithCustomToken(auth, newToken);
                     localStorage.setItem("clientUsername", auth.currentUser.displayName);
                 }catch(e){
                     console.error(e);

@@ -276,6 +276,7 @@ export default function IndexHomepage() {
                 }} 
                 action={() => {
                     navigator("/registration");
+                    window.location.reload();
                     signOut(auth);
                 }}/>
             </div>

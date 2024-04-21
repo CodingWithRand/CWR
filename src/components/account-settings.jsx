@@ -14,18 +14,22 @@ export default function AccountSettings() {
     }, []);
 
     useEffect(() => {
-        const handleSettingRegistry = (event) => {
-            if(event.origin === "https://codingwithrand.vercel.app" && event.data.status === "ready"){
-                document.getElementById("account-settings-iframe").contentWindow.postMessage({ action: "resetFirebaseAuth" }, "https://codingwithrand.vercel.app");
-                document.getElementById("account-settings-iframe").contentWindow.postMessage({ 
-                    action: "signalAuthenticate", 
-                    username: localStorage.getItem("clientUsername"),
-                    parentWindowTheme: theme.theme
-                }, "https://codingwithrand.vercel.app")
+        const handleChildIFrameMessages = (event) => {
+            if(event.origin === "https://codingwithrand.vercel.app"){
+                if(event.data.status === "ready"){
+                    document.getElementById("account-settings-iframe").contentWindow.postMessage({ action: "resetFirebaseAuth" }, "https://codingwithrand.vercel.app");
+                    document.getElementById("account-settings-iframe").contentWindow.postMessage({ 
+                        action: "signalAuthenticate", 
+                        username: localStorage.getItem("clientUsername"),
+                        parentWindowTheme: theme.theme
+                    }, "https://codingwithrand.vercel.app")
+                }
+                else if(event.data.action === "signalDeauthenticate") window.location.replace("/registration");
             }
         }
-        window.addEventListener("message", handleSettingRegistry)
-        return () => window.removeEventListener("message", handleSettingRegistry)
+
+        window.addEventListener("message", handleChildIFrameMessages);
+        return () => window.removeEventListener("message", handleChildIFrameMessages)
     }, [])
     return(
         <div className="page-container spaceship-cockpit-panel">

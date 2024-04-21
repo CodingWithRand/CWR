@@ -65,6 +65,12 @@ async function createNewCustomToken(userId){
     return newToken.data.token;
 }
 
+async function getClientIp(){
+    const ipResponse = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipResponse.json();
+    return ipData.ip
+}
+
 function Image(props){
     const { theme } = useGlobal();
     const [imgSrc, setImgSrc] = useState("");
@@ -356,7 +362,8 @@ const Functions = {
     jobDelay,
     syncDelay,
     getRegistryData,
-    createNewCustomToken
+    createNewCustomToken,
+    getClientIp
 };
 
 const Components = {

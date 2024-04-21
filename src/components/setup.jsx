@@ -119,12 +119,12 @@ function MoreSettings(props){
     const navigator = useNavigate();
 
     return (
-        <button id='more' className='setup-btn' onClick={() => {navigator(`account/settings`);}}
+        <button id='more' className='setup-btn' onClick={() => {navigator(`account/settings`); window.location.reload();}}
             onMouseEnter={() => onHoverSetupBtn("more")} 
             onMouseLeave={() => onHoverSetupBtn("more")}
         >
             <Image constant dir="icon/" name="dots.png" alt="more-settings-btn-icon" cls="setup-btn-icon-shadow theme custom" />
-            <div className='setup-desc theme text-color' style={{width: `${props.parentSize / props.childNumber}px`}}>More</div>
+            <div className='setup-desc' style={{width: `${props.parentSize / props.childNumber}px`}}>More</div>
         </button>
     )
 }

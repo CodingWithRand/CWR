@@ -9,7 +9,10 @@ const { userExist, getUserInfo } = require("./api/roblox/main");
 const { crud, verifyToken, createCustomToken, setCustomUserClaims } = require("./api/provider/main");
 
 server.use("/post/provider/cwr/*", cors({
-    origin: ["https://codingwithrand.vercel.app", "https://cwr-education.vercel.app"]
+    origin: [
+        "https://codingwithrand.vercel.app", 
+        "https://cwr-education.vercel.app"
+    ]
 }));
 
 server.use(bodyParser.json())
@@ -17,6 +20,16 @@ server.use(bodyParser.json())
 server.use("/post/provider/cwr/*", (req, res, next) => {
     if(req.method === "POST" && req.body.adminKey === process.env.FIREBASE_PERSONAL_ADMIN_KEY) next();
     else response.unauthorized(res, "Invalid admin key");
+})
+
+server.use((req, res, next) => {
+    const originalSend = res.send;
+    res.send = function (body) {
+        originalSend.call(this, body);
+        console.log("ending connection")
+        res.end();
+    };
+    next();
 })
 
 server.use((req, res, next) => {

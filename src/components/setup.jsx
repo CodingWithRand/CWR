@@ -71,12 +71,7 @@ function SignOut(props){
 
     return (
         <button id='signout' className='setup-btn' onClick={async () => {
-            const registryData = await Functions.getRegistryData(auth.currentUser.uid);
-            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: false, at: null } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-            });
+            await Functions.cwrAuthMethod.updateRegistryData(auth.currentUser.uid, { origin: window.location.origin, authenticated: false, ip: null, date: null });
             await signOut(auth);
             navigator("/registration");
             window.location.reload();

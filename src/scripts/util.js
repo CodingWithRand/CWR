@@ -45,25 +45,40 @@ function useDelayedEffect(callback, dependencies, delay) {
     }, [...dependencies, delay]);
 }
 
-async function getRegistryData(userId){
-    const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-    });
-    const registryData = await registryDataResponse.json();
-    return registryData.docData;
+async function sitePostApiFetch(path, data=undefined) {
+    try{
+        const response = await fetch(`https://codingwithrand.vercel.app/global/server/api/${path}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data: data })
+        })
+        if(response.status === 200){
+            const responseJSON = await response.json();
+            return responseJSON.data;
+        }
+    }catch(e){
+        console.error(e);
+    }
 }
 
-async function createNewCustomToken(userId){
-    const newTokenResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid: userId, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-    })
-    const newToken = await newTokenResponse.json();
-    return newToken.data.token;
+async function siteGetApiFetch(path) {
+    try{
+        const response = await fetch(`https://codingwithrand.vercel.app/global/server/api/${path}`)
+        if(response.status === 200){
+            const responseJSON = await response.json();
+            return responseJSON.data;
+        }
+    }catch(e){
+        console.error(e);
+    }
 }
+
+const updateUsername = async (username, uid) => await sitePostApiFetch("firebase/auth/uu", { username: username, uid: uid });
+const updateRegistryData = async (uid, regData) => await sitePostApiFetch("firebase/auth/urd", { uid: uid, regData: regData });
+
+const getAllUsernames = async () => await siteGetApiFetch("firebase/auth/gau");
+const getRegistryData = async (uid) => await sitePostApiFetch("firebase/auth/grd", { uid: uid });
+const createNewCustomToken = async (uid) => await sitePostApiFetch("firebase/auth/cnct", { uid: uid });
 
 async function getClientIp(){
     const ipResponse = await fetch("https://api.ipify.org?format=json");
@@ -361,9 +376,14 @@ const Functions = {
     asyncDelay,
     jobDelay,
     syncDelay,
-    getRegistryData,
-    createNewCustomToken,
-    getClientIp
+    cwrAuthMethod: {
+        getRegistryData,
+        createNewCustomToken,
+        getClientIp,
+        getAllUsernames,
+        updateRegistryData,
+        updateUsername
+    }
 };
 
 const Components = {

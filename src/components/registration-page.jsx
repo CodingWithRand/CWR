@@ -16,13 +16,8 @@ export default function RegistrationPage(){
     Hooks.useDelayedEffect(() => {
         if(login.isLoggedIn && auth.currentUser?.emailVerified){
             (async () => {
-                const userAuthenticatedStatesResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-                });
-                const userAuthenticatedStates = await userAuthenticatedStatesResponse.json();
-                const thisSiteStates = userAuthenticatedStates.docData[window.location.origin];
+                const userAuthenticatedStates = await Functions.cwrAuthMethod.getRegistryData(auth.currentUser.uid)
+                const thisSiteStates = userAuthenticatedStates[window.location.origin];
                 if(!thisSiteStates.authenticated) signOut(auth);
                 else{
                     navigator("/");
@@ -32,33 +27,18 @@ export default function RegistrationPage(){
         }else{
             (async () => {
                 try{
-                    const usersResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-                    });
-                    const users = await usersResponse.json();
-                    const userId = users.docData[localStorage.getItem("clientUsername")];
-                    const userAuthenticatedStatesResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-                    });
-                    const userAuthenticatedStates = await userAuthenticatedStatesResponse.json();
-                    const thisSiteState = userAuthenticatedStates.docData[window.location.origin];
+                    const users = await Functions.cwrAuthMethod.getAllUsernames();
+                    const userId = users[localStorage.getItem("clientUsername")];
+                    const userAuthenticatedStates = await Functions.cwrAuthMethod.getRegistryData(userId)
+                    const thisSiteStates = userAuthenticatedStates[window.location.origin];
 
                     let authenticationToken;
-                    if(thisSiteState?.authenticated) authenticationToken = await Functions.createNewCustomToken(userId)
+                    if(thisSiteStates?.authenticated) authenticationToken = await Functions.cwrAuthMethod.createNewCustomToken(userId)
 
                     if(authenticationToken){
                         await signInWithCustomToken(auth, authenticationToken);
-                        const registryData = await Functions.getRegistryData(userId);
-                        const ip = await Functions.getClientIp();
-                        await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-                        })
+                        const ip = await Functions.cwrAuthMethod.getClientIp();
+                        await Functions.cwrAuthMethod.updateRegistryData(userId, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})
                         navigator("/");
                     };
                 }catch(e){
@@ -99,21 +79,11 @@ export default function RegistrationPage(){
                 setTimeout(() => document.querySelector("main").remove(), 2000);
                 try{
                     document.getElementById("registration-iframe").contentWindow.postMessage({ action: "resetFirebaseAuth" }, "https://codingwithrand.vercel.app");
-                    const usersResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-                    });
-                    const users = await usersResponse.json();
-                    const userId = users.docData[responseRegistration.clientUsername]
-                    const newToken = await Functions.createNewCustomToken(userId);
-                    const registryData = await Functions.getRegistryData(userId);
-                    const ip = await Functions.getClientIp();
-                    await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: process.env.REACT_APP_FIREBASE_PERSONAL_ADMIN_KEY })
-                    })
+                    const users = await Functions.cwrAuthMethod.getAllUsernames();
+                    const userId = users[responseRegistration.clientUsername]
+                    const newToken = await Functions.cwrAuthMethod.createNewCustomToken(userId);
+                    const ip = await Functions.cwrAuthMethod.getClientIp();
+                    await Functions.cwrAuthMethod.updateRegistryData(userId, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})
                     await signInWithCustomToken(auth, newToken);
                     localStorage.setItem("clientUsername", auth.currentUser.displayName);
                 }catch(e){

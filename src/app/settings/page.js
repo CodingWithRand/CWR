@@ -7,13 +7,15 @@ import UpdatePassword from "./components/account-settings/update-password";
 import Client from "@/glient/util";
 import { SignOutBTN, Username } from "./components/utility-components";
 import Loading from "@/glient/loading";
-import { auth } from "../global/client/firebase";
+import { auth } from "@/glient/firebase";
 import { signInWithCustomToken } from "firebase/auth";
-import Neutral from "../global/neutral/util";
 import AuthenticationManagementPanel from "./components/account-settings/authentication-management-panel";
+import { getAllUsernames, getRegistryData, createNewCustomToken } from "@/gerver/apiCaller"; 
+import { useGlobal } from "@/glient/global";
 
 export default function SettingPage() {
   const { AuthenticateGate } = Client.Components; 
+  const { authUser } = useGlobal();
 
   return (
     <AuthenticateGate unauthenticatedAction={() => {
@@ -26,22 +28,12 @@ export default function SettingPage() {
           if(targetWebsite.some(url => url === event.origin)){
             if(event.data.action === "signalAuthenticate" && event.data.username){
               if(event.data.parentWindowTheme === "dark" || event.data.parentWindowTheme === "default-os") document.documentElement.classList.add("dark");
-              const usersResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-              });
-              const users = await usersResponse.json();
-              const userId = users.docData[event.data.username];
-              const userAuthenticatedStatesResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-              });
-              const userAuthenticatedStates = await userAuthenticatedStatesResponse.json();
-              const thisSiteStates = userAuthenticatedStates.docData[window.location.origin];
+              const users = await getAllUsernames();
+              const userId = users[event.data.username];
+              const userAuthenticatedStates = await getRegistryData(userId);
+              const thisSiteStates = userAuthenticatedStates[window.location.origin];
               if(thisSiteStates.authenticated){
-                const newToken = await Neutral.Functions.createNewCustomToken(userId);
+                const newToken = await createNewCustomToken(userId);
                 await signInWithCustomToken(auth, newToken);
               }
             }else if(event.data.action === "resetFirebaseAuth") indexedDB.deleteDatabase("firebaseLocalStorageDb");
@@ -49,6 +41,12 @@ export default function SettingPage() {
         })
         targetWebsite.forEach((url) => window.parent.postMessage({ status: "ready", message: "Message Event Listener is ready!"}, url));
       }
+    }}
+    isolateAction={async () => {
+        if(!authUser.isAuthUser) return;
+        const userAuthenticatedStates = await getRegistryData(auth.currentUser.uid);
+        const thisSiteStates = userAuthenticatedStates[window.location.origin];
+        if(!thisSiteStates.authenticated) signOut(auth);
     }}>
       <Loading cover>
         <nav id="navbar">

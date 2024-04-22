@@ -8,6 +8,7 @@ import { useLoadingState } from "@/glient/loading";
 import Client from "@/glient/util";
 import Neutral from"@/geutral/util";
 import EmailVerifificationPage from "./email-verification";
+import { getAllUsernames, updateRegistryData, updateUsername } from "@/gerver/apiCaller";
 
 export default function SignUp() {
     const { Switch, AlertBox, Dynamic } = Client.Components;
@@ -43,32 +44,18 @@ export default function SignUp() {
         setLoadingState(true);
 
         try{
-            const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/availableUser", adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-            })
-            const total_username_list = await response.json()
-            if (total_username_list.docData[userName]) {
+            const total_username_list = await getAllUsernames();
+            if (total_username_list[userName]) {
                 setSUS(true); setErrMsg("This username has been taken");
                 setLoadingState(false)
                 return;
             }
             const userCredential = await createUserWithEmailAndPassword(auth, userEmail, userPass)
-            sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
-            updateProfile(userCredential.user, { displayName: userName });
-            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", { 
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/availableUser", writeData: { [userName]: userCredential.user.uid }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-            })
-            const registryData = await Neutral.Functions.getRegistryData(userCredential.user.uid);
+            await sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
+            await updateProfile(userCredential.user, { displayName: userName });
+            await updateUsername(userName, userCredential.user.uid);
             const ip = await Neutral.Functions.getClientIp();
-            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Web", writeData: {...registryData, [window.location.origin]: { authenticated: true, at: { place: ip, time: Date() }} }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-            })
+            await updateRegistryData(userCredential.user.uid, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})
         } catch (error) {
             const errorCode = error.code;
             const errorMessage = error.message;

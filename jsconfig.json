@@ -4,7 +4,9 @@
       "@/*": ["./src/*"],
       "@/glient/*": ["./src/app/global/client/*"],
       "@/gss/*": ["./src/app/global/css/*"],
-      "@/geutral/*": ["./src/app/global/neutral/*"]
+      "@/geutral/*": ["./src/app/global/neutral/*"],
+      "@/gerver/*": ["./src/app/global/server/*"],
+      "@/gpi/*": ["./src/app/global/server/api/*"],
     }
   }
 }

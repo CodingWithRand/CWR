@@ -2,7 +2,6 @@
 
 const nextConfig = {
     reactStrictMode: false,
-    output: 'export',
     env: {
         FIREBASE_API_KEY: "AIzaSyD9E-p_S6YuWa3UXenbPoCKWjIj7iZoAUA",
         FIREBASE_AUTH_DOMAIN: "codingwithrand.firebaseapp.com",
@@ -13,6 +12,27 @@ const nextConfig = {
         FIREBASE_MEASUREMENT_ID: "G-CFMLXXM8L4",
         FIREBASE_PERSONAL_ADMIN_KEY: "23049rijfvjmkff3-4095t89re-23098549034050034958utr90-3240-432"
     },
+    async headers() {
+        return [
+            {
+                source: "/global/server/api/:path*",
+                headers: [
+                    {
+                        key: "Access-Control-Allow-Origin",
+                        value: "*",
+                    },
+                    {
+                        key: "Access-Control-Allow-Methods",
+                        value: "GET, POST, PUT, DELETE, OPTIONS",
+                    },
+                    {
+                        key: "Access-Control-Allow-Headers",
+                        value: "Content-Type, Authorization",
+                    },
+                ],
+            },
+        ];
+    }
 }
 
 module.exports = nextConfig

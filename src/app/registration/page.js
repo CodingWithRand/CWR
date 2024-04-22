@@ -10,7 +10,8 @@ import Loading from "@/glient/loading";
 import Neutral from "@/geutral/util";
 import { useGlobal } from "@/glient/global";
 import { signOut } from "firebase/auth";
-import { auth } from "../global/client/firebase";
+import { auth } from "@/glient/firebase";
+import { getRegistryData } from "@/gerver/apiCaller";
 
 export default function RegistrationPage() {
     const { AuthenticateGate } = Client.Components; 
@@ -28,13 +29,9 @@ export default function RegistrationPage() {
                 targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
             }
         }} isolateAction={async () => {
-            const userAuthenticatedStatesResponse= await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-            });
-            const userAuthenticatedStates = await userAuthenticatedStatesResponse.json();
-            const thisSiteStates = userAuthenticatedStates.docData[window.location.origin];
+            if(!authUser.isAuthUser) return;
+            const userAuthenticatedStates = await getRegistryData(auth.currentUser.uid);
+            const thisSiteStates = userAuthenticatedStates[window.location.origin];
             if(!thisSiteStates.authenticated) signOut(auth);
         }}>
             <Loading cover>

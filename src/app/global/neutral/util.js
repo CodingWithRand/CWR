@@ -22,26 +22,6 @@ function syncDelay(ms) {
     };
 };
 
-async function getRegistryData(userId){
-    const registryDataResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: `util/authenticationSessions/${userId}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-    });
-    const registryData = await registryDataResponse.json();
-    return registryData.docData;
-}
-
-async function createNewCustomToken(userId){
-    const newTokenResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid: userId, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-      })
-      const newToken = await newTokenResponse.json();
-      return newToken.data.token;
-}
-
 async function getClientIp(){
     const ipResponse = await fetch("https://api.ipify.org?format=json");
     const ipData = await ipResponse.json();
@@ -66,8 +46,6 @@ const Functions = {
     asyncDelay,
     jobDelay,
     syncDelay,
-    getRegistryData,
-    createNewCustomToken,
     getClientIp
 };
 

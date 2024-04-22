@@ -1,9 +1,10 @@
 import { auth } from "@/glient/firebase"
 import { useEffect, useState } from "react"
 import Client from "@/glient/util";
-import Neutral from "@/geutral/util";
 import Loading, { useLoadingState } from "@/glient/loading";
 import { useGlobal } from "@/glient/global";
+import { getRegistryData, updateRegistryData } from "@/gerver/apiCaller";
+import { signOut } from "firebase/auth";
 
 const { Section } = Client.Components;
 
@@ -16,13 +17,8 @@ function SessionsInfo(){
         if(!authUser.isAuthUser) return
         (async () => {
             let sc = [];
-            const userSessionsResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-            })
-            const userSessions = await userSessionsResponse.json()
-            for(const [site, data] of Object.entries(userSessions.docData)){
+            const userSessions = await getRegistryData(auth.currentUser.uid)
+            for(const [site, data] of Object.entries(userSessions)){
                 if(!data.authenticated) continue;
                 const locationResponse = await fetch(`https://ipwho.is/${data.at.place}`);
                 const location = await locationResponse.json();
@@ -45,13 +41,11 @@ function SessionsInfo(){
                             <dd>{data.at.place}</dd>
                         </dl>
                         <button style={{ width: "100%", color: "dimgray" }} onClick={async () => {
-                            const registryData = await Neutral.Functions.getRegistryData(auth.currentUser.uid);
-                            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData, [site]: { authenticated: false, at: null } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-                            })
-                            if(site === window.location.origin && window !== window.parent) window.location.replace("/registration");
+                            await updateRegistryData(auth.currentUser.uid, { origin: site, authenticated: false, ip: null, date: null });
+                            if(site === window.location.origin && window === window.parent){
+                                window.location.replace("/registration");
+                                signOut(auth)
+                            }
                             else window.parent.postMessage({ action: "signalDeauthenticate" }, site);
                             document.getElementById(site.replace("https://", "").replace(".vercel.app", "")).remove();
                         }}><b>Logout this session</b></button>
@@ -71,20 +65,13 @@ function SessionsInfo(){
         <Loading cover>
             {sessionComponents}
             <button onClick={async () => {
-                const userSessionsResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-                })
-                const userSessions = await userSessionsResponse.json()
-                for(const [site, _] of Object.entries(userSessions.docData)){
-                    const registryData = await Neutral.Functions.getRegistryData(auth.currentUser.uid);
-                    await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${auth.currentUser.uid}/Web`, writeData: {...registryData, [site]: { authenticated: false, at: null } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-                    })
-                    if(site === window.location.origin && window !== window.parent) window.location.replace("/registration");
+                const userSessions = await getRegistryData(auth.currentUser.uid)
+                for(const [site, _] of Object.entries(userSessions)){
+                    await updateRegistryData(auth.currentUser.uid, { origin: site, authenticated: false, ip: null, date: null });
+                    if(site === window.location.origin && window === window.parent){
+                        window.location.replace("/registration");
+                        signOut(auth)
+                    }
                     else window.parent.postMessage({ action: "signalDeauthenticate" }, site);
                     document.getElementById("page-parent").remove()
                 }

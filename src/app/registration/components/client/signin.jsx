@@ -8,6 +8,7 @@ import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "@fi
 import { useGlobal } from "@/glient/global";
 import { auth } from "@/glient/firebase";
 import { useLoadingState } from "@/glient/loading";
+import { updateRegistryData } from "@/gerver/apiCaller";
 
 export default function SignIn() {
 
@@ -43,15 +44,8 @@ export default function SignIn() {
             const username = user.displayName;
             if (username === userName.current) {
                 login.logIn(true);
-                try {
-                    const ip = await Neutral.Functions.getClientIp();
-                    const registryData = await Neutral.Functions.getRegistryData(user.uid)
-                    await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Web`, writeData: {...registryData, [window.location.origin]: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })
-                    })
-                } catch (e) { console.error(e); }
+                const ip = await Neutral.Functions.getClientIp();
+                await updateRegistryData(user.uid, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})
                 await Neutral.Functions.asyncDelay(1000);
                 if(window === window.parent) window.location.replace("/");
             } else {

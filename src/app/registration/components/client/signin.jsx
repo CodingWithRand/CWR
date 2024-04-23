@@ -44,6 +44,7 @@ export default function SignIn() {
             const username = user.displayName;
             if (username === userName.current) {
                 login.logIn(true);
+                localStorage.setItem("clientUsername", userName.current);
                 const ip = await Neutral.Functions.getClientIp();
                 await updateRegistryData(user.uid, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})
                 await Neutral.Functions.asyncDelay(1000);

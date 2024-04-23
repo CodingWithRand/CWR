@@ -13,6 +13,13 @@ export default function UpdateUsername() {
         e.preventDefault();
         if(isValid){ 
             await updateProfile(auth.currentUser, { displayName: userName });
+            if(window === window.parent) localStorage.setItem("clientUsername", userName);
+            else{
+                const targetWebsite = [
+                    "https://cwr-education.vercel.app",
+                ];
+                targetWebsite.forEach((url) => window.parent.postMessage({ action: "signalUpdateClientUsername", newUsername: userName }, url));
+            }
             window.location.reload();
         }
     }

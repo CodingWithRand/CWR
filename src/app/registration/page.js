@@ -9,9 +9,9 @@ import Script from "next/script";
 import Loading from "@/glient/loading";
 import Neutral from "@/geutral/util";
 import { useGlobal } from "@/glient/global";
-import { signOut } from "firebase/auth";
+import { signOut, signInWithCustomToken } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
-import { getRegistryData } from "@/gerver/apiCaller";
+import { getRegistryData, getAllUsernames, updateRegistryData, createNewCustomToken } from "@/gerver/apiCaller";
 
 export default function RegistrationPage() {
     const { AuthenticateGate } = Client.Components; 
@@ -33,7 +33,18 @@ export default function RegistrationPage() {
             const userAuthenticatedStates = await getRegistryData(auth.currentUser.uid);
             const thisSiteStates = userAuthenticatedStates[window.location.origin];
             if(!thisSiteStates.authenticated) signOut(auth);
-        }}>
+        }} unauthenticatedAction={async () => {
+            const usernames = await getAllUsernames();
+            const userAuthenticatedStates = await getRegistryData(usernames[localStorage.getItem("clientUsername")]);
+            const thisSiteStates = userAuthenticatedStates[window.location.origin];
+            if(thisSiteStates.authenticated){
+                const newToken = await createNewCustomToken(usernames[localStorage.getItem("clientUsername")]);
+                await signInWithCustomToken(auth, newToken);
+                const ip = await Neutral.Functions.getClientIp();
+                await updateRegistryData(auth.currentUser.uid, { origin: window.location.origin, authenticated: true, ip: ip, date: Date() });
+            }
+        }}
+        >
             <Loading cover>
                 <main>
                     <Script src="/vanilla-js/frontend/registration.js"/>

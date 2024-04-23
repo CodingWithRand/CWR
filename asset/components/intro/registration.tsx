@@ -1,14 +1,20 @@
 import React, { useEffect, useState, useMemo, useRef } from "react"
 import { Animated, StyleSheet, Text, TouchableHighlight, Easing, View, useColorScheme, TextInput, Modal, useWindowDimensions, Alert, ActivityIndicator } from "react-native"
 import WebView from "react-native-webview"
-import { jobDelay, asyncDelay } from "../../scripts/util"
+import { jobDelay, asyncDelay, getClientIp, useDelayedEffect, retryFetch } from "../../scripts/util"
 import { TypingText } from "../util";
 import { horizontalScale, verticalScale, moderateScale } from "../../scripts/Metric"
 import auth from "@react-native-firebase/auth"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteStackParamList } from "../../scripts/native-stack-navigation-types";
 import { GoogleSignin, GoogleSigninButton, statusCodes } from "react-native-google-signin";
-import { FIREBASE_PERSONAL_ADMIN_KEY } from "@env"
+import { FIREBASE_PERSONAL_ADMIN_KEY, FIREBASE_GOOGLE_PROVIDER_WEB_CLIENT_ID } from "@env"
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useGlobal } from "../../scripts/global";
+
+GoogleSignin.configure({ 
+    webClientId: FIREBASE_GOOGLE_PROVIDER_WEB_CLIENT_ID
+})
 
 async function signInWithGoogle() {
     try {
@@ -19,41 +25,22 @@ async function signInWithGoogle() {
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     
         const userCredential = await auth().signInWithCredential(googleCredential);
-
-        let successfullySetClaims = false;
-        let counter = 0;
-        while(!successfullySetClaims) {
-            let fetchResponse;
-            try {
-                fetchResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-                })
-                if(fetchResponse?.status === 503 || fetchResponse?.status === 502) {
-                    console.log(fetchResponse?.status)
-                    await asyncDelay(1000)
-                    if(counter === 10) break;
-                    continue
-                } else {
-                    console.log(fetchResponse?.status)
-                }
-                successfullySetClaims = true
-            } catch (error) {}
-        }
-        await userCredential.user?.getIdToken(true);
-
-        const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
+        if(userCredential.user.displayName) AsyncStorage.setItem("clientUsername", userCredential.user.displayName);
+        const ip = await getClientIp();
+        const updateRegistryResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ uid: userCredential.user.uid, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+            body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Mobile`, writeData: { planreminder :{ authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
         })
-        const mobileAuthToken = await response.json();
-        await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ path: `util/authenticationSessions`, collectionName: userCredential.user.uid, docName: "Mobile", writeData: { authenticated: true, token: mobileAuthToken.data.token }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-        });
+        if(updateRegistryResponse.status === 404){
+            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Mobile", writeData: { planreminder :{ authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+            });
+        }
+
+        await retryFetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
 
     } catch (error: any) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -68,7 +55,8 @@ async function signInWithGoogle() {
     }
 }
 
-async function verifyUsername(username: string) {
+async function verifyUsername(username: string | null) {
+    if(username === null) return;
     const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -79,22 +67,15 @@ async function verifyUsername(username: string) {
     return uid;
 }
 
-async function getUserWebSession(uid: string){
+async function getUserWebSessions(uid: string){
     const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ path: `util/authenticationSessions/${uid}/Web`, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
     })
-    const userWebSession = await response.json();
-    return userWebSession;
-}
-
-async function verifySessionToken(sessionToken: string) {
-    return await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/verifyToken", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: sessionToken, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-    })
+    const userWebSessions = await response.json();
+    const providerWebSessions = userWebSessions.docData["https://codingwithrand.vercel.app"];
+    return providerWebSessions;
 }
 
 async function implementMobileAuthentication(uid: string) {
@@ -105,34 +86,22 @@ async function implementMobileAuthentication(uid: string) {
     })
     const mobileAuthToken = await response.json();
     const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
-    await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
+    if(userCredential.user.displayName) AsyncStorage.setItem("clientUsername", userCredential.user.displayName);
+    const ip = await getClientIp();
+    const updateRegistryResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: `util/authenticationSessions`, collectionName: userCredential.user.uid, docName: "Mobile", writeData: { authenticated: true, token: mobileAuthToken.data.token }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-    });
-    let successfullySetClaims = false
-    let counter = 0;
-    while(!successfullySetClaims) {
-        let fetchResponse;
-        try {
-            fetchResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "password" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-            })
-            if(fetchResponse?.status === 503 || fetchResponse?.status === 502) {
-                console.log(fetchResponse?.status)
-                await asyncDelay(1000)
-                if(counter === 10) break
-                continue
-            } else {
-                console.log(fetchResponse?.status)
-            }
-            
-            successfullySetClaims = true
-        } catch (error) {}
+        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Mobile`, writeData: { planreminder :{ authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+    })
+    if(updateRegistryResponse.status === 404){
+        await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ path: "util/authenticationSessions", collectionName: userCredential.user.uid, docName: "Mobile", writeData: { planreminder :{ authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+        });
     }
-    await userCredential.user?.getIdToken(true);
+
+    await retryFetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "password" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
 }
 
 export default function RegistrationPage({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "Registration"> }) {
@@ -144,6 +113,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ injectJS, setInjectJS ] = useState<string>();
     const [ cwrRegistrationType, setCWRRegistrationType ] = useState<string>("");
+    const { authUser } = useGlobal();
     const inputUsername = useRef<string>();
     const registrationBtnsFadingAnim = new Animated.Value(0);
     const registrationPageTitle = new Animated.Value(0);
@@ -230,12 +200,6 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     ), [ width, height ])
 
     useEffect(() => {
-        GoogleSignin.configure({ 
-            webClientId: "12217560937-khiiikcchh24kojufsg8iuei8envrgcc.apps.googleusercontent.com"    
-        })
-    }, [])
-
-    useEffect(() => {
         // Reset Animation
         Animated.timing(logoFadingAnim, {
             toValue: 0,
@@ -284,7 +248,45 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                     useNativeDriver: true,
                 }).start()
             }, 1000)
-            if(auth().currentUser) await jobDelay(() => navigation.replace("Dashboard"), 3000)
+            try{
+                const cachedUsername = await AsyncStorage.getItem("clientUsername");
+                const uid = await verifyUsername(cachedUsername);
+                const MobileAuthSessionsResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ path: `util/authenticationSessions/${uid}/Mobile`, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                })
+                const MobileAuthSessions = await MobileAuthSessionsResponse.json();
+                const planreminderMobileAuthSession = MobileAuthSessions.docData["planreminder"];
+                if(planreminderMobileAuthSession.authenticated && !auth().currentUser){
+                    console.log("Welcome back", cachedUsername);
+                    const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ uid: uid, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                    })
+                    const mobileAuthToken = await response.json();
+                    const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
+                    const userTokens = await auth().currentUser?.getIdTokenResult();
+                    const userClaims = userTokens?.claims;
+                    if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
+                    const ip = await getClientIp();
+                    await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Mobile`, writeData: { planreminder: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                    });
+                }
+                else if(!planreminderMobileAuthSession.authenticated && auth().currentUser) await auth().signOut();
+                else if(planreminderMobileAuthSession.authenticated && auth().currentUser){
+                    const userTokens = await auth().currentUser?.getIdTokenResult();
+                    const userClaims = userTokens?.claims;
+                    if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
+                    await jobDelay(() => navigation.replace("Dashboard"), 3000);
+                }
+            }catch(error){
+                console.error(error);   
+            } 
             if(width > height) await jobDelay(() => {
                 Animated.timing(appNameFadingAnim, {
                     toValue: 0,
@@ -328,6 +330,23 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
         })();
     }, [ width, height ]);
 
+    useDelayedEffect(() => {
+        if(authUser.isAuthUser){
+            console.log("authenticated user");
+            (async () => {
+                const userTokens = await auth().currentUser?.getIdTokenResult();
+                const userClaims = userTokens?.claims;
+                try{
+                    await GoogleSignin.hasPlayServices();
+                    if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
+                }catch(error){
+                    console.error(error);
+                }
+                navigation.replace("Dashboard");
+            })();
+        }
+    }, [authUser.isAuthUser], 3000)
+
     return(
         <View style={[styles.fullPageCenter, { height: height }]}>
             <Modal animationType="slide" visible={showModal} transparent={true}>
@@ -347,15 +366,12 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                                 setLoading(true);
                                 const uid = await verifyUsername(inputUsername.current || "")
                                 if(uid) {
-                                    const userWebSession = await getUserWebSession(uid);
-                                    if(userWebSession.docData.authenticated){
-                                        const tokenVerificationResult = await verifySessionToken(userWebSession.docData.token);
-                                        if(tokenVerificationResult.ok) {
-                                            await implementMobileAuthentication(uid);
-                                            setLoading(false);
-                                            setShowModal(false);
-                                            return;
-                                        };
+                                    const userWebSession = await getUserWebSessions(uid);
+                                    if(userWebSession.authenticated){
+                                        await implementMobileAuthentication(uid);
+                                        setLoading(false);
+                                        setShowModal(false);
+                                        return;
                                     };
                                     setInjectJS(loginFocusJS(inputUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true })));
                                     setCWRRegistrationType("login")

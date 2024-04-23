@@ -6,8 +6,11 @@ import type { RouteStackParamList } from "../../scripts/native-stack-navigation-
 import { horizontalScale, moderateScale } from "../../scripts/Metric";
 import { GoogleSignin } from "react-native-google-signin";
 import { NativeModules } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import BackgroundFetch from "react-native-background-fetch";
+import { FIREBASE_PERSONAL_ADMIN_KEY } from "@env"
+import { retryFetch } from "../../scripts/util";
 
 const { AndroidNativeUtil } = NativeModules;
 
@@ -16,7 +19,7 @@ export default function Dashboard({ navigation }: { navigation: NativeStackNavig
     const { width } = useWindowDimensions();
     const switchesEvent = {
         intenseMode: useState(false),
-    } 
+    };
 
     useEffect(() => {
         (async () => {
@@ -26,24 +29,49 @@ export default function Dashboard({ navigation }: { navigation: NativeStackNavig
 
     useEffect(() => {
         (async () => {
-            console.log(await AsyncStorage.getItem("intenseMode"));
             switchesEvent.intenseMode[1](await AsyncStorage.getItem("intenseMode") === "true" && await AndroidNativeUtil.checkWriteSettingsPermission());
+            await AsyncStorage.setItem("currentBackgroundTaskId", "-1");
+            let currentBackgroundTaskId: undefined | string;
+            BackgroundFetch.configure(
+                {
+                    minimumFetchInterval: 15,
+                    stopOnTerminate: false,
+                    startOnBoot: true,
+                },
+                async (taskId) => {
+                    if(!currentBackgroundTaskId){
+                        currentBackgroundTaskId = taskId;
+                        AsyncStorage.setItem("currentBackgroundTaskId", taskId);
+                        BackgroundFetch.finish(taskId);
+                    }
+                    await AndroidNativeUtil.setScreenBrightness(0);
+                    await AndroidNativeUtil.setVolume(0);
+                    console.log("aaaa")
+                    BackgroundFetch.finish(taskId)
+                }
+            )
+            BackgroundFetch.start();
         })()
-    }, [switchesEvent.intenseMode[0]])
+    }, [switchesEvent.intenseMode[0]]);
 
     async function promptSignOut(){
         try {
             const userTokens = await auth().currentUser?.getIdTokenResult();
             const userClaims = userTokens?.claims;
             console.log(userClaims?.authenticatedThroughProvider);
+            await retryFetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", { path: `util/authenticationSessions/${auth().currentUser?.uid}/Mobile`, writeData: { planreminder :{ authenticated: false, at: { place: null, time: null } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
             if(auth().currentUser?.providerData.some(provider => provider.providerId === "google.com") && userClaims?.authenticatedThroughProvider === "google.com") {
                 await GoogleSignin.revokeAccess();
                 await GoogleSignin.signOut();
             }
-            auth().signOut();
+            await auth().signOut();
             navigation.replace("Registration");
         } catch (e) {
-            console.error(e);
+            if((e as Error).message === "SIGN_IN_REQUIRED" && auth().currentUser){
+                await auth().signOut();
+                navigation.replace("Registration");
+            }
+            console.error((e as Error).message);
         }
     }
 

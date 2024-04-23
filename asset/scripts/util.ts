@@ -27,3 +27,34 @@ export async function jobDelay(callback: () => void, ms: number) {
       resolve(null);
     }, ms))
 }
+
+export async function retryFetch(url: string, body: object, retryLimit: number = 10) {
+  let successfullyFetched = false;
+  let counter = 0;
+  while(!successfullyFetched) {
+    let fetchResponse;
+    try {
+        fetchResponse = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        })
+        if(fetchResponse?.status === 503 || fetchResponse?.status === 502) {
+            console.log(fetchResponse?.status)
+            await asyncDelay(1000)
+            if(counter === retryLimit) break;
+            continue
+        } else {
+            console.log(fetchResponse?.status)
+        }
+        successfullyFetched= true
+    } catch (error) {}
+  }
+  return successfullyFetched;
+}
+
+export async function getClientIp(){
+  const ipResponse = await fetch("https://api.ipify.org?format=json");
+  const ipData = await ipResponse.json();
+  return ipData.ip
+}

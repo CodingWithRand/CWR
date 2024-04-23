@@ -25,6 +25,7 @@ export default function AccountSettings() {
                     }, "https://codingwithrand.vercel.app")
                 }
                 else if(event.data.action === "signalDeauthenticate") window.location.replace("/registration");
+                else if(event.data.action === "signalUpdateClientUsername") localStorage.setItem("clientUsername", event.data.newUsername);
             }
         }
 

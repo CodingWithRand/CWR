@@ -13,4 +13,5 @@ module.exports = {
     forbidden: (sender, msg=undefined) => sender.status(403).json({ error: msg || "Forbidden!"}),
     notFound: (sender, msg=undefined) => sender.status(404).json({ error: msg || "API not found!" }),
     unsupportContentType: (sender, msg=undefined) => sender.status(415).json({ error: msg || "Unsupported content-type!"}),
+    badGateway: (sender, msg=undefined) => sender.status(502).json({ error: msg || "Request failed due to the error occur in the server"}),
 }

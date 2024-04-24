@@ -26,6 +26,7 @@ function filteredSend(res, processedData){
         case "400": response.badRequest(res, respondingBody); break;
         case "404": response.notFound(res, respondingBody); break;
         case "415": response.unsupportContentType(res, respondingBody); break;
+        case "502": response.badGateway(res, respondingBody); break;
     }
 }
 

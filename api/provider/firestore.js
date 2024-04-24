@@ -3,6 +3,8 @@ const { firestore } = require("./initialize");
 const firebaseTools = require("firebase-tools");
 const providerResponse = require("./response");
 
+const { init, def } = firestore
+
 async function collectionDelete(path){
     return firebaseTools.firestore.delete(path, {
         project: "codingwithrand",
@@ -16,15 +18,15 @@ async function crud(req, res) {
     const mode = req.params.mode
     const reqAction = req.query;
     const realDocPath = collectionName && docName ? path + "/" + collectionName + "/" + docName : path
-    const documentContent = await firestore.doc(realDocPath).get();
+    const documentContent = await init.doc(realDocPath).get();
     let responseJson;
     if(documentContent.exists) switch(mode){
-        case 'ref': responseJson = await providerResponse.firestore.doc(200, firestore.doc(realDocPath), 'Ref'); break;
+        case 'ref': responseJson = await providerResponse.firestore.doc(200, init.doc(realDocPath), 'Ref'); break;
         case 'get': responseJson = await providerResponse.firestore.doc(200, documentContent, 'Snap'); break;
         case 'read': responseJson = await providerResponse.firestore.doc(200, documentContent.data(), 'Data'); break;
         case 'update': 
             try{ 
-                await firestore.doc(path).set(writeData, { merge: true });
+                await init.doc(path).set(writeData, { merge: true });
                 responseJson = { 204: "Document updated" };
             }
             catch (e) { responseJson = { 502: e.code + e.message } };
@@ -32,14 +34,14 @@ async function crud(req, res) {
         case 'delete': 
             switch(reqAction.deleteAction){
                 case 'field':
-                    await firestore.doc(realDocPath).set({ [fieldKey]: firestore.FieldValue.delete() }, { merge: true });
+                    await init.doc(realDocPath).set({ [fieldKey]: def.FieldValue.delete() }, { merge: true });
                     break;
                 case 'document':
                     if(reqAction.cleanDeletion === 'true'){
                         if(await collectionDelete(path)) responseJson = { 204: "Document has been entirely deleted" };
                         else responseJson = { 502: "Failed to entirely delete the document" };
                     }else{
-                        await firestore.doc(realDocPath).delete();
+                        await init.doc(realDocPath).delete();
                     }
                     break;
             }
@@ -49,7 +51,7 @@ async function crud(req, res) {
     } else if(!documentContent.exists && mode === "create") {
         if(!docName || !collectionName) return responseJson = { 400: "Document name or collection name are missing" }
         try {
-            await firestore.collection(path + "/" + collectionName).doc(docName).set(writeData || {}, { merge: true });
+            await init.collection(path + "/" + collectionName).doc(docName).set(writeData || {}, { merge: true });
             responseJson = { 201: `New document has been created in the collection "${collectionName}" of '${path}'` };
         } catch (e) { 
             responseJson = { 400: e.code + e.message };

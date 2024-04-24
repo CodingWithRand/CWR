@@ -7,6 +7,9 @@ admin.initializeApp({
 });
 
 module.exports = {
-  firestore: admin.firestore(),
+  firestore: {
+    init: admin.firestore(),
+    def: admin.firestore
+  },
   auth: admin.auth()
 }

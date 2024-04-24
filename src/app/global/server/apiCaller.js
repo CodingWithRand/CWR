@@ -57,12 +57,13 @@ async function siteGetApiFetch(path, retry=5) {
 }
 
 /**
- * Update a user's username in the CWR's firebase database
- * @param {string} username user's username to be altered (selector)
+ * Set a user's username as a new one in the CWR's firebase database
+ * @param {string} newUsername new user's username
  * @param {string} uid user's id (constant)
+ * @param {string | undefined} oldUsername old user's username to be removed, omit if opt to register new username.
  * @returns {Promise<void>}
  */
-const updateUsername = async (username, uid) => await sitePostApiFetch("firebase/auth/uu", { username: username, uid: uid });
+const updateUsername = async (newUsername, uid, oldUsername=undefined) => await sitePostApiFetch("firebase/auth/uu", { newUsername: newUsername, uid: uid, oldUsername: oldUsername });
 /**
  * Update a user's registry data in the CWR's firebase database
  * @param {string} uid user's username to be altered (selector)

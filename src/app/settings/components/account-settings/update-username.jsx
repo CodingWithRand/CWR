@@ -2,6 +2,7 @@ import { useState } from "react";
 import Client from "@/glient/util";
 import { updateProfile } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
+import { updateUsername } from "@/gerver/apiCaller";
 
 const { Section } = Client.Components;
 const { InputField } = Client.Components.Dynamic;
@@ -12,6 +13,7 @@ export default function UpdateUsername() {
     async function changeDisplayName(e){
         e.preventDefault();
         if(isValid){ 
+            await updateUsername(userName, auth.currentUser.uid, auth.currentUser.displayName);
             await updateProfile(auth.currentUser, { displayName: userName });
             if(window === window.parent) localStorage.setItem("clientUsername", userName);
             else{

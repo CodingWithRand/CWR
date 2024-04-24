@@ -1,9 +1,12 @@
 "use server"
 
-import { read, update } from "./firestore";
+import { del, read, update } from "./firestore";
 
 const getAllUsernames = async () => await read("util/availableUser");
-const updateUsername = async (username, uid) => await update("util/availableUser", { [username]: uid });
+const updateUsername = async (newUsername, uid, oldUsername=undefined) => {
+    if(oldUsername) await del("util/availableUser", "field", oldUsername);
+    await update("util/availableUser", { [newUsername]: uid });
+}
 
 const updateRegistryData = async (userId, data) => await update(`util/authenticationSessions/${userId}/Web`, {[data.origin]: { authenticated: data.authenticated, at: { place: data.ip, time: data.date } }})
 

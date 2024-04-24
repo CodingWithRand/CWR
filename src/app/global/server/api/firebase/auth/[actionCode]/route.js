@@ -1,3 +1,5 @@
+"use server"
+
 import { NextResponse } from "next/server";
 import { updateUsername, getAllUsernames, updateRegistryData, getRegistryData, createNewCustomToken } from "../../auth";
 
@@ -7,7 +9,7 @@ export async function POST(request, context){
         let data;
         switch(context.params.actionCode){
             case "uu":
-                await updateUsername(body.data.username, body.data.uid);
+                await updateUsername(body.data.newUsername, body.data.uid, body.data.oldUsername);
                 break;
             case "urd":
                 await updateRegistryData(body.data.uid, body.data.regData);

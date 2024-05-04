@@ -1,2 +1,2 @@
 # Pre-release Log
-*Latest Change* - Host to vercel
+*Latest Change* - About me page finished

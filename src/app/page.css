@@ -47,14 +47,26 @@
     }
 
     #navbar ul{
-        @apply bg-[#EAEAEA] dark:bg-[#050505] flex mx-4 p-0 top-0 flex-row h-full gap-x-4 items-center;
+        @apply bg-[#EAEAEA] dark:bg-[#050505] flex mx-4 p-0 top-0 flex-row h-full items-center;
+    }
+
+    #navbar #menu li{
+        @apply w-full sm:w-auto;
+    }
+
+    #navbar ul li a{
+        @apply block w-full px-2 py-4 sm:w-auto;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+
+    #navbar ul li a:hover{
+        @apply bg-[#050505] text-white dark:bg-[#EAEAEA] dark:text-black
     }
 
     #navbar #menu{
-        @apply hidden absolute m-0 p-4 top-full flex-col h-max gap-y-4 opacity-0 sm:flex sm:relative opacity-100 sm:mx-4 sm:p-0 sm:top-0 sm:flex-row sm:h-full sm:gap-x-4;
+        @apply hidden absolute m-0 top-full flex-col h-max opacity-0 text-center sm:flex sm:relative opacity-100 sm:mx-4 sm:top-0 sm:flex-row sm:h-full;
         list-style: none;
         align-items: center;
-        transition: opacity 0.5s ease-in-out
     }
 
     #logo-text{
@@ -89,13 +101,6 @@
         @apply border-solid border-[0.1rem] border-[#CDCDCD] bg-[#EBEBEB] dark:border-[#323232] dark:bg-[#141414] dark:text-white;
         padding: 0.5em;
         border-radius: 2em;
-    }
-
-    #navbar ul li{
-        transition: color 0.2s ease-in-out;
-    }
-    #navbar ul li a:hover{
-        @apply text-[#A1A1A1] dark:text-[#A3A3A3]
     }
 
     #logo .line{
@@ -143,8 +148,22 @@
         box-shadow: 0 0 1em;
     }
 
-    #about-me .content article h1{ @apply my-[0.5em] text-[1.5em] sm:text-[2em]; }
-    #about-me .content article p{ @apply text-sm sm:text-base; }
+    #about-me .skills{
+        @apply text-black dark:text-white;
+        padding: 2em 1em;
+        margin: 1em 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #about-me article:not(.skills) h1{ @apply my-[0.5em] text-[1.5em] sm:text-[2em]; }
+    #about-me .skills #skills-block li:not(#dev-type) h2{ @apply my-[0.4em] text-base sm:text-[1.25em]; }
+    #about-me p{ @apply text-sm sm:text-base; }
+
+    #about-me .skills #skills-block .skill-icon-name{
+        @apply w-0 h-0 sm:w-[150px] sm:h-auto
+    }
 
     #about-me .content article .fade{
         @apply light-theme-content-article-fade dark:dark-theme-content-article-fade;
@@ -191,6 +210,16 @@
         transform: translateY(-10%);
     }
 
+    .skills #skills-block .progress-cover-bar{
+        @apply relative light-theme-progress-bg-cover dark:dark-theme-progress-bg-cover;
+        height: 1rem;
+        border: 2px solid transparent;
+        border-radius: 1rem;
+        width: 80%;
+        display: inline-block;
+        font-size: x-small;
+    }
+
 }
 
 @layer utilities{
@@ -209,6 +238,9 @@
     .dark-theme-footer-gradient{
         background-image: linear-gradient(to bottom, transparent, rgb(250, 250, 250, 0.25));
     }
+    .dark-theme-progress-bg-cover{
+        --progress-bg-cover: linear-gradient(rgb(25, 25, 25), rgb(25, 25, 25));
+    }
     .light-theme-logo-line{
         background-image: linear-gradient(to right, transparent, black, transparent)
     }
@@ -220,6 +252,9 @@
     }
     .light-theme-content-article-fade{
         background-image: linear-gradient(to bottom, transparent, white);
+    }
+    .light-theme-progress-bg-cover{
+        --progress-bg-cover: linear-gradient(lightgray, lightgray);
     }
     .responsive-content-md{
         display: grid;
@@ -239,9 +274,79 @@
 
 :root{
     --icon-shadow: radial-gradient(gray 0%, transparent 60%);
+    --progress-bg-cover: linear-gradient(lightgray, lightgray);
+
+    --js-color: gold;
+    --ts-color: rgb(0, 113, 189);
+    --css-color: rgb(0, 104, 152);
+    --html-color: orangered;
+    --py-color: rgb(0, 62, 109);
+    --lua-color: rgb(26, 0, 104);
+    --java-color: rgb(255, 55, 0);
+    --php-color: rgb(101, 123, 179);
+    --cpp-color: rgb(0, 75, 151);
+    --sql-color: rgb(50,50,50);
+
+    --react-color: cyan;
+    --next-color: rgb(50,50,50);
+    --exp-color: rgb(50,50,50);
+    --node-color: rgb(12, 120, 0);
+    --fb-color: gold;
+    --an-color: rgb(0, 255, 200);
+    --git-color: orangered;
+    --tw-color: rgb(0, 183, 255);
+
+    --technical-skills-color: rgb(50, 50, 50);
+    --ps-color: var(--technical-skills-color);
+    --a-lt-color: var(--technical-skills-color);
+    --td-color: var(--technical-skills-color);
+    --dm-color: var(--technical-skills-color);
+
+    --designing-skills-color: var(--technical-skills-color);
+    --resp-color: var(--designing-skills-color);
+    --int-color: var(--designing-skills-color);
+    --ui-ux-color: var(--designing-skills-color);
+    --cr-color: var(--designing-skills-color);
+    
+    --js-gradient-color: linear-gradient(45deg, gold, yellow);
+    --ts-gradient-color: linear-gradient(45deg, rgb(0, 113, 189), rgb(0, 139, 246));
+    --css-gradient-color: linear-gradient(45deg, rgb(0, 104, 152), rgb(0, 170, 204));
+    --html-gradient-color: linear-gradient(45deg, orangered, orange);
+    --py-gradient-color: linear-gradient(45deg, rgb(0, 62, 109) 70%, gold);
+    --lua-gradient-color: linear-gradient(45deg, rgb(26, 0, 104) 70%, white);
+    --java-gradient-color: linear-gradient(45deg, rgb(255, 55, 0), rgb(0, 74, 159) 80%);
+    --php-gradient-color: linear-gradient(45deg, rgb(75, 89, 124), rgb(101, 123, 179));
+    --cpp-gradient-color: linear-gradient(45deg, rgb(43, 78, 155), rgb(46, 128, 180));
+    --sql-gradient-color: linear-gradient(45deg, rgb(50,50,50), rgb(200,200,200));
+
+    --react-gradient-color: linear-gradient(45deg, cyan, rgb(150, 255, 255));
+    --next-gradient-color: linear-gradient(45deg, rgb(50,50,50), rgb(200,200,200));
+    --exp-gradient-color: linear-gradient(45deg, rgb(50,50,50), rgb(200,200,200));
+    --node-gradient-color: linear-gradient(45deg, rgb(12, 120, 0), rgb(18, 183, 0));
+    --fb-gradient-color: linear-gradient(45deg, gold, orange);
+    --an-gradient-color: linear-gradient(45deg, rgb(0, 255, 200), rgb(0, 155, 100));
+    --git-gradient-color: linear-gradient(45deg, orangered, white);
+    --tw-gradient-color: linear-gradient(45deg, rgb(26, 0, 104), rgb(0, 183, 255));
+
+    --technical-skills-gradient-color: linear-gradient(45deg, rgb(50,50,50), rgb(200,200,200));
+    --ps-gradient-color: var(--technical-skills-gradient-color);
+    --a-lt-gradient-color: var(--technical-skills-gradient-color);
+    --td-gradient-color: var(--technical-skills-gradient-color);
+    --dm-gradient-color: var(--technical-skills-gradient-color);
+
+    --designing-skills-gradient-color: var(--technical-skills-gradient-color);
+    --resp-gradient-color: var(--designing-skills-gradient-color);
+    --int-gradient-color: var(--designing-skills-gradient-color);
+    --ui-ux-gradient-color: var(--designing-skills-gradient-color);
+    --cr-gradient-color: var(--designing-skills-gradient-color);
 }
 
 body{ user-select: none; }
+
+main section{
+    position: relative;
+    z-index: 2;
+}
 
 .setup{
     display: flex;
@@ -291,20 +396,28 @@ html{
     display: inline-block;
 }
 
-.shake{
+.shake, .skills #skills-block .skill-icon:hover{
     animation: shaking 1s ease-in-out alternate infinite
 }
 
-#menu-btn img{
+#menu-btn img, #skills-block .reveal-skills{
     cursor: pointer;
     transition: rotate 0.5s ease-in-out;
 }
 
-#menu-btn img:hover{
+#menu-btn img:hover, #skills-block .reveal-skills:hover{
     opacity: 0.8;
 }
 
-#about-me .content article{
+#navbar #menu, .skills #skills-block ol li {
+    transition: opacity 0.5s ease-in-out;
+}
+
+#about-me .content article,
+#about-me .skills #skills-block,
+#about-me .skills #skills-block ul > li,
+#about-me .skills #skills-block ul > li:not(#dev-type) h2,
+#about-me .skills #skills-block ul > li ol > li{
     transform: translateY(-10%); 
     opacity: 0; 
     transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out
@@ -336,6 +449,62 @@ html{
     width: 80%;
     height: 100%;
     position: absolute;
+    pointer-events: none;
+}
+
+#skills-block{
+    padding: 1em;
+    border-radius: 1em;
+    width: 80%;
+    overflow-y: auto;
+    box-shadow: 0 0 1em;
+    background-image: linear-gradient(to bottom, black, gray, black);
+}
+
+.skills #skills-block ol li{
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+
+.skills #skills-block ol li img, .skills #skills-block ol li .skill-icon-name{
+    display: inline-block;
+}
+
+.skills #skills-block .skill-icon-name{
+    width: 0;
+    transition: width 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.skills #skills-block .progress-bar{
+    position: relative;
+    height: 80%;
+    width: 0;
+    margin: 0.05rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    transition: width 0.2s 0.5s ease-in-out;
+}
+
+.skills #skills-block .progress-bar .progress-bar-sparkle{
+    position: absolute;
+    background-color: white;
+    border-radius: 9999px;
+    animation: randomly-moving-particle 2s ease-in-out infinite alternate;
+}
+
+::-webkit-scrollbar{
+    width: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb{
+    background-color: rgba(100, 100, 100, 0.5);
+    border-radius: 1rem;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background-color: rgba(200, 200, 200, 0.5);
 }
 
 @keyframes circulate1{
@@ -362,4 +531,12 @@ html{
 @keyframes shaking {
     from{ rotate: 10deg; }
     to{ rotate: -10deg; }
+}
+
+@keyframes randomly-moving-particle{
+    0%{ transform: translateX(-23%) translateY(4%); }
+    25%{ transform: translateX(23%) translateY(4%); }
+    50%{ transform: translateX(45%) translateY(-34%); }
+    75%{ transform: translateX(-45%) translateY(34%); }
+    100%{ transform: translateX(-9%) translateY(0); }
 }

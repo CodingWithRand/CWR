@@ -36,16 +36,16 @@ export default function OriginBioCard() {
                             <dd>Thanwisit Angsachon</dd>
                         </div>
                         <div className="info-list">
-                            <dt>Occupation</dt>
-                            <dd>Grade 12 Student</dd>
+                            <dt>Hobbies</dt>
+                            <dd>Gaming and Programming</dd>
                         </div>
                         <div className="info-list">
                             <dt>Location</dt>
                             <dd>Chiang Mai, Thailand</dd>
                             </div>
                         <div className="info-list">
-                            <dt>Twitter</dt>
-                            <dd>@rand0mtutorial</dd>
+                            <dt>Languages</dt>
+                            <dd>Thai, English, Chinese and German</dd>
                         </div>
                     </dl>
                 </div>

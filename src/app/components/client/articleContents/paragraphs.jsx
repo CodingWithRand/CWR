@@ -1,8 +1,8 @@
 export const originContent = <>
     <h1>Origin</h1>
     <p>&emsp;&emsp;My name is Thanwisit Angsachon, and my nickname is Than. Despite having those name and nickname, I&apos;m insisting on using alias names like <a className="outside-link" target="_blank" href="https://www.youtube.com/@CodingWithRand">CodingWithRand</a> (My YouTube channel), CWR (abbrevation), or Rand0MTutorial (The previous name) on the internet, and I prefer people on the internet to call me <i>&quot;Rand&quot;</i></p>
-    <p>&emsp;&emsp;I live in Thailand, to be precise, it&quot;s in Chiang Mai which one of a popular northern city, so that means I&apos;m Thai. I&apos;m turning 18 this year.</p>
-    <p>&emsp;&emsp;I&quot;m currently studying in the Matthayom 6th (Equivalent to Grade 12 or Grade 13) of <a className="outside-link" target="_blank" href="https://eng.chongfah.ac.th">Chongfah Xinsheng Wanishbamrung</a> school. It&apos;s a Thai-Chinese private school. Even though I have been studying in this school since I was 7, I&apos;m still not that good at Chinese. I still know a little bit of Chinese, but I think my fundamental of Chinese is okay I guess.</p>
+    <p>&emsp;&emsp;I live in Thailand, to be precise, it&apos;s in Chiang Mai which one of a popular northern city, so that means I&apos;m Thai. I&apos;m turning 18 this year.</p>
+    <p>&emsp;&emsp;I&apos;m currently studying in the Matthayom 6th (Equivalent to Grade 12 or Grade 13) of <a className="outside-link" target="_blank" href="https://eng.chongfah.ac.th">Chongfah Xinsheng Wanishbamrung</a> school. It&apos;s a Thai-Chinese private school. Even though I have been studying in this school since I was 7, I&apos;m still not that good at Chinese. I still know a little bit of Chinese, but I think my fundamental of Chinese is okay I guess.</p>
     <br /><br />
     <p>&emsp;&emsp;Want to know more about me? Keep scrolling down!</p>
 </>
@@ -23,7 +23,7 @@ export const interestContent = <>
     <br/>
     <p>&emsp;&emsp;And from that day, I keep learning and learning about it. Till now, I&apos;m still learning because new technologies emerge every day. I now know a lot about software and web development, but despite that, it&apos;s still a long way to go... </p>
     <br/><br/>
-    <p>&emsp;&emsp;Question about my skills? Click <a className="in-page-navigation">here</a>!</p>
+    <p>&emsp;&emsp;Question about my skills? Click <a className="in-page-navigation" href="#skills-block">here</a>!</p>
 </>
 
 export const learningStyle = <>

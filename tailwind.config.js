@@ -14,7 +14,7 @@ module.exports = {
         'amd': '777px',
         'gmob-lsm': {'min': '500px', 'max': '640px'},
         
-        'xs-md': {'min': '0px', 'max': '767px'}
+        'xs-md': {'min': '0px', 'max': '768px'}
       },
       fontFamily: {
         'russo': ['Russo One', 'sans-serif'],

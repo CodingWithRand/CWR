@@ -347,7 +347,7 @@ function ThemeChanger(){
     };
     
     return (
-        <button id='theme' className='setup-btn' onClick={changeTheme}>
+        <button id='theme' className='setup-btn mx-4' onClick={changeTheme}>
             <Client.Components.Dynamic.Image dir="icon/" name="mode.png" alt='theme-changer-btn-icon' cls="setup-btn-icon-shadow theme custom" />
         </button>
     )
@@ -440,7 +440,7 @@ function CWRFooter(){
             <h1>Powered by</h1>
             <ul>
                 <li><Image dir="icon/" name="vercel.png" constant alt="vercel-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://vercel.com" target="_blank">Vercel</a></li>
-                <li><Image dir="icon/" name="firebase-1.svg" constant alt="firebase-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://firebase.google.com" target="_blank">Firebase</a></li>
+                <li><Image dir="icon/" name="fb.png" constant alt="firebase-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://firebase.google.com" target="_blank">Firebase</a></li>
                 <li><Image dir="icon/" name="github.svg" constant alt="github-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://github.com" target="_blank">GitHub</a></li>
                 <li><Image dir="icon/" name="render.png" alt="render-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://render.com" target="_blank">Render</a></li>
             </ul>
@@ -448,10 +448,11 @@ function CWRFooter(){
             <div className="credit-card">
             <h1>Created using</h1>
             <ul>
-            <li><Image dir="icon/" name="react-2.svg" constant alt="react-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://react.dev" target="_blank">React</a></li>
+                <li><Image dir="icon/" name="react.png" constant alt="react-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://react.dev" target="_blank">React</a></li>
                 <li><Image dir="icon/" name="nextjs-icon-background.svg" alt="next-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://nextjs.org" target="_blank">Next.js</a></li>
                 <li><Image dir="icon/" name="express.svg" alt="express-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://expressjs.com/" target="_blank">Express</a></li>
-                <li><Image dir="icon/" name="node-js.svg" constant alt="node-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://nodejs.org" target="_blank">Node.js</a></li>
+                <li><Image dir="icon/" name="node.png" constant alt="node-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://nodejs.org" target="_blank">Node.js</a></li>
+                <li><Image dir="icon/" name="tw.png" constant alt="tw-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a></li>
             </ul>
             </div>
             <div className="credit-card">
@@ -459,7 +460,7 @@ function CWRFooter(){
             <ul>
                 <li><Image dir="icon/" name="flaticon.png" constant alt="flaticon-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://flaticon.com" target="_blank">Flaticon</a></li>
                 <li><Image dir="icon/" name="iconduck.png" constant alt="iconduck-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://iconduck.com" target="_blank">Iconduck</a></li>
-                <li><Image dir="icon/" name="brand-freepik.svg" alt="freepik-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://freepik.com/" target="_blank">Freepik</a></li>
+                <li><Image dir="icon/" name="brand-freepik.svg" alt="freepik-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://www.freepik.com/" target="_blank">Freepik</a></li>
                 <li><Image dir="icon/" name="microsoft-designer.png" constant alt="microsoft-designer-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://designer.microsoft.com/" target="_blank">Microsoft Designer (AI Generated)</a></li>
                 <li><a href="/medias-src">View media sources list</a></li>
             </ul>

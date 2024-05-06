@@ -19,7 +19,10 @@ public class AndroidNativeUtilPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new AndroidNativeUtilModule(reactContext));
+        modules.add(new MainNativeUtil(reactContext));
+        modules.add(new AppStatisticData(reactContext));
+        modules.add(new PermissionCheck(reactContext));
+        modules.add(new BackgroundProcess(reactContext));
 
         return modules;
     }

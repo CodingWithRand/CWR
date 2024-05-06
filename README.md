@@ -1,91 +1,86 @@
-# Please read [TECHNICALMANUAL.md](./TECHNICALMANUAL.md) for require information
+# Manual & Requirement for contributors
 
-# ~~Depreciated~~
-> ~~If you already have tried all the methods below, and non of them work. Please keep the `app` directory, README.md, TECHNICALMANUAL.md. and index.js. Then delete this whole directory. After that, create new react native app by running~~
->```bash
-> # If you previously installed a global react-native-cli package, please remove it as it may cause unexpected issues:
-> npm uninstall -g react-native-cli @react-native-community/cli
->
-> npx react-native@latest init <Project Name>
-> ```
-> ~~Lastly, bring those files back into the new created app.~~
+## Requirement
+- You must have experienced in web app development, and roughly know how the web work.
+- You must have a brief knowledge about how an API work, network, CORS, HTTP, HTTP status code, SSH, and CRUD concept.
+- You must have a brief knowledge about the React lifecycle, and hooks implementation.
+- You must know how to design an optimal database structure.
+- You must have a creativity to design the user interface that will enhance user experiences.
+- You must grasp the concept of OOP (Object-Oriented Programming -> Class and Object related)
+- These are the brief list of the technologies and computer languages we'll be using to develop the app. So you better study it (*briefly*)
 
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+### Core Structure
+> 1. [Node.js](https://nodejs.org/dist/v20.11.1/node-v20.11.1-x64.msi)
+> 2. [React.js](https://react.dev/learn)
+> 3. [React Native](https://reactnative.dev/docs/next/getting-started)
+> 4. [Android Native](https://developer.android.com/) for native module. Most likely sticks with its *[API](https://developer.android.com/reference)*.
+> 5. [Firebase](https://firebase.google.com/docs/) for Authentication and Database systems.
 
-# Getting Started
+### Computer Languages
+(*You can search and learn by yourself [here](https://www.w3schools.com/)*)
+> 1. JavaScript & TypeScript - *to write on React Native and React code.*
+> 2. XML - *XML is required to write configuration in AndroidManifest. Beside that, it includes to JSX / TSX*
+> 3. CSS - *We use CSS in JS in React Native. It's used to style the page*
+> 4. JSON - *Use for altering the project configurations*
+> 5. Java - *Its fundamental is required for writting native module*
+> 6. [Groovy](https://www.tutorialspoint.com/gradle/index.htm) - *It is required to import Java package to the application, which is written in `.gradle` files*
+> 7. Bash - *The commands that are associated to the projects are required. Mostly are npm or adb commands*
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+### Additional Technologies & Libraries
+> 1. [Git](https://git-scm.com/download/win) & [GitHub](https://github.com): Learn more about git commmands [here](https://www.w3schools.com/git/)
+> 2. Web hosting service (In this project, we use [Render](https://render.com/)) for publishing API server to request some data from firebase. 
+> 3. [Express.js](https://expressjs.com/) - it is used to create the API server as I mentioned in the previous one.
+> 4. Environment Variable - it is used to store secrets
 
-## Step 1: Start the Metro Server
+## Manual
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+You should have read [Official React Native Installation Manual](./REACT_NATIVE_INSTALLATION_MANUAL.md) and the [Setup Documentation](https://reactnative.dev/docs/environment-setup) before this. If you haven't, please go read it first.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+After knowing roughly how to configure and run test on the app. Here's something you must know.
 
-```bash
-# using npm
-npm start
+- We're mainly developing an __ANDROID__ mobile application, through an emulator.
+- Make sure you have enough free storage (At least 25 GB)
+- This app requires Java 17, so go install it [here](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- In some cases, you may need `adb` to debug or to retrieve the secret information. So, I recommend you to take a look on it [here](https://developer.android.com/tools/adb), and follow this [guide](https://www.howtogeek.com/125769/how-to-install-and-use-abd-the-android-debug-bridge-utility/) to install it properly.
+- Following these metadata to install an android emulator in [__Android Studio__](https://developer.android.com/studio) for unit test
 
-# OR using Yarn
-yarn start
-```
+    <table>
+        <tr>
+            <th rowspan="2" style="background-color: navy">Device Category</th>
+            <th colspan="5" style="text-align: center; background-color: magenta">Hardware Profie</th>
+            <th colspan=4 style="text-align: center; background-color: darkgreen">System Image</th>
+        </tr>
+        <tr>
+            <th style="text-align: center; background-color: magenta">Name</th>
+            <th style="font-size: x-small; background-color: magenta">Google Play Store Service Included</th>
+            <th style="background-color: magenta">Size</th>
+            <th style="background-color: magenta">Resolution</th>
+            <th style="background-color: magenta">Density</th>
+            <th style="background-color: darkgreen">Release Name</th>
+            <th style="background-color: darkgreen">API Level</th>
+            <th style="text-align: center; background-color: darkgreen">ABI</th>
+            <th style="text-align: center; background-color: darkgreen">Target</th>
+        </tr>
+        <tr>
+            <th style="background-color: blue">Phone</th>
+            <th style="background-color: hotpink">Pixel 7 Pro</th>
+            <th style="text-align: center; background-color: hotpink">Yes</th>
+            <th style="background-color: hotpink">6.71"</th>
+            <th style="background-color: hotpink">1440x3120</th>
+            <th style="background-color: hotpink">560dpi</th>
+            <th style="text-align: center; background-color: forestgreen">Tiramisu</th>
+            <th style="text-align: center; background-color: forestgreen">33</th>
+            <th style="background-color: forestgreen">x86_64</th>
+            <th style="font-size: x-small; background-color: forestgreen">Android 13 (Google Play)</th>
+        </tr>
+    </table>
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- We'll be using the following Android Native libraries for our native module code for now.
+> 1. WorkerManager - To manage background task processing.
+> 2. UsageStatsManager - To get app usages data.
+> 3. NotificationManager, NotificationCompat, NotificationChannel - To implement the notification feature for reminding the exceeded amount of usages of the user.
+> 4. SharedPreferenceManager - To reserve the state of background task initialization, which for preventing revocation.
+> 5. AudioManager - To implement audio-related setting jobs.
+- The minimum Android OS version is [7.0 (N: Nougat)](https://www.android.com/versions/nougat-7-0/) or API Level 24 and maximum and target Android OS Version are [14.0 (UPSIDE_DOWN_CAKE: Upside Down Cake)](https://www.android.com/android-14/) You can look [here](https://apilevels.com/) for the Android OS Version and API Level 
+- This app requires environment variables (sensitive data), please contact me for them.
+- *__HIGHLY__* recommended to work or learn with a ChatBot AI (My suggestion is ChatGPT)

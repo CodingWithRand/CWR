@@ -1,0 +1,122 @@
+/* General */
+
+.stage-name, .stages-section-name, .stage-paragraph, .section-topic, cite.citation{ color: white; }
+
+.stage-name{
+    transition: transform ease-out 1s;
+    margin: 2vw 0;
+    transform: translateY(-15rem);
+}
+
+.stage-content{
+    margin-top: 4rem;
+    height: 82vh;
+    overflow: auto;
+}
+
+.stage-content .page-container::-webkit-scrollbar, .quote-scrollable-container::-webkit-scrollbar{
+    opacity: 0;
+    width: 0;
+}
+
+.stages-section-name, cite.citation {
+    transition: opacity ease-in 2s;
+}
+
+.stages-section-name{
+    opacity: 0;
+    text-shadow: 0 0 0.75rem white;
+    margin-bottom: 3vw;
+}
+
+.page-controlling-panel{
+    background-image: linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0));
+    height: 15%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    align-items: center;
+}
+
+.page-controlling-panel img{
+    height: 5rem;
+    width: 5rem;
+}
+
+.page-controlling-panel button{
+    cursor: pointer;
+}
+
+.page-number{
+    color: white;
+    font-size: 3em;
+}
+
+.section-topic{
+    margin: 1rem 0;
+}
+
+.stage-paragraph.quotation {
+    overflow: hidden;
+    padding: 0 5rem;
+    position: relative;
+}
+
+/* .stage-paragraph.quotation::before{
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0.5;
+    filter: blur(1rem);
+} */
+
+.stage-paragraph.prologue {
+    padding: 0 2rem;
+}
+
+.stage-paragraph.quotation .quote-scrollable-container{
+    padding: 0 2rem;
+    transition: transform cubic-bezier(0, 0, 0.15, 1.5) 1s;
+    transform: translateY(100vh);
+}
+
+.stage-paragraph.quotation .quote{
+    transition: opacity ease-in 1s;
+}
+
+span.quote{
+    display: inline-block;
+    width: 100%;
+    opacity: 0;
+}
+
+span.quote.close{
+    text-align: right;
+}
+
+cite.citation{
+    opacity: 0;
+    text-align: left;
+    width: 100%;
+    padding: 0 5rem;
+    margin-bottom: 2rem;
+}
+
+.quote-fixed-container{
+    height: 60%;
+    overflow: hidden;
+}
+
+.quote-scrollable-container{
+    height: 100%;
+    position: relative;
+    overflow: auto;
+}
+
+/* The Beginning - Foundation of Programming */

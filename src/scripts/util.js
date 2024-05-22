@@ -45,6 +45,19 @@ function useDelayedEffect(callback, dependencies, delay) {
     }, [...dependencies, delay]);
 }
 
+function convertToTitleCase(str) {
+    return str
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+function convertToParamCase(str){
+    return str
+        .toLowerCase()
+        .replace(/ /g, "-")
+}
+
 /** 
  * Copy this code in your utilize code file. 
  * Only apply in web application
@@ -102,8 +115,8 @@ async function siteGetApiFetch(path, retry=5) {
 }
 
 /**
- * Update a user's username in the CWR's firebase database
- * @param {string} username user's username to be altered (selector)
+ * Set a user's username as a new one in the CWR's firebase database
+ * @param {string | undefined} username new user's username (undefined to omit the old one)
  * @param {string} uid user's id (constant)
  * @returns {Promise<void>}
  */
@@ -439,7 +452,9 @@ const Functions = {
         getAllUsernames,
         updateRegistryData,
         updateUsername
-    }
+    },
+    convertToParamCase,
+    convertToTitleCase
 };
 
 const Components = {

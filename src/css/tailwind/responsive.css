@@ -173,4 +173,27 @@
     .prompting-message.responsive{
         @apply p-4 nmob:p-8 lg:p-12;
     }
+
+    /* stages - general components */
+    .stage-name.responsive{
+        @apply text-[2.5em] sm:text-[5em] md:text-[7em];
+    }
+    .stages-section-name.responsive{
+        @apply text-lg sm:text-[2.5em] md:text-[3.5em];
+    }
+    .section-topic.responsive{
+        @apply text-2xl nmob:text-4xl md:text-6xl;
+    }
+    .stage-paragraph.quotation.responsive{
+        @apply text-sm h-[40%] sm:text-xl md:h-auto md:text-3xl;
+    }
+    .stage-paragraph.prologue.responsive{
+        @apply text-sm sm:text-base md:text-xl;
+    }
+    span.quote.responsive{
+        @apply text-4xl translate-y-1/4 md:translate-y-1/2 md:text-8xl;
+    }
+    span.quote.close.responsive{
+        @apply text-4xl translate-y-[-25%] md:translate-y-[-50%] md:text-8xl;
+    }
 }

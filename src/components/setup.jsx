@@ -114,7 +114,7 @@ function MoreSettings(props){
     const navigator = useNavigate();
 
     return (
-        <button id='more' className='setup-btn' onClick={() => {navigator(`account/settings`); window.location.reload();}}
+        <button id='more' className='setup-btn' onClick={() => {navigator(`/account/settings`); window.location.reload();}}
             onMouseEnter={() => onHoverSetupBtn("more")} 
             onMouseLeave={() => onHoverSetupBtn("more")}
         >

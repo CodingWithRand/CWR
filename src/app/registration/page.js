@@ -29,7 +29,10 @@ export default function RegistrationPage() {
                 targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
             }
         }} isolateAction={async () => {
-            if(window !== window.parent){ login.login(false); return; }
+            if(window !== window.parent){
+                console.log(authUser.isAuthUser);
+                login.logIn(false); return;
+            }
             if(!authUser.isAuthUser) return;
             const userAuthenticatedStates = await getRegistryData(auth.currentUser.uid);
             const thisSiteStates = userAuthenticatedStates[window.location.origin];

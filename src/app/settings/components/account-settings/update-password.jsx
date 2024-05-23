@@ -3,8 +3,8 @@ import { auth } from "@/glient/firebase";
 import { reauthenticateWithCredential, EmailAuthProvider, updatePassword, sendPasswordResetEmail } from "@firebase/auth";
 import { useRef, useState } from "react";
 
-const { Section, Dynamic, Switch, AlertBox } = Client.Components;
-const { InputField, InputGroupField } = Dynamic
+const { Dynamic, Switch } = Client.Components;
+const { AlertBox, Section, InputField, InputGroupField } = Dynamic
 
 export default function UpdatePassword() {
     const [inputType, setInputType] = useState("password");

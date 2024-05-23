@@ -14,7 +14,7 @@ import { getAllUsernames, getRegistryData, createNewCustomToken } from "@/gerver
 import { useGlobal } from "@/glient/global";
 
 export default function SettingPage() {
-  const { AuthenticateGate } = Client.Components; 
+  const { AuthenticateGate } = Client.Components.Dynamic; 
   const { authUser } = useGlobal();
 
   return (

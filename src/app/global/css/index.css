@@ -38,4 +38,17 @@
       border: none;
       background: transparent;
     }
+    ::-webkit-scrollbar{
+        width: 0.5rem;
+    }
+    
+    ::-webkit-scrollbar-thumb{
+        background-color: rgba(100, 100, 100, 0.5);
+        border-radius: 1rem;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover{
+        background-color: rgba(200, 200, 200, 0.5);
+    }
+  
 }

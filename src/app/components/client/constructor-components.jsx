@@ -1,80 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useGlobal } from "@/glient/global";
 import Script from "next/script";
 import Client from "@/glient/util"
 import Neutral from "@/geutral/util";
 import { ProgressBarSparkle, SkillsBarList } from "./utility-components";
 
-const { UserPFP } = Client.Components
-
-function NavBar(){
-
-    const { authUser } = useGlobal();
-    function MenuBtn(){
-        const { device } = useGlobal();
-        const [appearingComponent, setAppearance] = useState(<></>);
-        let menu;     
-
-        useEffect(() => {
-            menu = document.querySelector("#navbar #menu");
-            let isOpen = false;
-            function menuBtn(e) {
-                if(!isOpen) {
-                    isOpen = true;
-                    e.target.style.rotate = "180deg";
-                    menu.style.display = "flex";
-                    setTimeout(() => menu.style.opacity = 1, 500);
-                } else {
-                    isOpen = false;
-                    e.target.style.rotate = "0deg";
-                    menu.style.opacity = 0;
-                    setTimeout(() => menu.style.display = "none", 500)
-                };
-            }
-
-            if(device.device === "xs"){
-                menu.style.display = "none"
-                menu.style.opacity = 0
-                setAppearance(<div id="menu-btn">Menu <Client.Components.Dynamic.Image width={15} height={15} dir="icon/" name="sort-down.png" alt="triangle-icon" onClick={menuBtn}/></div>)
-            }
-            else{
-                setAppearance(<></>)
-                menu.style.display = "flex"
-                menu.style.opacity = 1
-            }
-        }, [device.device])
-
-        return appearingComponent
-    }
-    
-    return(
-        <nav id="navbar">
-            <MenuBtn />
-            <ul id="menu">
-                <li><a href="#about-me">About me</a></li>
-                <li><a>My Projects</a></li>
-                <li><a>Lounge</a></li>
-                <li><a>Contact</a></li>
-            </ul>
-            <ul>
-                <Client.Components.ThemeChanger />
-                {   authUser.isAuthUser ? 
-                    <>
-                        <li style={{ cursor: "pointer" }} onClick={() => window.location.replace('/settings')}><UserPFP /></li>
-                    </>
-                    :
-                    <>
-                        <li><a href="/registration?page=login">Login</a></li>
-                        <li><a href="/registration?page=register">Register</a></li>
-                    </>
-                }
-                
-            </ul>
-        </nav>
-    )
-}
 function Header(){
     return(
         <header id="banner">
@@ -99,6 +31,10 @@ function Header(){
             <h2 className="subtitle">Present</h2> 
             </div>
             <div className="caption">My Programming Portfolio</div>
+            <a href="#about-me" id="proceed" className="absolute bottom-4 w-full opacity-0 flex flex-col items-center text-black dark:text-white">
+                <span>Click here to proceed</span>
+                <Client.Components.Dynamic.Image width={30} height={30} dir="icon/" name="sort-down.png" alt="arrow-icon" />
+            </a>
             <Script async src="vanilla-js/frontend/index.js" type="application/javascript" />
         </header>
     )
@@ -108,7 +44,7 @@ export function Intro(){
     const { authUser } = useGlobal();
     return(
         <Client.Components.SuspenseComponent condition={authUser.isAuthUser !== undefined} cover loadingComponent={<Neutral.Components.LoadingPage />}>
-            <NavBar />
+            <Client.Components.NavBar />
             <Header />
         </Client.Components.SuspenseComponent>
     )

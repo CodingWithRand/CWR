@@ -6,7 +6,7 @@ import { useGlobal } from "@/glient/global";
 import { getRegistryData, updateRegistryData } from "@/gerver/apiCaller";
 import { signOut } from "firebase/auth";
 
-const { Section } = Client.Components;
+const { Section } = Client.Components.Dynamic;
 
 function SessionsInfo(){
     const [ sessionComponents, setSessionComponents ] = useState([]);

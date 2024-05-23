@@ -476,6 +476,7 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
     useDelayedEffect(() => isolateAction && isolateAction(), [], 500)
     useDelayedEffect(() => {
+        console.log(login.isLoggedIn, authUser.isAuthUser, authUser.isAuthUser.emailVerified)
         if(login.isLoggedIn === true && authUser.isAuthUser !== null && authUser.isAuthUser.emailVerified){
             authenticatedAction && authenticatedAction();
         }else{
@@ -496,22 +497,185 @@ function PreventCrossSiteComponent({ children }){
 }
 
 
+function NavBar(){
+
+    const { authUser } = useGlobal();
+    function MenuBtn(){
+        const { device } = useGlobal();
+        const [appearingComponent, setAppearance] = useState(<></>);
+        let menu;     
+
+        useEffect(() => {
+            menu = document.querySelector("#navbar #menu");
+            let isOpen = false;
+            function menuBtn(e) {
+                if(!isOpen) {
+                    isOpen = true;
+                    e.target.style.rotate = "180deg";
+                    menu.style.display = "flex";
+                    setTimeout(() => menu.style.opacity = 1, 500);
+                } else {
+                    isOpen = false;
+                    e.target.style.rotate = "0deg";
+                    menu.style.opacity = 0;
+                    setTimeout(() => menu.style.display = "none", 500)
+                };
+            }
+
+            if(device.device === "xs"){
+                menu.style.display = "none"
+                menu.style.opacity = 0
+                setAppearance(<div id="menu-btn">Menu <Image width={15} height={15} dir="icon/" name="sort-down.png" alt="triangle-icon" onClick={menuBtn}/></div>)
+            }
+            else{
+                setAppearance(<></>)
+                menu.style.display = "flex"
+                menu.style.opacity = 1
+            }
+        }, [device.device])
+
+        return appearingComponent
+    }
+    
+    return(
+        <nav id="navbar">
+            <MenuBtn />
+            <ul id="menu">
+                <li><a href="#about-me">About me</a></li>
+                <li><a href="/my-projects">My Projects</a></li>
+                <li><a>Lounge</a></li>
+                <li><a>Contact</a></li>
+            </ul>
+            <ul>
+                <ThemeChanger />
+                {   authUser.isAuthUser ? 
+                    <>
+                        <li style={{ cursor: "pointer" }} onClick={() => window.location.replace('/settings')}><UserPFP /></li>
+                    </>
+                    :
+                    <>
+                        <li><a href="/registration?page=login">Login</a></li>
+                        <li><a href="/registration?page=register">Register</a></li>
+                    </>
+                }
+                
+            </ul>
+        </nav>
+    )
+}
+
+function CorousselElements({ total, bgImgsSrc, autoScroll, elems, wrappersStyle }) {
+    let imgs = [];
+    for (let i = 0; i < total; i++) imgs.push(
+        <div className="c-elem w-screen h-screen" style={{ ...autoScroll, ...wrappersStyle[i], backgroundImage: `url(${bgImgsSrc + `/wallpaper-${i + 1}.jpg`})`, backgroundPositionX: "center", backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
+            {elems[i]}
+        </div>
+    );
+    return imgs;
+}
+
+function CorousselPage({ maxPages, btnFunc, tabsOpacity }) {
+    let tabs = [];
+    for (let i = 0; i < maxPages; i++) tabs.push(<div className='tab' id={`p-${i + 1}`} onClick={() => btnFunc(i + 1)} style={{ opacity: tabsOpacity[i] }}></div>);
+    return tabs;
+};
+
+function Coroussel({ totalPages, corousselElements, corousselWrappersStyle }) {
+
+    const [inUsed, setInUsed] = useState({
+        rightArrow: false,
+        leftArrow: false
+    });
+    const [page, setPage] = useState(1);
+    const [tabsOpaque, setTabsOpaque] = useState((() => {
+        let initial_opacity = [];
+        for (let i = 0; i < totalPages; i++) initial_opacity.push(0.5);
+        return initial_opacity;
+    })());
+    const rs = () => setPage((prevState) => prevState + 1);
+    const ls = () => setPage((prevState) => prevState - 1);
+
+    useEffect(() => {
+        const autoScroll = setInterval(() => {
+            if (!(page === totalPages)) rs();
+            else for (let currentPage = page; currentPage > 1; currentPage--) ls();
+        }, 5000);
+        return () => clearInterval(autoScroll);
+    }, [page])
+
+    useEffect(() => {
+        if (page <= 1) {
+            setInUsed({
+                rightArrow: false,
+                leftArrow: true
+            });
+        } else if (page === totalPages) {
+            setInUsed({
+                rightArrow: true,
+                leftArrow: false
+            });
+        } else {
+            setInUsed({
+                rightArrow: false,
+                leftArrow: false
+            });
+        };
+    }, [page]);
+
+    useEffect(() => {
+        setTabsOpaque(tabsOpaque.map((value, index, array) => {
+            if (index === page - 1) return 1;
+            else return 0.5;
+        }))
+    }, [page]);
+
+    return (
+        <div className='coroussel'>
+            <div className='_elems'>
+                <CorousselElements 
+                    total={totalPages}
+                    bgImgsSrc='/imgs/backend-images/coroussel'
+                    autoScroll={{ transform: `translateX(${(page - 1) * -100}%)` }} 
+                    elems={corousselElements}
+                    wrappersStyle={corousselWrappersStyle}
+                />
+            </div>
+            <div className='ctrl-btn'>
+                <div className='arrows'>
+                    <button id='lft' onClick={ls} disabled={inUsed.leftArrow} style={{ opacity: inUsed.leftArrow ? 0.5 : 1 }}>
+                        <img src="/imgs/backend-images/icon/left-arrow.png" alt='Left next arrow' height='50' width='50' />
+                    </button>
+                    <button id='rght' onClick={rs} disabled={inUsed.rightArrow} style={{ opacity: inUsed.rightArrow ? 0.5 : 1 }}>
+                        <img src="/imgs/backend-images/icon/right-arrow.png" alt='Right next arrow' height='50' width='50' />
+                    </button>
+                </div>
+                <div className='page-selector'>
+                    <CorousselPage maxPages={totalPages} btnFunc={setPage} tabsOpacity={tabsOpaque} />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
 const Components = {
     Dynamic: {
         InputField,
         InputGroupField,
         Image,
+        AlertBox,
+        Section,
+        Coroussel,
+        AuthenticateGate
     },
     ThemeChanger,
-    AlertBox,
     Switch,
-    Section,
     SuspenseComponent,
     UserPFP,
     Media,
     CWRFooter,
-    AuthenticateGate,
-    PreventCrossSiteComponent
+    PreventCrossSiteComponent,
+    NavBar,
 };
 
 const Hooks = {

@@ -29,4 +29,8 @@
     }
     
     setTimeout(() => document.querySelector("#banner .caption").style.transform = "scale(1)", 1000 + (window.innerWidth >= 1024 ? 3000 : 0))
+    setTimeout(() => {
+        document.getElementById("proceed").style.opacity = 1;
+        document.getElementById("proceed").style.pointerEvents = "auto";
+    }, 2000 + (window.innerWidth >= 1024 ? 3000 : 0))
 })()

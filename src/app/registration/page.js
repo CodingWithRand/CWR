@@ -14,7 +14,7 @@ import { auth } from "@/glient/firebase";
 import { getRegistryData, getAllUsernames, updateRegistryData, createNewCustomToken } from "@/gerver/apiCaller";
 
 export default function RegistrationPage() {
-    const { AuthenticateGate } = Client.Components; 
+    const { AuthenticateGate } = Client.Components.Dynamic; 
     const { authUser } = useGlobal();
     return (
         <AuthenticateGate authenticatedAction={async () => {
@@ -22,7 +22,7 @@ export default function RegistrationPage() {
                 const targetWebsite = [
                     "https://cwr-education.vercel.app",
                 ];
-                window.addEventListener("message", (event) => {
+                window.addEventListener("message", async (event) => {
                     if(targetWebsite.some(url => url === event.origin) && event.data.action === "resetFirebaseAuth") indexedDB.deleteDatabase("firebaseLocalStorageDb");
                 });
                 await Neutral.Functions.asyncDelay(500);

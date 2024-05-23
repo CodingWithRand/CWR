@@ -31,44 +31,6 @@
         z-index: 2;
     }
 
-    #navbar{
-        @apply text-black bg-[#EAEAEA] dark:text-white dark:bg-[#050505];
-        position: absolute;
-        top: 0;
-        margin: 0;
-        height: 3.5em;
-        font-family: sans-serif;
-        display: flex;
-        justify-content: space-between;
-        flex-direction: row;
-        width: 100%;
-        z-index: 1;
-        align-items: center;
-    }
-
-    #navbar ul{
-        @apply bg-[#EAEAEA] dark:bg-[#050505] flex mx-4 p-0 top-0 flex-row h-full items-center;
-    }
-
-    #navbar #menu li{
-        @apply w-full sm:w-auto;
-    }
-
-    #navbar ul li a{
-        @apply block w-full px-2 py-4 sm:w-auto;
-        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-    }
-
-    #navbar ul li a:hover{
-        @apply bg-[#050505] text-white dark:bg-[#EAEAEA] dark:text-black
-    }
-
-    #navbar #menu{
-        @apply hidden absolute m-0 top-full flex-col h-max opacity-0 text-center sm:flex sm:relative opacity-100 sm:mx-4 sm:top-0 sm:flex-row sm:h-full;
-        list-style: none;
-        align-items: center;
-    }
-
     #logo-text{
         @apply font-russo text-[#2C2C2C] dark:text-[#D3D3D3];
         position: relative;
@@ -87,14 +49,6 @@
         letter-spacing: 0.1em; 
         margin: 0; 
         transition: transform 1s var(--elastic)
-    }
-
-    #menu-btn{
-        @apply flex sm:hidden;
-        column-gap: 0.5em;
-        margin-left: 1em;
-        align-items: center;
-        flex-direction: row;
     }
 
     #search-bar input[type="text"]{
@@ -235,9 +189,6 @@
     .dark-theme-content-article-fade{
         background-image: linear-gradient(to bottom, transparent, black);
     }
-    .dark-theme-footer-gradient{
-        background-image: linear-gradient(to bottom, transparent, rgb(250, 250, 250, 0.25));
-    }
     .dark-theme-progress-bg-cover{
         --progress-bg-cover: linear-gradient(rgb(25, 25, 25), rgb(25, 25, 25));
     }
@@ -366,8 +317,11 @@ html{
 #banner{
     height: 100vh;
 }
-#banner img{
-    width: 100%;
+
+#proceed{
+    pointer-events: none;
+    transition: opacity 3s ease-in-out;
+    animation: updown 1s ease-in-out alternate infinite;
 }
 
 #search-bar{
@@ -400,16 +354,16 @@ html{
     animation: shaking 1s ease-in-out alternate infinite
 }
 
-#menu-btn img, #skills-block .reveal-skills{
+#skills-block .reveal-skills{
     cursor: pointer;
     transition: rotate 0.5s ease-in-out;
 }
 
-#menu-btn img:hover, #skills-block .reveal-skills:hover{
+#skills-block .reveal-skills:hover{
     opacity: 0.8;
 }
 
-#navbar #menu, .skills #skills-block ol li {
+.skills #skills-block ol li {
     transition: opacity 0.5s ease-in-out;
 }
 
@@ -494,19 +448,6 @@ html{
     animation: randomly-moving-particle 2s ease-in-out infinite alternate;
 }
 
-::-webkit-scrollbar{
-    width: 0.5rem;
-}
-
-::-webkit-scrollbar-thumb{
-    background-color: rgba(100, 100, 100, 0.5);
-    border-radius: 1rem;
-}
-
-::-webkit-scrollbar-thumb:hover{
-    background-color: rgba(200, 200, 200, 0.5);
-}
-
 @keyframes circulate1{
     0%{ top: -15%; right: -15%; }
     25%{ top: 100%; right: -15%; }
@@ -539,4 +480,9 @@ html{
     50%{ transform: translateX(45%) translateY(-34%); }
     75%{ transform: translateX(-45%) translateY(34%); }
     100%{ transform: translateX(-9%) translateY(0); }
+}
+
+@keyframes updown{
+    from{ transform: translateY(-0.5em); }
+    to{ transform: translateY(0.5em); }
 }

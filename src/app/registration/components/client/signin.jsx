@@ -12,8 +12,8 @@ import { updateRegistryData } from "@/gerver/apiCaller";
 
 export default function SignIn() {
 
-    const { Switch, AlertBox, Dynamic } = Client.Components;
-    const { InputField } = Dynamic;
+    const { Switch, Dynamic } = Client.Components;
+    const { AlertBox, InputField } = Dynamic;
 
     const { login } = useGlobal();
     const setLoadingState = useLoadingState();

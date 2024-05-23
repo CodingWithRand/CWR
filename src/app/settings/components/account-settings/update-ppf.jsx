@@ -4,7 +4,7 @@ import { auth, storage } from "@/glient/firebase";
 import Client from "@/app/global/client/util";
 import { updateProfile } from "@firebase/auth";
 
-const { Section } = Client.Components;
+const { Section } = Client.Components.Dynamic;
 
 export default function UpdateProfilePicture(){
     const clientPPFLink = useRef();

@@ -11,8 +11,8 @@ import EmailVerifificationPage from "./email-verification";
 import { getAllUsernames, updateRegistryData, updateUsername } from "@/gerver/apiCaller";
 
 export default function SignUp() {
-    const { Switch, AlertBox, Dynamic } = Client.Components;
-    const { InputField, InputGroupField } = Dynamic;
+    const { Switch, Dynamic } = Client.Components;
+    const { AlertBox, InputField, InputGroupField } = Dynamic;
 
     const [userEmail, setUserEmail] = useState("");
     const [userPass, setUserPass] = useState("");

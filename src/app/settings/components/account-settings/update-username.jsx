@@ -4,8 +4,7 @@ import { updateProfile } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
 import { updateUsername } from "@/gerver/apiCaller";
 
-const { Section } = Client.Components;
-const { InputField } = Client.Components.Dynamic;
+const { InputField, Section } = Client.Components.Dynamic;
 
 export default function UpdateUsername() {
     const [userName, setUserName] = useState("");

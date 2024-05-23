@@ -39,7 +39,7 @@ export default function RegistrationPage(){
                         await signInWithCustomToken(auth, authenticationToken);
                         const ip = await Functions.cwrAuthMethod.getClientIp();
                         await Functions.cwrAuthMethod.updateRegistryData(userId, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})
-                        navigator("/");
+                        // navigator("/");
                     };
                 }catch(e){
                     console.error(e)

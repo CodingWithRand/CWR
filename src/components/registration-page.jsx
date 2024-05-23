@@ -39,7 +39,7 @@ export default function RegistrationPage(){
                         await signInWithCustomToken(auth, authenticationToken);
                         const ip = await Functions.cwrAuthMethod.getClientIp();
                         await Functions.cwrAuthMethod.updateRegistryData(userId, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})
-                        // navigator("/");
+                        navigator("/");
                     };
                 }catch(e){
                     console.error(e)
@@ -64,7 +64,6 @@ export default function RegistrationPage(){
     useEffect(() => {
         const registrationResponseMessageHandle = async (e) => {
             const responseRegistration = e.data;
-            console.log(e.data)
             if(responseRegistration.authenticationProgressFinished){
                 await Functions.jobDelay(() => {
                     try { document.querySelector('.h-reg').classList.remove("animate"); }

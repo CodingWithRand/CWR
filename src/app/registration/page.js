@@ -27,9 +27,6 @@ export default function RegistrationPage() {
                 });
             }
         }} isolateAction={async () => {
-            if(window !== window.parent){
-                console.log(authUser.isAuthUser);
-            }
             if(!authUser.isAuthUser) return;
             const userAuthenticatedStates = await getRegistryData(auth.currentUser.uid);
             const thisSiteStates = userAuthenticatedStates[window.location.origin];

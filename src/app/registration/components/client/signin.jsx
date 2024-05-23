@@ -48,7 +48,7 @@ export default function SignIn() {
                     const targetWebsite = [
                         "https://cwr-education.vercel.app",
                     ];
-                    targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
+                    targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: userCredential.user.displayName , origin: window.location.origin }, url));
                 }
                 localStorage.setItem("clientUsername", userName.current);
                 const ip = await Neutral.Functions.getClientIp();

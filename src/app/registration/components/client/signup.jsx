@@ -59,7 +59,7 @@ export default function SignUp() {
                 const targetWebsite = [
                     "https://cwr-education.vercel.app",
                 ];
-                targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
+                targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: userCredential.user.displayName , origin: window.location.origin }, url));
             }
             const ip = await Neutral.Functions.getClientIp();
             await updateRegistryData(userCredential.user.uid, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})

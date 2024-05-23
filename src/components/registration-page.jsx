@@ -34,10 +34,6 @@ export default function RegistrationPage(){
 
                     let authenticationToken;
                     if(thisSiteStates?.authenticated) authenticationToken = await Functions.cwrAuthMethod.createNewCustomToken(userId)
-                    
-                    console.log(thisSiteStates.authenticated, authenticationToken)
-
-                    await Functions.asyncDelay(10000)
 
                     if(authenticationToken){
                         await signInWithCustomToken(auth, authenticationToken);
@@ -68,6 +64,7 @@ export default function RegistrationPage(){
     useEffect(() => {
         const registrationResponseMessageHandle = async (e) => {
             const responseRegistration = e.data;
+            console.log(e.data)
             if(responseRegistration.authenticationProgressFinished){
                 await Functions.jobDelay(() => {
                     try { document.querySelector('.h-reg').classList.remove("animate"); }

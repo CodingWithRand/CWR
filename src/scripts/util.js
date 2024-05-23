@@ -58,6 +58,8 @@ function convertToParamCase(str){
         .replace(/ /g, "-")
 }
 
+const API_DOMAIN = "https://codingwithrand.vercel.app";
+
 /** 
  * Copy this code in your utilize code file. 
  * Only apply in web application
@@ -73,7 +75,7 @@ function convertToParamCase(str){
 async function sitePostApiFetch(path, data, retry=5) {
     for(let i = 0; i < retry; i++){
         try{
-            const response = await fetch(`/global/server/api/${path}`, {
+            const response = await fetch(`${API_DOMAIN}/global/server/api/${path}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ data: data })
@@ -100,7 +102,7 @@ async function sitePostApiFetch(path, data, retry=5) {
 async function siteGetApiFetch(path, retry=5) {
     for(let i = 0; i < retry; i++){
         try{
-            const response = await fetch(`/global/server/api/${path}`)
+            const response = await fetch(`${API_DOMAIN}/global/server/api/${path}`)
             if(response.status === 200){
                 const responseJSON = await response.json();
                 return responseJSON.data;

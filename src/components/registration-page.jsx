@@ -34,6 +34,10 @@ export default function RegistrationPage(){
 
                     let authenticationToken;
                     if(thisSiteStates?.authenticated) authenticationToken = await Functions.cwrAuthMethod.createNewCustomToken(userId)
+                    
+                    console.log(thisSiteStates.authenticated, authenticationToken)
+
+                    await Functions.asyncDelay(10000)
 
                     if(authenticationToken){
                         await signInWithCustomToken(auth, authenticationToken);

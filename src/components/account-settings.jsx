@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useGlobal } from "../scripts/global"
 import { Components, Functions } from "../scripts/util";
+import { BgMusicController } from "./setup";
 
 export default function AccountSettings() {
     const { theme } = useGlobal();
@@ -36,6 +37,7 @@ export default function AccountSettings() {
         <div className="page-container spaceship-cockpit-panel">
             <iframe id="account-settings-iframe" className="crossite-iframe" src="https://codingwithrand.vercel.app/settings" />
             <Components.HyperspaceTeleportationBackground />
+            <BgMusicController />
         </div>
     )
 }

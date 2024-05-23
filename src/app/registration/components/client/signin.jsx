@@ -44,6 +44,12 @@ export default function SignIn() {
             const username = user.displayName;
             if (username === userName.current) {
                 login.logIn(true);
+                if(window !== window.parent){
+                    const targetWebsite = [
+                        "https://cwr-education.vercel.app",
+                    ];
+                    targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
+                }
                 localStorage.setItem("clientUsername", userName.current);
                 const ip = await Neutral.Functions.getClientIp();
                 await updateRegistryData(user.uid, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})

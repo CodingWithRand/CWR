@@ -25,8 +25,6 @@ export default function RegistrationPage() {
                 window.addEventListener("message", async (event) => {
                     if(targetWebsite.some(url => url === event.origin) && event.data.action === "resetFirebaseAuth") indexedDB.deleteDatabase("firebaseLocalStorageDb");
                 });
-                await Neutral.Functions.asyncDelay(500);
-                targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: authUser.isAuthUser.displayName , origin: window.location.origin }, url));
             }
         }} isolateAction={async () => {
             if(window !== window.parent){

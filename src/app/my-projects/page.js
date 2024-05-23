@@ -13,7 +13,7 @@ export default function MyProjects() {
       <Coroussel 
         totalPages={3} 
         corousselElements={[
-          <div style={{
+          <div key={1} style={{
             width: "100%",
             height: "100%",
             backdropFilter: "blur(10px)" /* Apply blur effect */

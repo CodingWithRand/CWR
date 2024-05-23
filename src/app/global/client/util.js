@@ -476,7 +476,7 @@ function AuthenticateGate({ children, authenticatedAction, unauthenticatedAction
     const [ showingComponent, setShowingComponent ] = useState(LoadingPage)
     useDelayedEffect(() => isolateAction && isolateAction(), [], 500)
     useDelayedEffect(() => {
-        console.log(login.isLoggedIn, authUser.isAuthUser, authUser.isAuthUser.emailVerified)
+        console.log(login.isLoggedIn, authUser.isAuthUser)
         if(login.isLoggedIn === true && authUser.isAuthUser !== null && authUser.isAuthUser.emailVerified){
             authenticatedAction && authenticatedAction();
         }else{

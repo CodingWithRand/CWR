@@ -31,7 +31,6 @@ export default function RegistrationPage() {
         }} isolateAction={async () => {
             if(window !== window.parent){
                 console.log(authUser.isAuthUser);
-                login.logIn(false); return;
             }
             if(!authUser.isAuthUser) return;
             const userAuthenticatedStates = await getRegistryData(auth.currentUser.uid);

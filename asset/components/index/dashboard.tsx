@@ -21,8 +21,9 @@ export default function Dashboard({ navigation }: { navigation: NativeStackNavig
 
     useEffect(() => {
         (async () => {
+            await PermissionCheck.requestAccessibilityServicePermission();
             if(!await PermissionCheck.checkWriteSettingsPermission()) AsyncStorage.setItem("intenseMode", "false");
-        })
+        })()
     }, [])
 
     useEffect(() => {
@@ -90,17 +91,11 @@ export default function Dashboard({ navigation }: { navigation: NativeStackNavig
             <TouchableHighlight onPress={async () => await BackgroundProcess.registerInvoker([
                 {
                     name: "Retriever",
-                    retrieveAppStatistic: true,
-                    appStatisticInterval: "daily"
                 },
                 {
                     name: "Processor",
                     jobs: {
-                        totalAppUsageRestriction: {
-                            restrictedPeriod: 1,
-                            inUnit: "hour",
-                            watchInterval: "daily"
-                        }
+
                     }
                 }
             ])} underlayColor="darkgreen" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "green", borderRadius: moderateScale(10, width) }}>
@@ -108,6 +103,15 @@ export default function Dashboard({ navigation }: { navigation: NativeStackNavig
             </TouchableHighlight>
             <TouchableHighlight onPress={async () => await BackgroundProcess.revokeInvokerRegistry()} underlayColor="maroon" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "red", borderRadius: moderateScale(10, width) }}>
                 <Text>Revoke Example Task</Text>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={async () => await BackgroundProcess.registerAppInForegroundEventListener({
+                YouTube: {
+                    from: 14,
+                    to: 16
+                },
+                isStrictModeOn: false
+            })} underlayColor="cyan" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "lightblue", borderRadius: moderateScale(10, width) }}>
+                <Text>Start Tracking 3rd Party Foreground App</Text>
             </TouchableHighlight>
             <TouchableHighlight onPress={promptSignOut} underlayColor="dimgrey" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "grey", borderRadius: moderateScale(10, width) }}>
                 <Text>Sign Out</Text>

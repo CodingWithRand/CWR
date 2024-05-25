@@ -1,6 +1,9 @@
 package com.cwr.androidnativeutil.bgprocessworker;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,19 +12,20 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.cwr.androidnativeutil.AppStatisticData;
-import com.cwr.androidnativeutil.MainNativeUtil;
 import com.cwr.androidnativeutil.Notification;
 import com.cwr.androidnativeutil.PackageUtilities;
 import com.cwr.androidnativeutil.settings.Audio;
 import com.cwr.androidnativeutil.settings.Brightness;
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
 
 import org.json.JSONException;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -70,9 +74,8 @@ public class BackgroundProcessWorkers {
             Data.Builder retrievedDataConstructor = new Data.Builder();
             if(appStatisticData != null) {
                 retrievedDataConstructor.putString("appStatisticData", PackageUtilities.JSON_Stringify(appStatisticData));
-            }else{
-                Log.i("Retriever",  "Nothing to observe, aborting...");
-                return Result.success();
+            } else {
+                Log.i("Retriever",  "Nothing was observed, passing work to processor...");
             }
             retrievedDataConstructor.putString("Processor", getInputData().getString("Processor"));
             Data retrievedData = retrievedDataConstructor.build();
@@ -195,6 +198,7 @@ public class BackgroundProcessWorkers {
             long comparator = bcp.c;
             try {
                 Map<String, Object> RetrievedAppUsageStatisticData = PackageUtilities.JSON_Map_Parse(RawAppUsageStatisticData);
+
             } catch (JSONException je){
                 throw new RuntimeException(je);
             }
@@ -208,7 +212,6 @@ public class BackgroundProcessWorkers {
             String RawProcessorConfigs = getInputData().getString("Processor");
             String RawRetrievedAppUsageStatisticData = getInputData().getString("appStatisticData");
             assert RawProcessorConfigs != null;
-            assert RawRetrievedAppUsageStatisticData != null;
             WritableMap ProcessorConfigs = PackageUtilities.JSON_Parse(RawProcessorConfigs);
             ReadableMapKeySetIterator processorConfigKeys = ProcessorConfigs.keySetIterator();
             while(processorConfigKeys.hasNextKey()) {

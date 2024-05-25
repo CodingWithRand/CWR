@@ -23,17 +23,14 @@ import java.util.Map;
 public class AppStatisticData extends MainNativeUtil{
 
     private final UsageStatsManager usageStatsManager;
-    private final Calendar calendar;
     public AppStatisticData(ReactApplicationContext context){
         super(context);
         this.usageStatsManager = (UsageStatsManager) NativeModuleContext.getSystemService(Context.USAGE_STATS_SERVICE);
-        this.calendar = Calendar.getInstance();
     }
 
     public AppStatisticData(Context context){
         super(context);
         this.usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-        this.calendar = Calendar.getInstance();
     }
 
     @NonNull
@@ -48,10 +45,11 @@ public class AppStatisticData extends MainNativeUtil{
             long et;
         }
         private BeginEndTime getPeriod(int quantifier, int timeUnit){
+            Calendar calendar = Calendar.getInstance();
             long endTime = calendar.getTimeInMillis();
             calendar.add(quantifier, -(timeUnit));
             long startTime = calendar.getTimeInMillis();
-            calendar.setTimeInMillis(System.currentTimeMillis());
+
             return new BeginEndTime() {{
                 st = startTime;
                 et = endTime;
@@ -71,7 +69,7 @@ public class AppStatisticData extends MainNativeUtil{
         }
     }
 
-    private String getAppName(String packageName){
+    public String getAppName(String packageName){
         PackageManager packageManager = NativeModuleContext.getPackageManager();
         try {
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
@@ -116,12 +114,14 @@ public class AppStatisticData extends MainNativeUtil{
         List<UsageStats> stats = usageStatsManager.queryUsageStats(interval, beginEndTime.st, beginEndTime.et);
         Map<String, Object> appsForegroundTime = new HashMap<>();
 
-        for (UsageStats usageStats : stats) {
-            String packageName = usageStats.getPackageName();
-            if(getAppName(packageName).equals("System Package")) continue;
-            long timeInForeground = usageStats.getTotalTimeInForeground();
-//            Log.d("AppStatisticData", "Spent " + timeInForeground + " millisecond in " + getAppName(packageName) + " (" + packageName + ")");
-            appsForegroundTime.put(getAppName(usageStats.getPackageName()), timeInForeground);
+        if(stats != null && !stats.isEmpty()) {
+            for (UsageStats usageStats : stats) {
+                String packageName = usageStats.getPackageName();
+                if (getAppName(packageName).equals("System Package")) continue;
+                long timeInForeground = usageStats.getTotalTimeInForeground();
+                // Log.d("AppStatisticData", "Spent " + timeInForeground + " millisecond in " + getAppName(packageName) + " (" + packageName + ")");
+                appsForegroundTime.put(getAppName(usageStats.getPackageName()), timeInForeground);
+            }
         }
 
         return appsForegroundTime;

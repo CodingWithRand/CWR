@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
 import android.provider.Settings;
+import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.NonNull;
 
@@ -42,6 +43,13 @@ public class PermissionCheck extends MainNativeUtil {
         }
     }
 
+    @ReactMethod
+    public void checkForAccessibilityServicePermission(Promise promise) {
+        AccessibilityManager accessibilityManager = (AccessibilityManager) NativeModuleContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        boolean isServiceEnabled = accessibilityManager.isEnabled();
+        promise.resolve(isServiceEnabled);
+    }
+
     private void requestSettingsPermission(String permission){
         Intent intent = new Intent(permission);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -56,5 +64,10 @@ public class PermissionCheck extends MainNativeUtil {
     @ReactMethod
     public void requestUsageAccessSettingsPermission() {
         requestSettingsPermission(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+    }
+
+    @ReactMethod
+    public void requestAccessibilityServicePermission() {
+        requestSettingsPermission(Settings.ACTION_ACCESSIBILITY_SETTINGS);
     }
 }

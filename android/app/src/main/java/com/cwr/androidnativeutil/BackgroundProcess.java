@@ -21,6 +21,7 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class BackgroundProcess extends MainNativeUtil{
@@ -97,6 +98,15 @@ public class BackgroundProcess extends MainNativeUtil{
         }else{
             throw new RuntimeException("Worker hasn't been registered yet");
         }
+    }
+
+    @ReactMethod
+    public void registerAppInForegroundEventListener(ReadableMap configs){
+        SharedPreferences preferences = NativeModuleContext.getSharedPreferences(
+                PreferenceManager.getDefaultSharedPreferencesName(NativeModuleContext),
+                Context.MODE_PRIVATE
+        );
+        preferences.edit().putString("tiaoifConfig", PackageUtilities.JSON_Stringify(configs)).apply();
     }
 
     @ReactMethod

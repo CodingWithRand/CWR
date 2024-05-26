@@ -10,6 +10,7 @@ import './css/use/theme.css';
 import Greet from "./components/greeting";
 import AccountSettings from "./components/account-settings";
 import StagesManager from "./components/stages/stages-manager";
+import { Functions } from "./scripts/util";
 
 function PageRouter() {
 
@@ -30,6 +31,11 @@ function PageRouter() {
       case "/account/settings": title = "Account Settings"; break;
       default: title = "404 Not found"; break;
     };
+
+    if(path.startsWith("/stage")){
+      const params = path.split("/");
+      title = `${Functions.convertToTitleCase(params[2])} - ${Functions.convertToTitleCase(params[3])}`
+    }
 
     document.title = title;
 

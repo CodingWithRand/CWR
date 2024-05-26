@@ -210,7 +210,7 @@ function Image(props){
         }
       }, [], 100);
     
-    return <img alt={props.alt || undefined} src={imgSrc} className={props.cls || undefined} style={props.style || undefined} />
+    return <img alt={props.alt || undefined} src={imgSrc} className={props.cls || undefined} style={props.style || undefined} width={props.width || undefined} height={props.height || undefined}/>
 }
 
 function AlertBox(props){
@@ -433,7 +433,7 @@ function HyperspaceTeleportationBackground() {
         const animationContainer = document.getElementById("animation-container");
         animationContainer.appendChild(p5Script);
         animationContainer.appendChild(hyperspaceTeleportationScript);
-        Functions.asyncDelay(1000).then(() => document.querySelector(".p5Canvas").removeAttribute("style"))
+        Functions.asyncDelay(2000).then(() => document.querySelector(".p5Canvas").removeAttribute("style"))
         animationContainer.removeChild(p5Script);
         animationContainer.removeChild(hyperspaceTeleportationScript);
         scriptLoaded.setScriptLoaded(true);

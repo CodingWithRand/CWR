@@ -196,4 +196,17 @@
     span.quote.close.responsive{
         @apply text-4xl translate-y-[-25%] md:translate-y-[-50%] md:text-8xl;
     }
+    /* stages - the beginning - foundation of programming*/
+    .computer-component h1.responsive{
+        @apply text-lg nmob:text-xl sm:text-2xl md:text-3xl lg:text-4xl;
+    }
+    .computer-info-card h2.responsive{
+        @apply text-lg sm:text-xl lg:text-2xl;
+    }
+    .computer-component ul li.responsive{
+        @apply items-center my-4 flex flex-col lg:justify-items-center lg:grid lg:grid-cols-2 lg:gap-x-4;
+    }
+    .computer-info-card p{
+        @apply text-xs nmob:text-sm sm:text-base;
+    }
 }

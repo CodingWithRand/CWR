@@ -7,7 +7,7 @@ import { SetUp } from "../setup";
 import "../../css/use/stages.css";
 
 const totalStageSections = {
-    "the-beginning": 2
+    "the-beginning": 3
 }
 
 export default function StagesManager(){

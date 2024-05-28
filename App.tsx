@@ -7,6 +7,7 @@ import Credit from './asset/components/intro/credit';
 import Dashboard from './asset/components/index/dashboard';
 import RegistrationPage from './asset/components/intro/registration';
 import { Global } from './asset/scripts/global';
+import UI from './asset/components/index/ui';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +30,7 @@ function App(): React.JSX.Element {
           <Stack.Navigator screenOptions={{ presentation: "transparentModal" }}>
             <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
             <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
-            <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen name="Dashboard" component={UI} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>

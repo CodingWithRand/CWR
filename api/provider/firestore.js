@@ -72,11 +72,17 @@ async function sqlQuery(req, res) {
     let { select, where } = req.query
     let responseJSON;
 
-    if(Array.isArray(select)) select = select.map((s) => decodeURIComponent(s))
-    else select = decodeURIComponent(select)
+    if(Array.isArray(select)) select = select.map((s) => /[~*/[\]]/.test(select) ? new def.FieldPath(select) : decodeURIComponent(s))
+    else if(select){
+        select = decodeURIComponent(select);
+        if(/[~*/[\]]/.test(select)) select = new def.FieldPath(select);
+    }
 
-    if(Array.isArray(where)) where = where.map((w) => decodeURIComponent(w))
-    else where = decodeURIComponent(where)
+    if(Array.isArray(where)) where = where.map((w) => /[~*/[\]]/.test(w) ? new def.FieldPath(w) : decodeURIComponent(w))
+    else if(where){
+        where = decodeURIComponent(where)
+        if(/[~*/[\]]/.test(where)) where = new def.FieldPath(where)
+    }
 
     function whereQuery(query){
         if(Array.isArray(where)) where.forEach((w) => {
@@ -99,6 +105,7 @@ async function sqlQuery(req, res) {
         (await query.get()).forEach((doc) => docDatas[doc.id] = doc.data());
         responseJSON = { 200: { docDatas: docDatas } };
     }catch(e){
+        console.error(e)
         responseJSON = { 400: e.code + e.message };
     }
     filteredSend(res, responseJSON);

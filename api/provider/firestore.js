@@ -69,8 +69,14 @@ async function crud(req, res) {
 
 async function sqlQuery(req, res) {
     const { path } = req.body;
-    const { select, where } = req.query
+    let { select, where } = req.query
     let responseJSON;
+
+    if(Array.isArray(select)) select = select.map((s) => decodeURIComponent(s))
+    else select = decodeURIComponent(select)
+
+    if(Array.isArray(where)) where = where.map((w) => decodeURIComponent(w))
+    else where = decodeURIComponent(where)
 
     function whereQuery(query){
         if(Array.isArray(where)) where.forEach((w) => {

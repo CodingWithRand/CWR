@@ -6,7 +6,7 @@ const server = express();
 
 const response = require("./responseStatus");
 const { userExist, getUserInfo } = require("./api/roblox/main");
-const { crud, verifyToken, createCustomToken, setCustomUserClaims } = require("./api/provider/main");
+const { crud, sqlQuery, verifyToken, createCustomToken, setCustomUserClaims } = require("./api/provider/main");
 
 server.use("/post/provider/cwr/*", cors({
     origin: [
@@ -46,6 +46,7 @@ server.use((req, res, next) => {
 server.get("/get/roblox/users/exist/:userKey", userExist)
 server.get("/get/roblox/users/info/:category/:userId", getUserInfo)
 
+server.post("/post/provider/cwr/firestore/query", sqlQuery)
 server.post("/post/provider/cwr/firestore/:mode", crud)
 server.post("/post/provider/cwr/auth/verifyToken", verifyToken)
 server.post("/post/provider/cwr/auth/createCustomToken", createCustomToken)

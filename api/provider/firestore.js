@@ -16,6 +16,7 @@ async function collectionDelete(path){
 async function crud(req, res) {
     const { path, collectionName, docName, writeData, fieldKey } = req.body;
     const mode = req.params.mode
+    if(mode === 'query') res.status(403);
     const reqAction = req.query;
     const realDocPath = collectionName && docName ? path + "/" + collectionName + "/" + docName : path
     const documentContent = await init.doc(realDocPath).get();
@@ -66,6 +67,38 @@ async function crud(req, res) {
     filteredSend(res, responseJson);
 }
 
+async function sqlQuery(req, res) {
+    const { path } = req.body;
+    const { select, where } = req.query
+    let responseJSON;
+
+    function whereQuery(query){
+        if(Array.isArray(where)) where.forEach((w) => {
+            const [ field, operator, value ] = w.split(",")
+            return query.where(field === "id" ? def.FieldPath.documentId() : field, operator, value)
+        })
+        else return query.where(where.split(",")[0] === "id" ? def.FieldPath.documentId() : where.split(",")[0], where.split(",")[1], where.split(",")[2]);
+    }
+
+    function selectQuery(query){
+        if(Array.isArray(select)) return query.select(...select.split(","));
+        else return query.select(select);
+    }
+
+    try{
+        let query = init.collection(path);
+        if(select) query = selectQuery(query);
+        if(where) query = whereQuery(query);
+        let docDatas = {};
+        (await query.get()).forEach((doc) => docDatas[doc.id] = doc.data());
+        responseJSON = { 200: { docDatas: docDatas } };
+    }catch(e){
+        responseJSON = { 400: e.code + e.message };
+    }
+    filteredSend(res, responseJSON);
+}
+
 module.exports = {
-    crud
+    crud,
+    sqlQuery
 }

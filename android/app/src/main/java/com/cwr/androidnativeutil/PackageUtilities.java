@@ -88,7 +88,7 @@ public class PackageUtilities {
                     try {
                         JSONObject nestedObject = new JSONObject((String) value);
                         readableMap.putMap(key, JSON_Parse(nestedObject.toString()));
-                    } catch (JSONException e) {
+                    } catch (JSONException re) {
                         readableMap.putString(key, (String) value);
                     }
                 } else if (value instanceof JSONObject) {
@@ -134,7 +134,12 @@ public class PackageUtilities {
                 } else if (value instanceof Integer || value instanceof Double) {
                     writableArray.pushDouble(((Number) value).doubleValue());
                 } else if (value instanceof String) {
-                    writableArray.pushString((String) value);
+                    try {
+                        JSONObject nestedObject = new JSONObject(value.toString());
+                        writableArray.pushMap(JSON_Parse(nestedObject.toString()));
+                    } catch (JSONException e) {
+                        writableArray.pushString((String) value);
+                    }
                 } else if (value instanceof JSONObject) {
                     writableArray.pushMap(JSON_Parse(value.toString()));
                 } else if (value instanceof JSONArray) {

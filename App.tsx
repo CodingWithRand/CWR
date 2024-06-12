@@ -30,7 +30,7 @@ function App(): React.JSX.Element {
           <Stack.Navigator screenOptions={{ presentation: "transparentModal" }}>
             <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
             <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
-            <Stack.Screen name="Dashboard" component={UI} />
+            <Stack.Screen name="Dashboard" component={Dashboard} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>

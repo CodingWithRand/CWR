@@ -221,12 +221,15 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                             webviewState[1](true);
                             setLoading(false);
                         }}
-                        underlayColor="darkgrey"
-                        style={[styles.btn, { backgroundColor: 'lightgrey', width: horizontalScale(250, width) }]}
+                        underlayColor="dodgerblue"
+                        style={[styles.btn, { backgroundColor: 'deepskyblue', width: horizontalScale(250, width) }]}
                     >
-                        <Text style={styles.btnText}>CWR provider</Text>
+                        <Text style={styles.btnText}>Email</Text>
                     </TouchableHighlight>
-                    <GoogleSigninButton 
+                    <TouchableHighlight underlayColor="darkgrey" onPress={async () => { setLoading(true); await auth().signInAnonymously(); setLoading(false); }} style={[styles.btn, { backgroundColor: 'lightgrey', width: horizontalScale(250, width) }]}>
+                        <Text style={styles.btnText}>Sign Up as a Guest</Text>
+                    </TouchableHighlight>
+                    <GoogleSigninButton
                         style={{ width: horizontalScale(200, width), height: verticalScale(width > height ? 100 : 50, height) }}
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
@@ -369,7 +372,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     }, [ width, height ]);
 
     useDelayedEffect(() => {
-        if(authUser.isAuthUser){
+        if(authUser.isAuthUser || auth().currentUser){
             console.log("authenticated user");
             (async () => {
                 const userTokens = await auth().currentUser?.getIdTokenResult();
@@ -387,47 +390,6 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
 
     return(
         <View style={[styles.fullPageCenter, { height: height }]}>
-            {/* <Modal animationType="slide" visible={showModal} transparent={true}>
-                <View style={[styles.fullPageCenter, { flex: 1 }]}>
-                    <View style={{ display: "flex", rowGap: verticalScale(width > height ? 20 : 10, height), backgroundColor: isDark ? "black" : "white", padding: moderateScale(20, width), borderRadius: moderateScale(10, width) }}>
-                        <Text style={[styles.btnText, { fontSize: 20 }]}>Please enter your CWR account username</Text>
-                        <TextInput onChangeText={text => inputUsername.current = text} placeholder="Your username here" style={{ borderColor: isDark ? "white" : "black", borderWidth: 1, padding: 10, borderRadius: 10 }}></TextInput>
-                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                            <TouchableHighlight onPress={() => { setShowModal(false); inputUsername.current = ""; }} underlayColor="darkgrey" style={[styles.btn, { backgroundColor: 'lightgrey', width: "45%" }]}>
-                                <Text style={styles.btnText}>Cancel</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={async () => {
-                                if(inputUsername.current === "" || inputUsername.current === undefined) {
-                                    Alert.alert("System Error", "Please type in your username!");
-                                    return;
-                                }
-                                setLoading(true);
-                                const uid = await verifyUsername(inputUsername.current || "")
-                                if(uid) {
-                                    const userWebSession = await getUserWebSessions(uid);
-                                    if(userWebSession.authenticated){
-                                        await implementMobileAuthentication(uid);
-                                        setLoading(false);
-                                        setShowModal(false);
-                                        return;
-                                    };
-                                    setInjectJS(loginFocusJS(inputUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true })));
-                                    setCWRRegistrationType("login")
-                                } else {
-                                    setInjectJS(registrationFocusJS(inputUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true, newClient: true })));
-                                    setCWRRegistrationType("register")
-                                }   
-                                setProvider("cwr");
-                                webviewState[1](true);
-                                setLoading(false);
-                                setShowModal(false);
-                            }} underlayColor="silver" style={[styles.btn, { backgroundColor: isDark ? 'white' : 'whitesmoke', width: "45%" }]}>
-                                <Text style={[styles.btnText, { color: "black" }]}>Submit</Text>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
-                </View>
-            </Modal> */}
             {MainComponent}
             <Modal animationType="none" visible={loading} transparent={true}>
                 <View style={[styles.fullPageCenter, { position: "absolute", zIndex: 100, top: 0, left: 0, width: width, height: height }]}>

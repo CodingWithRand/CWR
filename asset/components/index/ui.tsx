@@ -1,0 +1,306 @@
+import { Text, View, TouchableHighlight, useWindowDimensions, Modal, ActivityIndicator, useColorScheme, StyleSheet, Switch, TouchableOpacity } from "react-native";
+import auth from "@react-native-firebase/auth"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteStackParamList } from "../../scripts/native-stack-navigation-types";
+import { GoogleSignin } from "react-native-google-signin";
+import { horizontalScale, moderateScale } from "../../scripts/Metric";
+import { retryFetch } from "../../scripts/util";
+import { useState } from "react";
+import { Button, RadioButton } from "react-native-paper";
+import { options } from "@react-native-community/cli-platform-android/build/commands/buildAndroid";
+import { Picker } from "@react-native-picker/picker";
+import MultiSelect from "react-native-multiple-select";
+import Slider from "@react-native-community/slider";
+
+const items = [
+    { id: 'java', name: 'Java' },
+    { id: 'javascript', name: 'JavaScript' },
+    { id: 'python', name: 'Python' },
+    { id: 'cpp', name: 'C++' },
+    { id: 'go', name: 'Go' },
+];
+export function UserPage1({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard"> }) {
+    const [selectedUnit, setSelectedUnit] = useState('daily');
+    const [selectedPlan, setSelectedPlan] = useState("duration");
+    const [selectedGathering, setSelectedGathering] = useState("total");
+    const [selectedApp, setSelectApp] = useState("blank");
+    const [selectedItems, setSelectedItems] = useState<string[]>([])
+    const [selectStictMode, setSelectStictMode] = useState(false)
+    const { width, height } = useWindowDimensions()
+
+    const onSelectedItemsChange = (selectedItems: string[]) => {
+        setSelectedItems(selectedItems);
+    };
+
+
+    return (
+        <View>
+            <Text style={styles.title}>การกำหนดเเผนการใช้งาน</Text>
+            <Text style={styles.subtitle}>หน่วยเวลา</Text>
+
+
+            <View style={styles.options}>
+                <RadioButton.Android
+                    value="daily"
+                    status={selectedUnit === 'daily' ?
+                        'checked' : 'unchecked'}
+                    onPress={() => setSelectedUnit('daily')}
+                    color="#007BFF"
+                />
+                <Text style={styles.optionsLabel}>รายวัน</Text>
+            </View>
+            <View style={styles.options}>
+                <RadioButton.Android
+                    value="weekly"
+                    status={selectedUnit === 'weekly' ?
+                        'checked' : 'unchecked'}
+                    onPress={() => setSelectedUnit('weekly')}
+                    color="#007BFF"
+                />
+                <Text style={styles.optionsLabel}>รายสัปดาห์</Text>
+            </View>
+
+            <View style={styles.options}>
+                <RadioButton.Android
+                    value="mouthly"
+                    status={selectedUnit === 'mouthly' ?
+                        'checked' : 'unchecked'}
+                    onPress={() => setSelectedUnit('mouthly')}
+                    color="#007BFF"
+                />
+                <Text style={styles.optionsLabel}>รายเดือน</Text>
+            </View>
+
+            <Text style={styles.subtitle}>รูปเเบบการกำหนดเเผน</Text>
+            <View style={styles.options}>
+                <RadioButton.Android
+                    value="duration"
+                    status={selectedPlan === 'duration' ?
+                        'checked' : 'unchecked'}
+                    onPress={() => setSelectedPlan('duration')}
+                    color="#007BFF"
+                />
+                <Text style={styles.optionsLabel}>กำหนดระยะเวลาที่จะใช้ในเเต่ละแอปต่อวัน</Text>
+
+            </View>
+            <View style={styles.options}>
+                <RadioButton.Android
+                    value="range"
+                    status={selectedPlan === 'range' ?
+                        'checked' : 'unchecked'}
+                    onPress={() => setSelectedPlan('range')}
+                    color="#007BFF"
+                />
+                <Text style={styles.optionsLabel}>กำหนดช่วงเวลาที่จะใช้ในเเต่ละแอปต่อวัน</Text>
+            </View>
+            <Text style={styles.title}>รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน</Text>
+            <View style={styles.options}>
+                <RadioButton.Android
+                    value="total"
+                    status={selectedGathering === 'total' ?
+                        'checked' : 'unchecked'}
+                    onPress={() => setSelectedGathering('total')}
+                    color="#007BFF"
+                />
+                <Text style={styles.optionsLabel}>เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)</Text>
+
+            </View>
+            <View style={styles.options}>
+                <RadioButton.Android
+                    value="separate"
+                    status={selectedGathering === 'separate' ?
+                        'checked' : 'unchecked'}
+                    onPress={() => setSelectedGathering('separate')}
+                    color="#007BFF"
+                />
+                <Text style={styles.optionsLabel}>เเบบเเยกกัน</Text>
+            </View>
+
+            <Text style={styles.subtitle}>ให้การใช้เเอปพลิเคชั่นได้บ้าง</Text>
+            <Picker style={styles.picker} dropdownIconColor="black"
+                selectedValue={selectedApp}
+                onValueChange={(itemValue, itemIndex) => setSelectApp(itemValue)}
+            >
+                <Picker.Item label="Bleh" value="bleh"></Picker.Item>
+                <Picker.Item label="Lol" value="lol"></Picker.Item>
+                <Picker.Item label="Sad" value="sad"></Picker.Item>
+            </Picker>
+            <MultiSelect
+                items={items}
+                uniqueKey="id"
+                onSelectedItemsChange={onSelectedItemsChange}
+                selectedItems={selectedItems}
+                selectText="Pick Items"
+                searchInputPlaceholderText="Search Items..."
+                tagRemoveIconColor="#CCC"
+                tagBorderColor="#CCC"
+                tagTextColor="#CCC"
+                selectedItemTextColor="#CCC"
+                selectedItemIconColor="#CCC"
+                itemTextColor="#000"
+                displayKey="name"
+                searchInputStyle={{ color: '#CCC' }}
+                submitButtonColor="#48d22b"
+                submitButtonText="Submit"
+            />
+
+            <View style={[styles.options, { justifyContent: "space-between" }]}>
+                <Text style={styles.title}>Stirct Mode</Text>
+                <Switch onValueChange={() => setSelectStictMode(prevSelectStictMode => !prevSelectStictMode)} value={selectStictMode} />
+
+
+            </View>
+            <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard2")}>
+                <Text style={{ fontSize: 50, textAlign: "center" }}>→</Text>
+            </TouchableOpacity>
+
+
+
+        </View>
+
+    )
+}
+
+export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "GuestDashboard"> }) {
+    const [selectedGathering, setSelectedGathering] = useState("total");
+    const [selectedDuration, setSelectedDuration] = useState("1h")
+    const { width, height } = useWindowDimensions()
+    return (
+        <View style={{ height: height, flex: 1, display: "flex", justifyContent: "space-between" }}>
+            <View><Text style={styles.title}>รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน</Text>
+                <View style={styles.options}>
+                    <RadioButton.Android
+                        value="total"
+                        status={selectedGathering === 'total' ?
+                            'checked' : 'unchecked'}
+                        onPress={() => setSelectedGathering('total')}
+                        color="#007BFF"
+                    />
+                    <Text style={styles.optionsLabel}>เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)</Text>
+                </View>
+                <View style={styles.options}>
+                    <RadioButton.Android
+                        value="separate"
+                        status={selectedGathering === 'separate' ?
+                            'checked' : 'unchecked'}
+                        onPress={() => setSelectedGathering('separate')}
+                        color="#007BFF"
+                    />
+                    <Text style={styles.optionsLabel}>เเบบเเยกกัน</Text>
+                </View>
+                <Text style={styles.title}>ระยะเวลาที่ใช้ในเเต่ระวัน</Text>
+                <View style={styles.options}>
+                    <RadioButton.Android
+                        value="15min"
+                        status={selectedDuration === '15min' ?
+                            'checked' : 'unchecked'}
+                        onPress={() => setSelectedDuration('15min')}
+                        color="#007BFF"
+                    />
+                    <Text style={styles.optionsLabel}>15 นาที</Text>
+                </View>
+                <View style={styles.options}>
+                    <RadioButton.Android
+                        value="30min"
+                        status={selectedDuration === '30min' ?
+                            'checked' : 'unchecked'}
+                        onPress={() => setSelectedDuration('30min')}
+                        color="#007BFF"
+                    />
+                    <Text style={styles.optionsLabel}>30 นาที</Text>
+                </View>
+                <View style={styles.options}>
+                    <RadioButton.Android
+                        value="1h"
+                        status={selectedDuration === '1h' ?
+                            'checked' : 'unchecked'}
+                        onPress={() => setSelectedDuration('1h')}
+                        color="#007BFF"
+                    />
+                    <Text style={styles.optionsLabel}>1 ชั่วโมง</Text>
+                </View>
+                <View style={styles.options}>
+                    <RadioButton.Android
+                        value="2h"
+                        status={selectedDuration === '2h' ?
+                            'checked' : 'unchecked'}
+                        onPress={() => setSelectedDuration('2h')}
+                        color="#007BFF"
+                    />
+                    <Text style={styles.optionsLabel}>2 ชั่วโมง</Text>
+                </View>
+            </View>
+
+            <TouchableHighlight onPress={() => {
+
+            }}
+                style={styles.savebutton}
+                activeOpacity={0.5}
+                underlayColor="mediumseagreen"
+            >
+                <Text style={{ color: "white", textAlign: "center", fontSize: 20 }}>Save Setting</Text>
+            </TouchableHighlight>
+
+        </View>
+    )
+}
+export function UserPage2({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard2"> }) {
+    const [slidervalue,SetSliderValue] = useState(0)
+    return (<View>
+        
+        <Text style={styles.title}>ระยะเวลาในการใช้ต่อ {"Variable"}</Text>
+        <Slider maximumValue={10} minimumValue={0} step={1} value={slidervalue} onValueChange={function(slidervalue){SetSliderValue(slidervalue)}}/>
+        <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard")}>
+            <Text style={{ fontSize: 50, textAlign: "center" }}>←</Text>
+        </TouchableOpacity>
+
+        <TouchableHighlight onPress={() => {
+
+        }}
+            style={styles.savebutton}
+            activeOpacity={0.5}
+            underlayColor="mediumseagreen"
+        >
+            <Text style={{ color: "white", textAlign: "center", fontSize: 20 }}>Save Setting</Text>
+        </TouchableHighlight>
+
+
+
+    </View>)
+
+
+}
+
+
+const styles = StyleSheet.create({
+    title: {
+        fontSize: 30,
+        fontWeight: "bold",
+        marginHorizontal: 10
+    },
+    subtitle: {
+        fontSize: 20,
+        marginHorizontal: 10
+    },
+    options: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    optionsLabel: {
+        color: "deepskyblue"
+    },
+    picker: {
+        color: "black",
+        backgroundColor: "lightgray",
+        margin: 10
+    },
+    savebutton: {
+        backgroundColor: "mediumspringgreen",
+        margin: 20,
+        padding: 20,
+        borderRadius: 10
+    },
+
+
+})

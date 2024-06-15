@@ -153,4 +153,25 @@ public class PackageUtilities {
         }
         return writableArray;
     }
+
+    @NonNull
+    public static WritableMap mapToWritableMap(@NonNull Map<String, Object> map){
+        WritableMap writableMap = Arguments.createMap();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value instanceof String) {
+                writableMap.putString(key, (String) value);
+            } else if (value instanceof Integer) {
+                writableMap.putInt(key, (Integer) value);
+            } else if (value instanceof Double) {
+                writableMap.putDouble(key, (Double) value);
+            } else if (value instanceof Boolean) {
+                writableMap.putBoolean(key, (Boolean) value);
+            } else {
+                writableMap.putString(key, value.toString());
+            }
+        }
+        return writableMap;
+    }
 }

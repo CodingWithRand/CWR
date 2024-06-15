@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,14 +26,17 @@ import java.util.Map;
 public class AppStatisticData extends MainNativeUtil{
 
     private final UsageStatsManager usageStatsManager;
+    private final PackageManager packageManager;
     public AppStatisticData(ReactApplicationContext context){
         super(context);
         this.usageStatsManager = (UsageStatsManager) NativeModuleContext.getSystemService(Context.USAGE_STATS_SERVICE);
+        this.packageManager = NativeModuleContext.getPackageManager();
     }
 
     public AppStatisticData(Context context){
         super(context);
         this.usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        this.packageManager = context.getPackageManager();
     }
 
     @NonNull
@@ -119,53 +123,6 @@ public class AppStatisticData extends MainNativeUtil{
 
         return lastEvent;
     }
-    HashMap<String, Integer> getTimeSpent(Context context, String packageName, long beginTime, long endTime) {
-        UsageEvents.Event currentEvent;
-        List<UsageEvents.Event> allEvents = new ArrayList<>();
-        HashMap<String, Integer> appUsageMap = new HashMap<>();
-
-        UsageStatsManager usageStatsManager = (UsageStatsManager)context.getSystemService(Context.USAGE_STATS_SERVICE);
-        UsageEvents usageEvents = usageStatsManager.queryEvents(beginTime, endTime);
-
-        while (usageEvents.hasNextEvent()) {
-            currentEvent = new UsageEvents.Event();
-            usageEvents.getNextEvent(currentEvent);
-            if(currentEvent.getPackageName().equals(packageName) || packageName == null) {
-                if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED
-                        || currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_PAUSED) {
-                    allEvents.add(currentEvent);
-                    String key = currentEvent.getPackageName();
-                    appUsageMap.putIfAbsent(key, 0);
-                }
-            }
-        }
-
-        for (int i = 0; i < allEvents.size() - 1; i++) {
-            UsageEvents.Event E0 = allEvents.get(i);
-            UsageEvents.Event E1 = allEvents.get(i + 1);
-
-            if (E0.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED
-                    && E1.getEventType() == UsageEvents.Event.ACTIVITY_PAUSED
-                    && E0.getClassName().equals(E1.getClassName())) {
-                int diff = (int)(E1.getTimeStamp() - E0.getTimeStamp());
-                diff /= 1000;
-                Integer prev = appUsageMap.get(E0.getPackageName());
-                if(prev == null) prev = 0;
-                appUsageMap.put(E0.getPackageName(), prev + diff);
-            }
-        }
-
-        UsageEvents.Event lastEvent = allEvents.get(allEvents.size() - 1);
-        if(lastEvent.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-            int diff = (int)System.currentTimeMillis() - (int)lastEvent.getTimeStamp();
-            diff /= 1000;
-            Integer prev = appUsageMap.get(lastEvent.getPackageName());
-            if(prev == null) prev = 0;
-            appUsageMap.put(lastEvent.getPackageName(), prev + diff);
-        }
-
-        return appUsageMap;
-    }
 
     public Map<String, Object> getTotalAppsUsage(String trackingPeriod){
         TimePeriod timePeriod = new TimePeriod();
@@ -245,4 +202,21 @@ public class AppStatisticData extends MainNativeUtil{
         }
         return appForegroundTime;
     }
+
+    @ReactMethod
+    public void getAllInstalledLaunchableAppNames(Promise promise){
+        Intent testIntent = new Intent(Intent.ACTION_MAIN);
+        testIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(testIntent, 0);
+        Map<String, Object> allInstalledAppNamesAndPackages = new HashMap<>();
+
+        for (ResolveInfo resolveInfo : resolveInfos) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            String appName = resolveInfo.loadLabel(packageManager).toString();
+            allInstalledAppNamesAndPackages.put(appName, appName + " (" + packageName + ")");
+        }
+
+        promise.resolve(PackageUtilities.mapToWritableMap(allInstalledAppNamesAndPackages));
+    }
 }
+

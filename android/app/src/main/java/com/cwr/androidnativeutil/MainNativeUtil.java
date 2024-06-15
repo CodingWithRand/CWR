@@ -3,6 +3,8 @@ package com.cwr.androidnativeutil;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.provider.Settings;
 
@@ -18,6 +20,7 @@ import com.cwr.androidnativeutil.BackgroundProcess;
 import com.cwr.androidnativeutil.AppStatisticData;
 import com.cwr.androidnativeutil.PermissionCheck;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MainNativeUtil extends ReactContextBaseJavaModule {
@@ -46,5 +49,4 @@ public class MainNativeUtil extends ReactContextBaseJavaModule {
         /* Test function */
         promise.resolve("Module Initiated (Test)");
     }
-
 }

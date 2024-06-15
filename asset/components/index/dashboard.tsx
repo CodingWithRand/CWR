@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FIREBASE_PERSONAL_ADMIN_KEY } from "@env"
 import { retryFetch } from "../../scripts/util";
 
+
 const { AppStatisticData, PermissionCheck, BackgroundProcess } = NativeModules;
 
 export default function Dashboard({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "Dashboard"> }) {
@@ -21,6 +22,7 @@ export default function Dashboard({ navigation }: { navigation: NativeStackNavig
 
     useEffect(() => {
         (async () => {
+            console.log(await AppStatisticData.getAllInstalledLaunchableAppNames());
             // await PermissionCheck.requestAccessibilityServicePermission();
             if(!await PermissionCheck.checkWriteSettingsPermission()) AsyncStorage.setItem("intenseMode", "false");
         })()

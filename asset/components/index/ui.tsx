@@ -1,32 +1,49 @@
-import { Text, View, TouchableHighlight, useWindowDimensions, Modal, ActivityIndicator, useColorScheme, StyleSheet, Switch, TouchableOpacity } from "react-native";
+import { Text, View, TouchableHighlight, useWindowDimensions, Modal, ActivityIndicator, useColorScheme, StyleSheet, Switch, TouchableOpacity, NativeModules, ScrollView } from "react-native";
 import auth from "@react-native-firebase/auth"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteStackParamList } from "../../scripts/native-stack-navigation-types";
 import { GoogleSignin } from "react-native-google-signin";
 import { horizontalScale, moderateScale } from "../../scripts/Metric";
 import { retryFetch } from "../../scripts/util";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, RadioButton } from "react-native-paper";
 import { options } from "@react-native-community/cli-platform-android/build/commands/buildAndroid";
 import { Picker } from "@react-native-picker/picker";
 import MultiSelect from "react-native-multiple-select";
 import Slider from "@react-native-community/slider";
 
-const items = [
-    { id: 'java', name: 'Java' },
-    { id: 'javascript', name: 'JavaScript' },
-    { id: 'python', name: 'Python' },
-    { id: 'cpp', name: 'C++' },
-    { id: 'go', name: 'Go' },
-];
+const { AppStatisticData } = NativeModules
+
 export function UserPage1({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard"> }) {
     const [selectedUnit, setSelectedUnit] = useState('daily');
     const [selectedPlan, setSelectedPlan] = useState("duration");
     const [selectedGathering, setSelectedGathering] = useState("total");
-    const [selectedApp, setSelectApp] = useState("blank");
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const [selectStictMode, setSelectStictMode] = useState(false)
+    const [ appNamesArrey , setAppNamesArrey ] = useState<object[]>([])
     const { width, height } = useWindowDimensions()
+
+
+    useEffect(() => {
+        (async () => {
+            const TotalApps = await AppStatisticData.getAllInstalledLaunchableAppNames()
+            const TAK = Object.keys(TotalApps)
+            const TAV = Object.values(TotalApps)
+            let array:object[] = []
+            TAV.forEach((v,i) =>{
+                array.push(
+                    { id: TAK[i] , name: v }
+                
+                )
+
+            });
+            setAppNamesArrey(array)
+
+        
+            
+        })()
+
+    }, [])
 
     const onSelectedItemsChange = (selectedItems: string[]) => {
         setSelectedItems(selectedItems);
@@ -34,7 +51,7 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
 
 
     return (
-        <View>
+        <ScrollView>
             <Text style={styles.title}>การกำหนดเเผนการใช้งาน</Text>
             <Text style={styles.subtitle}>หน่วยเวลา</Text>
 
@@ -117,16 +134,9 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
             </View>
 
             <Text style={styles.subtitle}>ให้การใช้เเอปพลิเคชั่นได้บ้าง</Text>
-            <Picker style={styles.picker} dropdownIconColor="black"
-                selectedValue={selectedApp}
-                onValueChange={(itemValue, itemIndex) => setSelectApp(itemValue)}
-            >
-                <Picker.Item label="Bleh" value="bleh"></Picker.Item>
-                <Picker.Item label="Lol" value="lol"></Picker.Item>
-                <Picker.Item label="Sad" value="sad"></Picker.Item>
-            </Picker>
+            <View style={{margin:10}}>
             <MultiSelect
-                items={items}
+                items={appNamesArrey}
                 uniqueKey="id"
                 onSelectedItemsChange={onSelectedItemsChange}
                 selectedItems={selectedItems}
@@ -143,6 +153,7 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
                 submitButtonColor="#48d22b"
                 submitButtonText="Submit"
             />
+            </View>
 
             <View style={[styles.options, { justifyContent: "space-between" }]}>
                 <Text style={styles.title}>Stirct Mode</Text>
@@ -156,7 +167,7 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
 
 
 
-        </View>
+        </ScrollView>
 
     )
 }
@@ -245,11 +256,11 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
     )
 }
 export function UserPage2({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard2"> }) {
-    const [slidervalue,SetSliderValue] = useState(0)
+    const [slidervalue, SetSliderValue] = useState(0)
     return (<View>
-        
+
         <Text style={styles.title}>ระยะเวลาในการใช้ต่อ {"Variable"}</Text>
-        <Slider maximumValue={10} minimumValue={0} step={1} value={slidervalue} onValueChange={function(slidervalue){SetSliderValue(slidervalue)}}/>
+        <Slider maximumValue={10} minimumValue={0} step={1} value={slidervalue} onValueChange={function (slidervalue) { SetSliderValue(slidervalue) }} />
         <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard")}>
             <Text style={{ fontSize: 50, textAlign: "center" }}>←</Text>
         </TouchableOpacity>

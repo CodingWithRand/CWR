@@ -383,7 +383,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 }catch(error){
                     console.error(error);
                 }
-                navigation.replace("Dashboard");
+                navigation.replace("UserDashboard");
             })();
         }
     }, [authUser.isAuthUser], 3000)

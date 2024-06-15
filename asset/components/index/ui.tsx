@@ -11,6 +11,7 @@ import { options } from "@react-native-community/cli-platform-android/build/comm
 import { Picker } from "@react-native-picker/picker";
 import MultiSelect from "react-native-multiple-select";
 import Slider from "@react-native-community/slider";
+import { RouteProp } from "@react-navigation/native";
 
 const { AppStatisticData } = NativeModules
 
@@ -20,7 +21,7 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
     const [selectedGathering, setSelectedGathering] = useState("total");
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const [selectStictMode, setSelectStictMode] = useState(false)
-    const [ appNamesArrey , setAppNamesArrey ] = useState<object[]>([])
+    const [appNamesArrey, setAppNamesArrey] = useState<object[]>([])
     const { width, height } = useWindowDimensions()
 
 
@@ -29,18 +30,18 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
             const TotalApps = await AppStatisticData.getAllInstalledLaunchableAppNames()
             const TAK = Object.keys(TotalApps)
             const TAV = Object.values(TotalApps)
-            let array:object[] = []
-            TAV.forEach((v,i) =>{
+            let array: object[] = []
+            TAV.forEach((v, i) => {
                 array.push(
-                    { id: TAK[i] , name: v }
-                
+                    { id: TAK[i], name: v }
+
                 )
 
             });
             setAppNamesArrey(array)
 
-        
-            
+
+
         })()
 
     }, [])
@@ -134,25 +135,25 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
             </View>
 
             <Text style={styles.subtitle}>ให้การใช้เเอปพลิเคชั่นได้บ้าง</Text>
-            <View style={{margin:10}}>
-            <MultiSelect
-                items={appNamesArrey}
-                uniqueKey="id"
-                onSelectedItemsChange={onSelectedItemsChange}
-                selectedItems={selectedItems}
-                selectText="Pick Items"
-                searchInputPlaceholderText="Search Items..."
-                tagRemoveIconColor="#CCC"
-                tagBorderColor="#CCC"
-                tagTextColor="#CCC"
-                selectedItemTextColor="#CCC"
-                selectedItemIconColor="#CCC"
-                itemTextColor="#000"
-                displayKey="name"
-                searchInputStyle={{ color: '#CCC' }}
-                submitButtonColor="#48d22b"
-                submitButtonText="Submit"
-            />
+            <View style={{ margin: 10 }}>
+                <MultiSelect
+                    items={appNamesArrey}
+                    uniqueKey="id"
+                    onSelectedItemsChange={onSelectedItemsChange}
+                    selectedItems={selectedItems}
+                    selectText="Pick Items"
+                    searchInputPlaceholderText="Search Items..."
+                    tagRemoveIconColor="#CCC"
+                    tagBorderColor="#CCC"
+                    tagTextColor="#CCC"
+                    selectedItemTextColor="#CCC"
+                    selectedItemIconColor="#CCC"
+                    itemTextColor="#000"
+                    displayKey="name"
+                    searchInputStyle={{ color: '#CCC' }}
+                    submitButtonColor="#48d22b"
+                    submitButtonText="Submit"
+                />
             </View>
 
             <View style={[styles.options, { justifyContent: "space-between" }]}>
@@ -161,7 +162,15 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
 
 
             </View>
-            <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard2")}>
+            <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard2", {
+                unit: selectedUnit,
+                plan: selectedPlan,
+                gathering: {
+                    name: selectedGathering,
+                    body: selectedItems.length > 0 ? selectedItems : undefined
+                },
+                isStrictMode: selectStictMode
+            })}>
                 <Text style={{ fontSize: 50, textAlign: "center" }}>→</Text>
             </TouchableOpacity>
 
@@ -255,13 +264,51 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
         </View>
     )
 }
-export function UserPage2({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard2"> }) {
-    const [slidervalue, SetSliderValue] = useState(0)
-    return (<View>
+export function UserPage2({ navigation, route }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard2">, route:RouteProp<RouteStackParamList, "UserDashboard2"> }) {
 
-        <Text style={styles.title}>ระยะเวลาในการใช้ต่อ {"Variable"}</Text>
-        <Slider maximumValue={10} minimumValue={0} step={1} value={slidervalue} onValueChange={function (slidervalue) { SetSliderValue(slidervalue) }} />
-        <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard")}>
+    const {unit, plan, gathering,isStrictMode} = route.params
+    const [slidervalue, SetSliderValue] = useState(Array.from(gathering.body||["total"], () => 0));
+    const [sliderMaximumValue, SetSliderMaximumValue ] = useState(Array.from(gathering.body||["total"], () => constraint[`PER_${unit==="daily"?"DAY":unit==="monthly"?"MONTH":"WEEK"}`]));
+    const constraint = {
+        PER_DAY: 2,
+        PER_WEEK: 10,
+        PER_MONTH: 50
+
+    }
+    return (plan==="duration"? <ScrollView>
+
+        <Text style={styles.title}>ระยะเวลาในการใช้ต่อ {unit}</Text>
+        {(() => {
+            let tempJSXArray: JSX.Element[] = [];
+            (gathering.body||["total"]).forEach((v,i)=>{
+                tempJSXArray.push(
+                    <View>
+                    <Text>{v}</Text>
+                    <Slider maximumValue={sliderMaximumValue[i]} minimumValue={0} step={1} value={slidervalue[i]} onValueChange={function (slidervalue) { 
+                        SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => index === i ? slidervalue : val))
+                        SetSliderMaximumValue(prevSliderMax => prevSliderMax.map((val, index) => index !==i ? val - slidervalue : val)); 
+                        }} />
+                    
+
+                    </View>
+                )
+            })
+            return tempJSXArray
+        })()}
+        {/* <View>
+            <Slider maximumValue={10} minimumValue={0} step={1} value={slidervalue} onValueChange={function (slidervalue) { SetSliderValue(slidervalue) }} />
+            
+        </View> */}
+        <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard", {
+                unit: unit,
+                plan: plan,
+                gathering: {
+                    name: gathering.name,
+                    body: gathering.body
+                },
+                isStrictMode: isStrictMode
+            })
+        }>
             <Text style={{ fontSize: 50, textAlign: "center" }}>←</Text>
         </TouchableOpacity>
 
@@ -277,7 +324,9 @@ export function UserPage2({ navigation }: { navigation: NativeStackNavigationPro
 
 
 
-    </View>)
+    </ScrollView>:<ScrollView>
+        <Text>ThisisaText</Text>
+    </ScrollView>)
 
 
 }

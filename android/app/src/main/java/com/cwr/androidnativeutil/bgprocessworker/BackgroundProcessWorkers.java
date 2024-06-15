@@ -48,7 +48,9 @@ public class BackgroundProcessWorkers {
                 Log.i("Retriever",  "Unprovided configs. Nothing to observe, aborting...");
                 return Result.success();
             }
+            Log.d("Retriever", RawRetrieverConfigs);
             WritableMap RetrieverConfigs = PackageUtilities.JSON_Parse(RawRetrieverConfigs);
+            Log.d("Retriever", RetrieverConfigs.toString());
 
             Map<String, Object> appStatisticData = null;
             ReadableMapKeySetIterator retrieverConfigKeys = RetrieverConfigs.keySetIterator();
@@ -56,16 +58,22 @@ public class BackgroundProcessWorkers {
                 String retrieverConfigKey = retrieverConfigKeys.nextKey();
                 switch (retrieverConfigKey){
                     case "retrieveTotalAppsStatistic":
-                        if(RetrieverConfigs.getBoolean("retrieveTotalAppsStatistic")){
+                        if(RetrieverConfigs.getMap("retrieveTotalAppsStatistic") != null){
                             appStatisticData = new AppStatisticData(backgroundContext)
-                                .getTotalAppsUsage(Objects.requireNonNullElse(RetrieverConfigs.getString("appStatisticInterval"), "daily"));
+                                .getTotalAppsUsage(Objects.requireNonNullElse(Objects.requireNonNull(RetrieverConfigs.getMap("retrieveTotalAppsStatistic")).getString("interval"), "daily"));
                         }
                         break;
-                    case "retrieveOneAppsStatistic":
+                    case "retrieveAppsStatistic":
                         // TODO: (later) Properly deal with one app statistic data retrieval. Create new method in AppStatisticData.java
-                        if(RetrieverConfigs.getBoolean("retrieveOneAppsStatistic")){
-                            appStatisticData = new AppStatisticData(backgroundContext)
-                                    .getTotalAppsUsage(Objects.requireNonNullElse(RetrieverConfigs.getString("appStatisticInterval"), "daily"));
+                        if(RetrieverConfigs.getArray("retrieveAppsStatistic") != null){
+                            Map<String, Object> appsStatisticData = new HashMap<>();
+                            for(int i = 0; i < Objects.requireNonNull(RetrieverConfigs.getArray("retrieveAppsStatistic")).size(); i++){
+                                ReadableMap theAppConfigMap = Objects.requireNonNull(RetrieverConfigs.getArray("retrieveAppsStatistic")).getMap(i);
+                                String appName = theAppConfigMap.getString("appName");
+                                String interval = Objects.requireNonNullElse(theAppConfigMap.getString("interval"), "daily");
+                                appsStatisticData.put(appName, new AppStatisticData(backgroundContext).getOneAppUsage(interval, appName));
+                            }
+                            appStatisticData = appsStatisticData;
                         }
                         break;
                 }
@@ -182,7 +190,7 @@ public class BackgroundProcessWorkers {
                             "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass",
                             "You've been spending " + usageRestrictionIntervalValue + " " + intervalUnit + " on the screen already. Come on man, get some break!"
                     );
-                    Log.i("AppStatisticProcessor", "You've spent " + TotalAppsUsageInPeriod + " milliseconds screen. Go touch grass now man.");
+                    Log.i("AppStatisticProcessor", "You've spent " + TotalAppsUsageInPeriod + " milliseconds on screen. Go touch grass now man.");
                 } else {
                     Log.i("AppStatisticProcessor", "You've spent " + TotalAppsUsageInPeriod + " milliseconds on screen");
                 }
@@ -191,13 +199,51 @@ public class BackgroundProcessWorkers {
             }
         }
 
-        private void trackOneLaunchableApp(@NonNull ReadableMap configs, @NonNull String RawAppUsageStatisticData){
-            BasicConfigsPrep bcp = new BasicConfigsPrep(configs);
-            int usageRestrictionIntervalValue = bcp.uri;
-            String intervalUnit = bcp.unit;
-            long comparator = bcp.c;
+        private void trackLaunchableApps(@NonNull ReadableMap configs, @NonNull String RawAppUsageStatisticData){
             try {
                 Map<String, Object> RetrievedAppUsageStatisticData = PackageUtilities.JSON_Map_Parse(RawAppUsageStatisticData);
+                for(Map.Entry<String, Object> AppUsageInPeriod: RetrievedAppUsageStatisticData.entrySet()){
+                    String appName = AppUsageInPeriod.getKey();
+                    ReadableMap theAppConfigs = Objects.requireNonNull(configs.getMap(appName));
+                    BasicConfigsPrep theAppBcp = new BasicConfigsPrep(theAppConfigs);
+                    int theAppUsageRestrictionIntervalValue = theAppBcp.uri;
+                    String theAppIntervalUnit = theAppBcp.unit;
+                    long theComparator = theAppBcp.c;
+                    long usedTimeInApp = ((Number) AppUsageInPeriod.getValue()).longValue();
+                    if(usedTimeInApp >= (theAppUsageRestrictionIntervalValue * theComparator)){
+                        Brightness brightnessSetting = new Brightness(backgroundContext);
+                        Audio audioSetting = new Audio(backgroundContext);
+                        Notification notification = new Notification(backgroundContext);
+                        if (theAppConfigs.hasKey("isIntenselyStricted") && theAppConfigs.getBoolean("isIntenselyStricted")) {
+                            brightnessSetting.setScreenBrightness(0);
+                            audioSetting.setVolume("all", 0);
+                        }
+
+                        try{
+                            notification.createNotificationChannel(
+                                    "AppUsageStatisticDataAlert",
+                                    "App Usage Alert",
+                                    "This channel is used for notifying user about their app usage compare to the custom limit"
+                            );
+                        } catch (Exception e) {
+                            Log.e("AppStatisticProcessor", "Unable to create notification channel: " + e.getMessage());
+                        }
+
+                        notification.createAndSendNotification(
+                                "AppUsageStatisticDataAlert",
+                                "Master of Time",
+                                "Your " + theAppConfigs.getString("watchInterval") + " " + appName + " apps usage has reached limited of " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit,
+                                "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass",
+                                "You've been spending " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit + " on the screen already. Come on man, get some break!"
+                        );
+                        Log.i("AppStatisticProcessor", "You've spent " + usedTimeInApp + " milliseconds on " + appName + ". Go touch grass now man.");
+                    } else {
+                        Log.i("AppStatisticProcessor", "You've spent " + usedTimeInApp + " milliseconds on " + appName + ".");
+                    }
+                }
+                /* TODO: Finished the code on retrieving app usage data individually, now finish up this method.
+                    The RetrievedAppUsageStatisticData value would be like { appName: 0L, app: 1L, ... }
+                 */
 
             } catch (JSONException je){
                 throw new RuntimeException(je);
@@ -225,12 +271,12 @@ public class BackgroundProcessWorkers {
                             case "totalAppUsageRestriction":
                                 ReadableMap totalAppUsageStrictJobConfig = Objects.requireNonNull(jobs.getMap("totalAppUsageRestriction"));
                                 trackAllLaunchableAppUsage(totalAppUsageStrictJobConfig, RawRetrievedAppUsageStatisticData);
-
+                                break;
                                 // TODO: App usage data from retriever, accumulate the spent time of all app, then compare to the restriction. (Done)
-                            case "oneAppUsageRestriction":
-                                ReadableMap oneAppUsageRestrictionJobConfig = Objects.requireNonNull(jobs.getMap("oneAppUsageRestriction"));
-                                trackOneLaunchableApp(oneAppUsageRestrictionJobConfig, RawRetrievedAppUsageStatisticData);
-
+                            case "appsUsageRestriction":
+                                ReadableMap appsUsageRestrictionJobConfig = Objects.requireNonNull(jobs.getMap("appsUsageRestriction"));
+                                trackLaunchableApps(appsUsageRestrictionJobConfig, RawRetrievedAppUsageStatisticData);
+                                break;
                         }
                     }
                 }

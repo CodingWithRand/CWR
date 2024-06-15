@@ -21,7 +21,7 @@ export default function Dashboard({ navigation }: { navigation: NativeStackNavig
 
     useEffect(() => {
         (async () => {
-            await PermissionCheck.requestAccessibilityServicePermission();
+            // await PermissionCheck.requestAccessibilityServicePermission();
             if(!await PermissionCheck.checkWriteSettingsPermission()) AsyncStorage.setItem("intenseMode", "false");
         })()
     }, [])
@@ -91,11 +91,43 @@ export default function Dashboard({ navigation }: { navigation: NativeStackNavig
             <TouchableHighlight onPress={async () => await BackgroundProcess.registerInvoker([
                 {
                     name: "Retriever",
+                    // retrieveTotalAppsStatistic: {
+                    //     interval: "daily"
+                    // }
+                    retrieveAppsStatistic: [
+                        {
+                            appName: "YouTube",
+                            interval: "daily"
+                        },
+                        {
+                            appName: "planreminder",
+                            interval: "daily"
+                        }
+                    ]
                 },
                 {
                     name: "Processor",
                     jobs: {
-
+                        // totalAppUsageRestriction: {
+                        //     restrictedPeriod: 1,
+                        //     inUnit: "hour",
+                        //     watchInterval: "daily",
+                        //     isIntenselyStricted: true
+                        // }
+                        appsUsageRestriction: {
+                            YouTube: {
+                                restrictedPeriod: 1,
+                                inUnit: "hour",
+                                watchInterval: "daily",
+                                isIntenselyStricted: true
+                            },
+                            planreminder: {
+                                restrictedPeriod: 1,
+                                inUnit: "hour",
+                                watchInterval: "daily",
+                                isIntenselyStricted: true
+                            }
+                        }
                     }
                 }
             ])} underlayColor="darkgreen" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "green", borderRadius: moderateScale(10, width) }}>

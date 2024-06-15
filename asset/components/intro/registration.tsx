@@ -25,8 +25,17 @@ async function signInWithGoogle() {
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     
         const userCredential = await auth().signInWithCredential(googleCredential);
-        if(userCredential.user.displayName) AsyncStorage.setItem("clientUsername", userCredential.user.displayName);
+        if(userCredential.user.displayName){
+            await AsyncStorage.setItem("clientUsername", userCredential.user.displayName);
+            await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: "util/availableUser", writeData: { [userCredential.user.displayName]: userCredential.user.uid }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+            })
+        }
+
         const ip = await getClientIp();
+        
         const updateRegistryResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -57,25 +66,29 @@ async function signInWithGoogle() {
 
 async function verifyUsername(username: string | null) {
     if(username === null) return;
-    const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
+    const response = await fetch(`https://cwr-api.onrender.com/post/provider/cwr/firestore/query?select=${username}`, { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: "util/availableUser", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+        body: JSON.stringify({ path: "util", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
     })
-    const total_username_list = await response.json()
-    const uid = total_username_list.docData[username]
-    return uid;
+    if(response.ok){
+        const the_username_list = await response.json()
+        const uid = the_username_list.docDatas.availableUser[username]
+        return uid;
+    }
 }
 
 async function getUserWebSessions(uid: string){
-    const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
+    const response = await fetch(`https://cwr-api.onrender.com/post/provider/cwr/firestore/query?select=${encodeURIComponent("https://codingwithrand.vercel.app")}`, { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: `util/authenticationSessions/${uid}/Web`, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+        body: JSON.stringify({ path: `util/authenticationSessions/${uid}`, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
     })
-    const userWebSessions = await response.json();
-    const providerWebSessions = userWebSessions.docData["https://codingwithrand.vercel.app"];
-    return providerWebSessions;
+    if(response.ok){
+        const userWebSessions = await response.json();
+        const providerWebSessions = userWebSessions.docDatas.Web["https://codingwithrand.vercel.app"];
+        return providerWebSessions;
+    }
 }
 
 async function implementMobileAuthentication(uid: string) {
@@ -86,7 +99,7 @@ async function implementMobileAuthentication(uid: string) {
     })
     const mobileAuthToken = await response.json();
     const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
-    if(userCredential.user.displayName) AsyncStorage.setItem("clientUsername", userCredential.user.displayName);
+    if(userCredential.user.displayName) await AsyncStorage.setItem("clientUsername", userCredential.user.displayName);
     const ip = await getClientIp();
     const updateRegistryResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
         method: "POST",
@@ -108,13 +121,11 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     const { width, height } = useWindowDimensions()
     const isDark = useColorScheme() === 'dark';
     const [ providerType, setProvider ] = useState<string>("");
-    const [ showModal, setShowModal ] = useState<boolean>(false);
     const webviewState = useState<boolean>(false);
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ injectJS, setInjectJS ] = useState<string>();
     const [ cwrRegistrationType, setCWRRegistrationType ] = useState<string>("");
     const { authUser } = useGlobal();
-    const inputUsername = useRef<string>();
     const registrationBtnsFadingAnim = new Animated.Value(0);
     const registrationPageTitle = new Animated.Value(0);
     const appNameFadingAnim = new Animated.Value(0);
@@ -123,6 +134,8 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
         translateY: new Animated.Value(0),
         scale: new Animated.Value(1),
     };
+    const cachedUsername = useRef<string>();
+
     const checkCookieJS = (message: string) => `
         function checkIsLoggedIn() {
             const interval = setInterval(() => {
@@ -185,10 +198,38 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
             <View style={[styles.containerBox, { width: "100%", height: verticalScale(height/(width > height ? 0.65 : 1.35), height), position: "absolute", bottom: 0, rowGap: verticalScale(width > height ? 45 : 75, height) }]}>
                 <Animated.Text style={[styles.btnText, { fontSize: moderateScale(40, width), opacity: registrationPageTitle }]}>Register with...</Animated.Text>
                 <Animated.View style={[styles.containerBox, { opacity: registrationBtnsFadingAnim, rowGap: verticalScale(width > height ? 20 : 50, height) }]}>
-                    <TouchableHighlight onPress={() => setShowModal(true)} underlayColor="darkgrey" style={[styles.btn, { backgroundColor: 'lightgrey', width: horizontalScale(250, width) }]}>
-                        <Text style={styles.btnText}>CWR provider</Text>
+                    <TouchableHighlight
+                        onPress={async () => {
+                            cachedUsername.current = await AsyncStorage.getItem("clientUsername") || undefined;
+                            setLoading(true);
+                            let uid;
+                            if(cachedUsername.current) uid = await verifyUsername(cachedUsername.current);
+                            if(uid) {
+                                const userWebSession = await getUserWebSessions(uid);
+                                if(userWebSession.authenticated){
+                                    await implementMobileAuthentication(uid);
+                                    setLoading(false);
+                                    return;
+                                };
+                                setInjectJS(loginFocusJS(cachedUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true })));
+                                setCWRRegistrationType("login")
+                            } else {
+                                setInjectJS(registrationFocusJS(cachedUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true, newClient: true })));
+                                setCWRRegistrationType("register")
+                            }   
+                            setProvider("cwr");
+                            webviewState[1](true);
+                            setLoading(false);
+                        }}
+                        underlayColor="dodgerblue"
+                        style={[styles.btn, { backgroundColor: 'deepskyblue', width: horizontalScale(250, width) }]}
+                    >
+                        <Text style={styles.btnText}>Email</Text>
                     </TouchableHighlight>
-                    <GoogleSigninButton 
+                    <TouchableHighlight underlayColor="darkgrey" onPress={async () => { setLoading(true); await auth().signInAnonymously(); setLoading(false); }} style={[styles.btn, { backgroundColor: 'lightgrey', width: horizontalScale(250, width) }]}>
+                        <Text style={styles.btnText}>Sign Up as a Guest</Text>
+                    </TouchableHighlight>
+                    <GoogleSigninButton
                         style={{ width: horizontalScale(200, width), height: verticalScale(width > height ? 100 : 50, height) }}
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
@@ -251,13 +292,13 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
             try{
                 const cachedUsername = await AsyncStorage.getItem("clientUsername");
                 const uid = await verifyUsername(cachedUsername);
-                const MobileAuthSessionsResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/read", { 
+                const MobileAuthSessionsResponse = await fetch(`https://cwr-api.onrender.com/post/provider/cwr/firestore/query?select=planreminder`, { 
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${uid}/Mobile`, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                    body: JSON.stringify({ path: `util/authenticationSessions/${uid}`, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
                 })
                 const MobileAuthSessions = await MobileAuthSessionsResponse.json();
-                const planreminderMobileAuthSession = MobileAuthSessions.docData["planreminder"];
+                const planreminderMobileAuthSession = MobileAuthSessions.docDatas.Mobile.planreminder;
                 if(planreminderMobileAuthSession.authenticated && !auth().currentUser){
                     console.log("Welcome back", cachedUsername);
                     const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
@@ -331,7 +372,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     }, [ width, height ]);
 
     useDelayedEffect(() => {
-        if(authUser.isAuthUser){
+        if(authUser.isAuthUser || auth().currentUser){
             console.log("authenticated user");
             (async () => {
                 const userTokens = await auth().currentUser?.getIdTokenResult();
@@ -349,47 +390,6 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
 
     return(
         <View style={[styles.fullPageCenter, { height: height }]}>
-            <Modal animationType="slide" visible={showModal} transparent={true}>
-                <View style={[styles.fullPageCenter, { flex: 1 }]}>
-                    <View style={{ display: "flex", rowGap: verticalScale(width > height ? 20 : 10, height), backgroundColor: isDark ? "black" : "white", padding: moderateScale(20, width), borderRadius: moderateScale(10, width) }}>
-                        <Text style={[styles.btnText, { fontSize: 20 }]}>Please enter your CWR account username</Text>
-                        <TextInput onChangeText={text => inputUsername.current = text} placeholder="Your username here" style={{ borderColor: isDark ? "white" : "black", borderWidth: 1, padding: 10, borderRadius: 10 }}></TextInput>
-                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                            <TouchableHighlight onPress={() => { setShowModal(false); inputUsername.current = ""; }} underlayColor="darkgrey" style={[styles.btn, { backgroundColor: 'lightgrey', width: "45%" }]}>
-                                <Text style={styles.btnText}>Cancel</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={async () => {
-                                if(inputUsername.current === "" || inputUsername.current === undefined) {
-                                    Alert.alert("System Error", "Please type in your username!");
-                                    return;
-                                }
-                                setLoading(true);
-                                const uid = await verifyUsername(inputUsername.current || "")
-                                if(uid) {
-                                    const userWebSession = await getUserWebSessions(uid);
-                                    if(userWebSession.authenticated){
-                                        await implementMobileAuthentication(uid);
-                                        setLoading(false);
-                                        setShowModal(false);
-                                        return;
-                                    };
-                                    setInjectJS(loginFocusJS(inputUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true })));
-                                    setCWRRegistrationType("login")
-                                } else {
-                                    setInjectJS(registrationFocusJS(inputUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true, newClient: true })));
-                                    setCWRRegistrationType("register")
-                                }   
-                                setProvider("cwr");
-                                webviewState[1](true);
-                                setLoading(false);
-                                setShowModal(false);
-                            }} underlayColor="silver" style={[styles.btn, { backgroundColor: isDark ? 'white' : 'whitesmoke', width: "45%" }]}>
-                                <Text style={[styles.btnText, { color: "black" }]}>Submit</Text>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
             {MainComponent}
             <Modal animationType="none" visible={loading} transparent={true}>
                 <View style={[styles.fullPageCenter, { position: "absolute", zIndex: 100, top: 0, left: 0, width: width, height: height }]}>
@@ -398,7 +398,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 </View>
             </Modal>
             <ProviderWebView 
-                interactingUser={inputUsername.current || ""}
+                interactingUser={cachedUsername.current || ""}
                 type={providerType}
                 webviewState={webviewState}
                 injectedJavaScript={injectJS}

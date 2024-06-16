@@ -12,6 +12,8 @@ import { Picker } from "@react-native-picker/picker";
 import MultiSelect from "react-native-multiple-select";
 import Slider, { SliderRef } from "@react-native-community/slider";
 import { RouteProp } from "@react-navigation/native";
+import DateTimePicker from "react-native-modal-datetime-picker";
+import moment from "moment";
 
 const { AppStatisticData } = NativeModules
 
@@ -277,44 +279,74 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     const isStrictMode = route.params?.isStrictMode;
 
     const [sliderValue, SetSliderValue] = useState(Array.from((gathering?.body || ["total"]), () => 0));
-    const [sliderMaximumValue, SetSliderMaximumValue ] = useState(Array.from((gathering?.body || ["total"]), () => constraint[`PER_${unit==="daily"?"DAY":unit==="monthly"?"MONTH":"WEEK"}`]));
+    const [sliderMaximumValue, SetSliderMaximumValue] = useState(Array.from((gathering?.body || ["total"]), () => constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`]));
+    const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
+    const [isEndTimePickerVisible, setEndTimePickerVisibility] = useState(false);
+    const [startTime, setStartTime] = useState<Date>();
+    const [endTime, setEndtime] = useState<Date>()
+
+    const showStartTimePicker = () => {
+        setStartTimePickerVisibility(true);
+    };
+
+    const hideStartTimePicker = () => {
+        setStartTimePickerVisibility(false);
+    };
+
+    const handleStartConfirm = (date: Date) => {
+        setStartTime(date);
+        hideStartTimePicker();
+    };
+
+    const showEndTimePicker = () => {
+        setEndTimePickerVisibility(true);
+    };
+
+    const hideEndTimePicker = () => {
+        setEndTimePickerVisibility(false);
+    };
+
+    const handleEndConfirm = (date: Date) => {
+        setEndtime(date);
+        hideEndTimePicker();
+    };
 
     useEffect(() => {
         SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => {
-            if(prevSliderValue[index] > sliderMaximumValue[index]){
+            if (prevSliderValue[index] > sliderMaximumValue[index]) {
                 return sliderMaximumValue[index]
-            }else{
+            } else {
                 return prevSliderValue[index]
             }
         }))
     }, [sliderMaximumValue])
 
-    return (plan==="duration"? <ScrollView>
-
-        <Text style={styles.title}>ระยะเวลาในการใช้ต่อ{unit==="daily"?"วัน":unit==="monthly"?"เดือน":"สัปดาห์"}</Text>
+    return (plan === "duration" ? <ScrollView>
+        {/*page3*/}
+        <Text style={styles.title}>ระยะเวลาในการใช้ต่อ{unit === "daily" ? "วัน" : unit === "monthly" ? "เดือน" : "สัปดาห์"}</Text>
         {(() => {
             let tempJSXArray: JSX.Element[] = [];
-            (gathering?.body||["total"]).forEach((v,i)=>{
+            (gathering?.body || ["total"]).forEach((v, i) => {
                 tempJSXArray.push(
                     <View key={i}>
-                        <Text>{v}</Text>
-                        <Text>{Math.floor(sliderValue[i]/60) !== 0 ? Math.floor(sliderValue[i]/60) + "ชั่วโมง " : ""}{sliderValue[i] % 60 !== 0 ? sliderValue[i] % 60 + "นาที" : ""}</Text>
-                        <Slider maximumValue={constraint[`PER_${unit==="daily"?"DAY":unit==="monthly"?"MONTH":"WEEK"}`]} upperLimit={sliderMaximumValue[i]} minimumValue={0} step={1} value={sliderValue[i]} onValueChange={function (slidervalue) { 
+                        <Text style={{ fontSize: 20, fontWeight: "bold", marginHorizontal: 15, marginTop: 10 }}>{v}</Text>
+                        <Text style={{ marginHorizontal: 15, textAlign: "center", fontWeight: "bold" }}>{Math.floor(sliderValue[i] / 60) !== 0 ? Math.floor(sliderValue[i] / 60) + " ชั่วโมง " : ""}{sliderValue[i] % 60 !== 0 ? sliderValue[i] % 60 + " นาที" : ""}</Text>
+                        <Slider maximumValue={constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`]} upperLimit={sliderMaximumValue[i]} minimumValue={0} step={1} value={sliderValue[i]} onValueChange={function (slidervalue) {
                             SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => index === i ? slidervalue : val))
                             SetSliderMaximumValue(prevSliderMax => {
-                                if(slidervalue > sliderValue[i]){
+                                if (slidervalue > sliderValue[i]) {
                                     return prevSliderMax.map((val, index) => index !== i ? val - (slidervalue - sliderValue[i]) : val)
-                                }else if(slidervalue < sliderValue[i]){
+                                } else if (slidervalue < sliderValue[i]) {
                                     return prevSliderMax.map((val, index) => index !== i ? val + (sliderValue[i] - slidervalue) : val)
                                 }
-                                else{
+                                else {
                                     return prevSliderMax
                                 }
-                            }); 
-                            }} />
-                        <View>
+                            });
+                        }} />
+                        <View style={[styles.options, { justifyContent: "space-between", marginHorizontal: 15 }]}>
                             <Text>0 นาที</Text>
-                            <Text>{constraint[`PER_${unit==="daily"?"DAY":unit==="monthly"?"MONTH":"WEEK"}`]/60} ชั่วโมง</Text>
+                            <Text>{constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`] / 60} ชั่วโมง</Text>
                         </View>
 
                     </View>
@@ -324,14 +356,14 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
         })()}
 
         <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard", {
-                unit: unit || "daily",
-                plan: plan || "duration",
-                gathering: {
-                    name: gathering?.name || "total",
-                    body: gathering?.body || ["total"]
-                },
-                isStrictMode: isStrictMode || false
-            }
+            unit: unit || "daily",
+            plan: plan || "duration",
+            gathering: {
+                name: gathering?.name || "total",
+                body: gathering?.body || ["total"]
+            },
+            isStrictMode: isStrictMode || false
+        }
         )}>
             <Text style={{ fontSize: 50, textAlign: "center" }}>←</Text>
         </TouchableOpacity>
@@ -348,8 +380,66 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
 
 
 
-    </ScrollView>:<ScrollView>
-        <Text>ThisisaText</Text>
+    </ScrollView> : <ScrollView>
+        <Text style={styles.title}>กำหนดช่วงเวลาที่ไม่ให้ใช้เเอปพลิเคชัน</Text>
+        {(() => {
+            let tempJSXArray: JSX.Element[] = [];
+            (gathering?.body || ["total"]).forEach((v, i) => {
+                tempJSXArray.push(
+                    <View key={i}>
+                        <Text style={{ fontSize: 20, fontWeight: "bold", margin: 15}}>{v}</Text>
+                        <View style={[styles.options, { justifyContent: "space-between", marginHorizontal:10 }]}>
+                            <TouchableOpacity onPress={showStartTimePicker} style={styles.rangeselectorbutton}>
+                                    <Text style={{textAlign:"center", color:"deepskyblue"}}>
+                                        {startTime ? moment(startTime).format("h:mm a") : "Select Start Time"}
+                                    </Text>
+                            </TouchableOpacity>
+                            <DateTimePicker
+                            isVisible={isStartTimePickerVisible}
+                            mode="time"
+                            onConfirm={handleStartConfirm}
+                            onCancel={hideStartTimePicker}
+                            />
+
+<TouchableOpacity onPress={showEndTimePicker} style={styles.rangeselectorbutton}>
+                                    <Text style={{textAlign:"center", color:"deepskyblue"}}>
+                                        {endTime ? moment(endTime).format("h:mm a") : "Select End Time"}
+                                    </Text>
+                            </TouchableOpacity>
+                            <DateTimePicker
+                            isVisible={isEndTimePickerVisible}
+                            mode="time"
+                            onConfirm={handleEndConfirm}
+                            onCancel={hideEndTimePicker}
+                            />
+                        </View>
+
+                    </View>
+                )
+            })
+            return tempJSXArray
+        })()}
+        <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard", {
+            unit: unit || "daily",
+            plan: plan || "duration",
+            gathering: {
+                name: gathering?.name || "total",
+                body: gathering?.body || ["total"]
+            },
+            isStrictMode: isStrictMode || false
+        })}>
+            <Text style={{ fontSize: 50, textAlign: "center" }}>←</Text>
+        </TouchableOpacity>
+        <TouchableHighlight onPress={() => {
+
+        }}
+            style={styles.savebutton}
+            activeOpacity={0.5}
+            underlayColor="mediumseagreen"
+        >
+            <Text style={{ color: "white", textAlign: "center", fontSize: 20 }}>Save Setting</Text>
+        </TouchableHighlight>
+        {/*page2*/}
     </ScrollView>)
 
 
@@ -360,7 +450,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 30,
         fontWeight: "bold",
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        marginTop: 20
     },
     subtitle: {
         fontSize: 20,
@@ -385,6 +476,15 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10
     },
+    rangeselectorbutton: {
+        borderRadius: 10,
+        borderStyle: "solid",
+        borderWidth: 3,
+        borderColor: "deepskyblue",
+        padding: 10,
+        width: 150
+
+    }
 
 
 })

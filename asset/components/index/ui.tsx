@@ -5,12 +5,12 @@ import { RouteStackParamList } from "../../scripts/native-stack-navigation-types
 import { GoogleSignin } from "react-native-google-signin";
 import { horizontalScale, moderateScale } from "../../scripts/Metric";
 import { retryFetch } from "../../scripts/util";
-import { useEffect, useState } from "react";
-import { Button, RadioButton } from "react-native-paper";
+import { useEffect, useRef, createRef, useState, RefObject, LegacyRef, MutableRefObject, Ref } from "react";
+import { RadioButton } from "react-native-paper";
 import { options } from "@react-native-community/cli-platform-android/build/commands/buildAndroid";
 import { Picker } from "@react-native-picker/picker";
 import MultiSelect from "react-native-multiple-select";
-import Slider from "@react-native-community/slider";
+import Slider, { SliderRef } from "@react-native-community/slider";
 import { RouteProp } from "@react-navigation/native";
 
 const { AppStatisticData } = NativeModules
@@ -22,7 +22,6 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const [selectStictMode, setSelectStictMode] = useState(false)
     const [appNamesArrey, setAppNamesArrey] = useState<object[]>([])
-    const { width, height } = useWindowDimensions()
 
 
     useEffect(() => {
@@ -264,51 +263,76 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
         </View>
     )
 }
-export function UserPage2({ navigation, route }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard2">, route:RouteProp<RouteStackParamList, "UserDashboard2"> }) {
 
-    const {unit, plan, gathering,isStrictMode} = route.params
-    const [slidervalue, SetSliderValue] = useState(Array.from(gathering.body||["total"], () => 0));
-    const [sliderMaximumValue, SetSliderMaximumValue ] = useState(Array.from(gathering.body||["total"], () => constraint[`PER_${unit==="daily"?"DAY":unit==="monthly"?"MONTH":"WEEK"}`]));
+export function UserPage2({ navigation, route }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard2">, route: RouteProp<RouteStackParamList, "UserDashboard2"> }) {
     const constraint = {
-        PER_DAY: 2,
-        PER_WEEK: 10,
-        PER_MONTH: 50
+        PER_DAY: 120,
+        PER_WEEK: 600,
+        PER_MONTH: 3000
 
     }
+    const unit = route.params?.unit;
+    const plan = route.params?.plan;
+    const gathering = route.params?.gathering;
+    const isStrictMode = route.params?.isStrictMode;
+
+    const [sliderValue, SetSliderValue] = useState(Array.from((gathering?.body || ["total"]), () => 0));
+    const [sliderMaximumValue, SetSliderMaximumValue ] = useState(Array.from((gathering?.body || ["total"]), () => constraint[`PER_${unit==="daily"?"DAY":unit==="monthly"?"MONTH":"WEEK"}`]));
+
+    useEffect(() => {
+        SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => {
+            if(prevSliderValue[index] > sliderMaximumValue[index]){
+                return sliderMaximumValue[index]
+            }else{
+                return prevSliderValue[index]
+            }
+        }))
+    }, [sliderMaximumValue])
+
     return (plan==="duration"? <ScrollView>
 
-        <Text style={styles.title}>ระยะเวลาในการใช้ต่อ {unit}</Text>
+        <Text style={styles.title}>ระยะเวลาในการใช้ต่อ{unit==="daily"?"วัน":unit==="monthly"?"เดือน":"สัปดาห์"}</Text>
         {(() => {
             let tempJSXArray: JSX.Element[] = [];
-            (gathering.body||["total"]).forEach((v,i)=>{
+            (gathering?.body||["total"]).forEach((v,i)=>{
                 tempJSXArray.push(
-                    <View>
-                    <Text>{v}</Text>
-                    <Slider maximumValue={sliderMaximumValue[i]} minimumValue={0} step={1} value={slidervalue[i]} onValueChange={function (slidervalue) { 
-                        SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => index === i ? slidervalue : val))
-                        SetSliderMaximumValue(prevSliderMax => prevSliderMax.map((val, index) => index !==i ? val - slidervalue : val)); 
-                        }} />
-                    
+                    <View key={i}>
+                        <Text>{v}</Text>
+                        <Text>{Math.floor(sliderValue[i]/60) !== 0 ? Math.floor(sliderValue[i]/60) + "ชั่วโมง " : ""}{sliderValue[i] % 60 !== 0 ? sliderValue[i] % 60 + "นาที" : ""}</Text>
+                        <Slider maximumValue={constraint[`PER_${unit==="daily"?"DAY":unit==="monthly"?"MONTH":"WEEK"}`]} upperLimit={sliderMaximumValue[i]} minimumValue={0} step={1} value={sliderValue[i]} onValueChange={function (slidervalue) { 
+                            SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => index === i ? slidervalue : val))
+                            SetSliderMaximumValue(prevSliderMax => {
+                                if(slidervalue > sliderValue[i]){
+                                    return prevSliderMax.map((val, index) => index !== i ? val - (slidervalue - sliderValue[i]) : val)
+                                }else if(slidervalue < sliderValue[i]){
+                                    return prevSliderMax.map((val, index) => index !== i ? val + (sliderValue[i] - slidervalue) : val)
+                                }
+                                else{
+                                    return prevSliderMax
+                                }
+                            }); 
+                            }} />
+                        <View>
+                            <Text>0 นาที</Text>
+                            <Text>{constraint[`PER_${unit==="daily"?"DAY":unit==="monthly"?"MONTH":"WEEK"}`]/60} ชั่วโมง</Text>
+                        </View>
 
                     </View>
                 )
             })
             return tempJSXArray
         })()}
-        {/* <View>
-            <Slider maximumValue={10} minimumValue={0} step={1} value={slidervalue} onValueChange={function (slidervalue) { SetSliderValue(slidervalue) }} />
-            
-        </View> */}
+
         <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard", {
-                unit: unit,
-                plan: plan,
+                unit: unit || "daily",
+                plan: plan || "duration",
                 gathering: {
-                    name: gathering.name,
-                    body: gathering.body
+                    name: gathering?.name || "total",
+                    body: gathering?.body || ["total"]
                 },
-                isStrictMode: isStrictMode
-            })
-        }>
+                isStrictMode: isStrictMode || false
+            }
+        )}>
             <Text style={{ fontSize: 50, textAlign: "center" }}>←</Text>
         </TouchableOpacity>
 

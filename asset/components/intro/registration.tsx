@@ -233,7 +233,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         style={{ width: horizontalScale(200, width), height: verticalScale(width > height ? 100 : 50, height) }}
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
-                        onPress={async () => { await signInWithGoogle(); if(auth().currentUser) navigation.replace("Dashboard") }}
+                        onPress={async () => { await signInWithGoogle(); if(auth().currentUser) navigation.replace("UserDashboard") }}
                     />
                 </Animated.View> 
             </View>
@@ -323,7 +323,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                     const userTokens = await auth().currentUser?.getIdTokenResult();
                     const userClaims = userTokens?.claims;
                     if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
-                    await jobDelay(() => navigation.replace("Dashboard"), 3000);
+                    await jobDelay(() => navigation.replace("UserDashboard"), 3000);
                 }
             }catch(error){
                 console.error(error);   
@@ -437,7 +437,7 @@ function ProviderWebView({ interactingUser, type, webviewState, injectedJavaScri
                                 if(postedData.newClient) Alert.alert("We have sent you a verification email for your account, please don't forget to check your inbox!")
                                 const currentUserId = await verifyUsername(interactingUser);
                                 await implementMobileAuthentication(currentUserId);
-                                navigation.replace("Dashboard");
+                                navigation.replace("UserDashboard");
                             }
                         }}
                         style={{ flex: 1 }}

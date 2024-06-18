@@ -1,4 +1,4 @@
-import { Text, View, TouchableHighlight, useWindowDimensions, Modal, ActivityIndicator, useColorScheme, StyleSheet, Switch, TouchableOpacity, NativeModules, ScrollView } from "react-native";
+import { Text, View, TouchableHighlight, useWindowDimensions, Modal, ActivityIndicator, useColorScheme, StyleSheet, Switch, TouchableOpacity, NativeModules, ScrollView, Pressable } from "react-native";
 import auth from "@react-native-firebase/auth"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteStackParamList } from "../../scripts/native-stack-navigation-types";
@@ -6,7 +6,7 @@ import { GoogleSignin } from "react-native-google-signin";
 import { horizontalScale, moderateScale } from "../../scripts/Metric";
 import { retryFetch } from "../../scripts/util";
 import { useEffect, useRef, createRef, useState, RefObject, LegacyRef, MutableRefObject, Ref } from "react";
-import { RadioButton } from "react-native-paper";
+import { Button, RadioButton } from "react-native-paper";
 import { options } from "@react-native-community/cli-platform-android/build/commands/buildAndroid";
 import { Picker } from "@react-native-picker/picker";
 import MultiSelect from "react-native-multiple-select";
@@ -14,6 +14,8 @@ import Slider, { SliderRef } from "@react-native-community/slider";
 import { RouteProp } from "@react-navigation/native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import { FIREBASE_PERSONAL_ADMIN_KEY } from "@env";
 
 const { AppStatisticData } = NativeModules
 
@@ -24,7 +26,7 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const [selectStictMode, setSelectStictMode] = useState(false)
     const [appNamesArrey, setAppNamesArrey] = useState<object[]>([])
-
+    const { width, height } = useWindowDimensions();
 
     useEffect(() => {
         (async () => {
@@ -35,17 +37,32 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
             TAV.forEach((v, i) => {
                 array.push(
                     { id: TAK[i], name: v }
-
                 )
-
             });
             setAppNamesArrey(array)
-
-
-
         })()
-
     }, [])
+
+    async function promptSignOut(){
+        try {
+            const userTokens = await auth().currentUser?.getIdTokenResult();
+            const userClaims = userTokens?.claims;
+            console.log(userClaims?.authenticatedThroughProvider);
+            await retryFetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", { path: `util/authenticationSessions/${auth().currentUser?.uid}/Mobile`, writeData: { planreminder :{ authenticated: false, at: { place: null, time: null } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+            if(auth().currentUser?.providerData.some(provider => provider.providerId === "google.com") && userClaims?.authenticatedThroughProvider === "google.com") {
+                await GoogleSignin.revokeAccess();
+                await GoogleSignin.signOut();
+            }
+            await auth().signOut();
+            navigation.replace("Registration");
+        } catch (e) {
+            if((e as Error).message === "SIGN_IN_REQUIRED" && auth().currentUser){
+                await auth().signOut();
+                navigation.replace("Registration");
+            }
+            console.error((e as Error).message);
+        }
+    }
 
     const onSelectedItemsChange = (selectedItems: string[]) => {
         setSelectedItems(selectedItems);
@@ -176,7 +193,9 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
             </TouchableOpacity>
 
 
-
+            <TouchableHighlight onPress={promptSignOut} underlayColor="dimgrey" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "grey", borderRadius: moderateScale(10, width) }}>
+                <Text>Sign Out</Text>
+            </TouchableHighlight>
         </ScrollView>
 
     )
@@ -267,25 +286,45 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
 }
 
 export function UserPage2({ navigation, route }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard2">, route: RouteProp<RouteStackParamList, "UserDashboard2"> }) {
+    type RangeObject = {
+        owner: string,
+        startTime: {
+            hour?: number,
+            minute?: number
+        },
+        endTime: {
+            hour?: number,
+            minute?: number
+        }
+    }
+
     const constraint = {
         PER_DAY: 120,
         PER_WEEK: 600,
         PER_MONTH: 3000
 
     }
+
     const unit = route.params?.unit;
     const plan = route.params?.plan;
     const gathering = route.params?.gathering;
     const isStrictMode = route.params?.isStrictMode;
-
+    
+    const isDarker = useColorScheme() === 'dark';
     const [sliderValue, SetSliderValue] = useState(Array.from((gathering?.body || ["total"]), () => 0));
     const [sliderMaximumValue, SetSliderMaximumValue] = useState(Array.from((gathering?.body || ["total"]), () => constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`]));
     const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
     const [isEndTimePickerVisible, setEndTimePickerVisibility] = useState(false);
-    const [startTime, setStartTime] = useState<Date>();
-    const [endTime, setEndtime] = useState<Date>()
+    const [startTime, setStartTime] = useState<(Date | undefined)[]>(Array.from((gathering?.body || ["total"]), () => undefined));
+    const [endTime, setEndtime] = useState<(Date | undefined)[]>(Array.from((gathering?.body || ["total"]), () => undefined));
+    const [range, setRange] = useState<Array<RangeObject>>([]);
+    const isPickingStartTimeN = useRef<number>();
+    const isPickingEndTimeN = useRef<number>();
 
-    const showStartTimePicker = () => {
+    const themed = isDarker ? Colors.lighter : Colors.darker
+
+    const showStartTimePicker = (index: number) => {
+        isPickingStartTimeN.current = index;
         setStartTimePickerVisibility(true);
     };
 
@@ -294,11 +333,12 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     };
 
     const handleStartConfirm = (date: Date) => {
-        setStartTime(date);
+        setStartTime(prevStartTime => prevStartTime.map((st, i) => i === isPickingStartTimeN.current ? date : st)); 
         hideStartTimePicker();
     };
 
-    const showEndTimePicker = () => {
+    const showEndTimePicker = (index: number) => {
+        isPickingEndTimeN.current = index;
         setEndTimePickerVisibility(true);
     };
 
@@ -307,9 +347,37 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     };
 
     const handleEndConfirm = (date: Date) => {
-        setEndtime(date);
+        setEndtime(prevEndTime => prevEndTime.map((se, i) => i === isPickingEndTimeN.current ? date : se));
         hideEndTimePicker();
     };
+
+    const addRange = (index: number) => {
+        setRange((prevRange) => {
+            if(startTime.length === endTime.length) {
+                return [...prevRange, {
+                    startTime: {
+                        hour: startTime[index]?.getHours(),
+                        minute: startTime[index]?.getMinutes()
+                    },
+                    owner: gathering?.body?.at(index) || "total",
+                    endTime: {
+                        hour: endTime[index]?.getHours(),
+                        minute: endTime[index]?.getMinutes()
+                    }
+                }]
+            }else{
+                return prevRange
+            }
+        })
+    }
+
+    const removeRange = (index: number) => {
+        setRange(prevRange => {
+            const newRange = prevRange.filter((_, i) => i !== index)
+            console.log(newRange)
+            return newRange
+        })
+    }
 
     useEffect(() => {
         SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => {
@@ -321,7 +389,8 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
         }))
     }, [sliderMaximumValue])
 
-    return (plan === "duration" ? <ScrollView>
+    return (plan === "duration" ? 
+    <ScrollView>
         {/*page3*/}
         <Text style={styles.title}>ระยะเวลาในการใช้ต่อ{unit === "daily" ? "วัน" : unit === "monthly" ? "เดือน" : "สัปดาห์"}</Text>
         {(() => {
@@ -380,7 +449,8 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
 
 
 
-    </ScrollView> : <ScrollView>
+    </ScrollView> : 
+    <ScrollView>
         <Text style={styles.title}>กำหนดช่วงเวลาที่ไม่ให้ใช้เเอปพลิเคชัน</Text>
         {(() => {
             let tempJSXArray: JSX.Element[] = [];
@@ -389,31 +459,35 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
                     <View key={i}>
                         <Text style={{ fontSize: 20, fontWeight: "bold", margin: 15}}>{v}</Text>
                         <View style={[styles.options, { justifyContent: "space-between", marginHorizontal:10 }]}>
-                            <TouchableOpacity onPress={showStartTimePicker} style={styles.rangeselectorbutton}>
-                                    <Text style={{textAlign:"center", color:"deepskyblue"}}>
-                                        {startTime ? moment(startTime).format("h:mm a") : "Select Start Time"}
-                                    </Text>
+                            <TouchableOpacity onPress={() => showStartTimePicker(i)} style={[styles.borderbutton, {borderColor: "deepskyblue",}]}>
+                                <Text style={{textAlign:"center", color:"deepskyblue"}}>
+                                    {startTime[i] ? moment(startTime[i]).format("H:mmน.") : "Select Start Time"}
+                                </Text>
                             </TouchableOpacity>
-                            <DateTimePicker
-                            isVisible={isStartTimePickerVisible}
-                            mode="time"
-                            onConfirm={handleStartConfirm}
-                            onCancel={hideStartTimePicker}
-                            />
-
-<TouchableOpacity onPress={showEndTimePicker} style={styles.rangeselectorbutton}>
-                                    <Text style={{textAlign:"center", color:"deepskyblue"}}>
-                                        {endTime ? moment(endTime).format("h:mm a") : "Select End Time"}
-                                    </Text>
+                            <TouchableOpacity onPress={() => showEndTimePicker(i)} style={[styles.borderbutton, {borderColor: "deepskyblue",}]}>
+                                <Text style={{textAlign:"center", color:"deepskyblue"}}>
+                                    {endTime[i] ? moment(endTime[i]).format("H:mmน.") : "Select End Time"}
+                                </Text>
                             </TouchableOpacity>
-                            <DateTimePicker
-                            isVisible={isEndTimePickerVisible}
-                            mode="time"
-                            onConfirm={handleEndConfirm}
-                            onCancel={hideEndTimePicker}
-                            />
                         </View>
-
+                        <TouchableOpacity onPress={() => addRange(i)} style={[styles.borderbutton, {borderColor: themed, width: "auto", margin: 10}]}>
+                            <Text style={{textAlign:"center", color: themed}}>Add Range</Text>
+                        </TouchableOpacity>
+                        <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+                            {(() => {
+                                let anotherTempJSXArray: JSX.Element[] = [];
+                                range?.forEach((val, j) => {
+                                    if(val.owner === v)
+                                        anotherTempJSXArray.push(
+                                            <View key={j} style={{ borderStyle: "solid", borderColor: themed, borderWidth: 2, borderRadius: 999, padding: 10, paddingVertical: 5, marginLeft: 10, margin: 5, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "29%", opacity: 0.6 }}>
+                                                <Text style={{ textAlign: "center" }}>{`${val.startTime.hour}:${val.startTime.minute !== undefined && val.startTime.minute < 10 ? `0${val.startTime.minute}` : val.startTime} - ${val.endTime.hour}:${val.endTime.minute !== undefined && val.endTime.minute < 10 ? `0${val.endTime.minute}` : val.endTime}`}</Text>
+                                                <Pressable onPress={() => removeRange(j)}><Text>X</Text></Pressable>
+                                            </View>
+                                        )
+                                })
+                                return anotherTempJSXArray
+                            })()}
+                        </View>
                     </View>
                 )
             })
@@ -439,6 +513,18 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
         >
             <Text style={{ color: "white", textAlign: "center", fontSize: 20 }}>Save Setting</Text>
         </TouchableHighlight>
+        <DateTimePicker
+            isVisible={isStartTimePickerVisible}
+            mode="time"
+            onConfirm={handleStartConfirm}
+            onCancel={hideStartTimePicker}
+        />
+        <DateTimePicker
+            isVisible={isEndTimePickerVisible}
+            mode="time"
+            onConfirm={handleEndConfirm}
+            onCancel={hideEndTimePicker}
+        />
         {/*page2*/}
     </ScrollView>)
 
@@ -476,11 +562,10 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10
     },
-    rangeselectorbutton: {
+    borderbutton: {
         borderRadius: 10,
         borderStyle: "solid",
         borderWidth: 3,
-        borderColor: "deepskyblue",
         padding: 10,
         width: 150
 

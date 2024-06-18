@@ -125,7 +125,8 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ injectJS, setInjectJS ] = useState<string>();
     const [ cwrRegistrationType, setCWRRegistrationType ] = useState<string>("");
-    const { authUser } = useGlobal();
+    const { authUser, counter } = useGlobal();
+    const [ showModal, setShowModal ] = useState(false);
     const registrationBtnsFadingAnim = new Animated.Value(0);
     const registrationPageTitle = new Animated.Value(0);
     const appNameFadingAnim = new Animated.Value(0);
@@ -135,6 +136,9 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
         scale: new Animated.Value(1),
     };
     const cachedUsername = useRef<string>();
+    const usernameInquiryStatus = useRef<boolean>();
+
+    const clearDB = () => `indexedDB.deleteDatabase("firebaseLocalStorageDb");`
 
     const checkCookieJS = (message: string) => `
         function checkIsLoggedIn() {
@@ -144,9 +148,8 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 cookieArray.forEach((cookie) => {
                     cookie = cookie.trim();
                     const [ key, value ] = cookie.split('=');
-                    if(key === "login" && value === "true"){
+                    if(key === "emailVerified" && value === "true"){
                         clearInterval(interval);
-                        indexedDB.deleteDatabase("firebaseLocalStorageDb");
                         window.ReactNativeWebView.postMessage(JSON.stringify(${message}));
                     }
                 });
@@ -191,7 +194,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 source={isDark ? require('../../imgs/dark-content-management.png') : require('../../imgs/light-content-management.png')}
                 style={{ width: "100%", height: "100%", opacity: logoFadingAnim }}
             />
-            <Animated.Text style={{ lineHeight: (width > height ? verticalScale(60, height) : verticalScale(45, height)), textAlignVertical: "center", fontSize: (width > height ? moderateScale(20, width) : moderateScale(40, width)), opacity: appNameFadingAnim}}>
+            <Animated.Text style={{ width: width, textAlign: "center", lineHeight: (width > height ? verticalScale(60, height) : verticalScale(45, height)), textAlignVertical: "center", fontSize: (width > height ? moderateScale(20, width) : moderateScale(40, width)), opacity: appNameFadingAnim}}>
                 <TypingText text="Plan Reminder" delay={100} initialDelay={1500}/>
             </Animated.Text>
             </Animated.View>
@@ -204,6 +207,24 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                             setLoading(true);
                             let uid;
                             if(cachedUsername.current) uid = await verifyUsername(cachedUsername.current);
+                            else{
+                                setShowModal(true)
+                                const inquiryStatus = await new Promise((resolve: (value: string) => void) => {
+                                    setShowModal(true)
+                                    usernameInquiryStatus.current = undefined
+                                    const checkForNewInputUsername = () => {
+                                        if(usernameInquiryStatus.current === true) resolve("Got new user in")
+                                        else if(usernameInquiryStatus.current === false) resolve("too bad they left");
+                                        else setTimeout(checkForNewInputUsername, 1000)
+                                    }
+                                    checkForNewInputUsername();
+                                })
+                                console.log(inquiryStatus)
+                                if(inquiryStatus === "too bad they left"){
+                                    setLoading(false);
+                                    return
+                                }
+                            }
                             if(uid) {
                                 const userWebSession = await getUserWebSessions(uid);
                                 if(userWebSession.authenticated){
@@ -211,10 +232,10 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                                     setLoading(false);
                                     return;
                                 };
-                                setInjectJS(loginFocusJS(cachedUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true })));
+                                setInjectJS(clearDB() + loginFocusJS(cachedUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true })));
                                 setCWRRegistrationType("login")
                             } else {
-                                setInjectJS(registrationFocusJS(cachedUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true, newClient: true })));
+                                setInjectJS(clearDB() + registrationFocusJS(cachedUsername.current || "") + checkCookieJS(JSON.stringify({ authenticated: true, newClient: true })));
                                 setCWRRegistrationType("register")
                             }   
                             setProvider("cwr");
@@ -290,6 +311,10 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 }).start()
             }, 1000)
             try{
+                (async () => {
+                    if(counter.setGlobalCounter) counter.setGlobalCounter(0);
+                    for(let i = 0; i<10; i++) await asyncDelay(1000);
+                })()
                 const cachedUsername = await AsyncStorage.getItem("clientUsername");
                 const uid = await verifyUsername(cachedUsername);
                 const MobileAuthSessionsResponse = await fetch(`https://cwr-api.onrender.com/post/provider/cwr/firestore/query?select=planreminder`, { 
@@ -299,31 +324,33 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 })
                 const MobileAuthSessions = await MobileAuthSessionsResponse.json();
                 const planreminderMobileAuthSession = MobileAuthSessions.docDatas.Mobile.planreminder;
-                if(planreminderMobileAuthSession.authenticated && !auth().currentUser){
-                    console.log("Welcome back", cachedUsername);
-                    const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ uid: uid, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-                    })
-                    const mobileAuthToken = await response.json();
-                    const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
-                    const userTokens = await auth().currentUser?.getIdTokenResult();
-                    const userClaims = userTokens?.claims;
-                    if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
-                    const ip = await getClientIp();
-                    await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Mobile`, writeData: { planreminder: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-                    });
-                }
-                else if(!planreminderMobileAuthSession.authenticated && auth().currentUser) await auth().signOut();
-                else if(planreminderMobileAuthSession.authenticated && auth().currentUser){
-                    const userTokens = await auth().currentUser?.getIdTokenResult();
-                    const userClaims = userTokens?.claims;
-                    if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
-                    await jobDelay(() => navigation.replace("UserDashboard"), 3000);
+                if(counter.globalCounter && counter.globalCounter < 10){
+                    if(planreminderMobileAuthSession.authenticated && !auth().currentUser){
+                        console.log("Welcome back", cachedUsername);
+                        const response = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ uid: uid, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                        })
+                        const mobileAuthToken = await response.json();
+                        const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
+                        const userTokens = await auth().currentUser?.getIdTokenResult();
+                        const userClaims = userTokens?.claims;
+                        if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
+                        const ip = await getClientIp();
+                        await fetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Mobile`, writeData: { planreminder: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                        });
+                    }
+                    else if(!planreminderMobileAuthSession.authenticated && auth().currentUser) await auth().signOut();
+                    else if(planreminderMobileAuthSession.authenticated && auth().currentUser){
+                        const userTokens = await auth().currentUser?.getIdTokenResult();
+                        const userClaims = userTokens?.claims;
+                        if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
+                        await jobDelay(() => navigation.replace("UserDashboard"), 3000);
+                    }
                 }
             }catch(error){
                 console.error(error);   
@@ -390,6 +417,29 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
 
     return(
         <View style={[styles.fullPageCenter, { height: height }]}>
+            <Modal animationType="slide" visible={showModal} transparent={true}>
+                <View style={[styles.fullPageCenter, { flex: 1 }]}>
+                    <View style={{ display: "flex", rowGap: verticalScale(width > height ? 20 : 10, height), backgroundColor: isDark ? "black" : "white", padding: moderateScale(20, width), borderRadius: moderateScale(10, width) }}>
+                        <Text style={[styles.btnText, { fontSize: 20 }]}>Please enter your new account username</Text>
+                        <TextInput onChangeText={text => cachedUsername.current = text} placeholder="Your username here" style={{ borderColor: isDark ? "white" : "black", borderWidth: 1, padding: 10, borderRadius: 10 }}></TextInput>
+                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                            <TouchableHighlight onPress={() => { setShowModal(false); cachedUsername.current = ""; usernameInquiryStatus.current = false; }} underlayColor="darkgrey" style={[styles.btn, { backgroundColor: 'lightgrey', width: "45%" }]}>
+                                <Text style={styles.btnText}>Cancel</Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight onPress={async () => {
+                                if(cachedUsername.current === "" || cachedUsername.current === undefined) {
+                                    Alert.alert("System Error", "Please type in your username!");
+                                    return;
+                                }
+                                setShowModal(false);
+                                usernameInquiryStatus.current = true;
+                            }} underlayColor="silver" style={[styles.btn, { backgroundColor: isDark ? 'white' : 'whitesmoke', width: "45%" }]}>
+                                <Text style={[styles.btnText, { color: "black" }]}>Submit</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             {MainComponent}
             <Modal animationType="none" visible={loading} transparent={true}>
                 <View style={[styles.fullPageCenter, { position: "absolute", zIndex: 100, top: 0, left: 0, width: width, height: height }]}>
@@ -434,7 +484,7 @@ function ProviderWebView({ interactingUser, type, webviewState, injectedJavaScri
                             const postedData = JSON.parse(e.nativeEvent.data);
                             if(postedData.authenticated){
                                 setWebviewShow(false);
-                                if(postedData.newClient) Alert.alert("We have sent you a verification email for your account, please don't forget to check your inbox!")
+                                if(postedData.newClient) Alert.alert("Successfully created your account")
                                 const currentUserId = await verifyUsername(interactingUser);
                                 await implementMobileAuthentication(currentUserId);
                                 navigation.replace("UserDashboard");

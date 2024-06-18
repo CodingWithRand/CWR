@@ -5,11 +5,13 @@ import { reload, sendEmailVerification } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
 import { useGlobal } from "@/glient/global";
 import Neutral from "@/app/global/neutral/util";
+import Cookies from "universal-cookie";
 
 const { Dynamic } = Client.Components;
 const { Image } = Dynamic;
 
 export default function EmailVerifificationPage() {
+    const cookies = new Cookies();
     const [ timer, countdown ] = useState(60);
     const [ btnState, setBtnState ] = useState(true);
 
@@ -23,7 +25,10 @@ export default function EmailVerifificationPage() {
         const user = auth.currentUser;
         const intervalId = setInterval(() => {
             if(!user) return;
-            if(user.emailVerified) if(window === window.parent) window.location.replace("/")
+            if(user.emailVerified){
+                cookies.set("emailVerified", true, { path: "/" });
+                if(window === window.parent) window.location.replace("/")
+            }
             else reload(user).then(() => console.log('Reloaded')).catch((error) => console.error('Error while try to fetch data from database:', error));
         }, 1000);
         return () => clearInterval(intervalId);

@@ -7,8 +7,10 @@ import "./page.css"
 import { applyActionCode, verifyPasswordResetCode, confirmPasswordReset } from "@firebase/auth";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Cookies from "universal-cookie";
 
 export default function AuthenticateActionHandler() {
+    const cookies = new Cookies();
     const { LoadingPage } = Neutral.Components
     const { Dynamic, Switch } = Client.Components;
     const { Section, AlertBox, InputGroupField } = Dynamic;
@@ -28,6 +30,7 @@ export default function AuthenticateActionHandler() {
                     try {
                         await applyActionCode(auth, oobCode);
                         setAMT("Successfully verify your email!");
+                        cookies.set("emailVerified", true, { path: "/" });
                         window.location.replace("/");
                     } catch(e) { 
                         setAMT("Fail to verify your email!");

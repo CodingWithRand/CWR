@@ -54,10 +54,7 @@ export default function SignUp() {
                 return;
             }
             const userCredential = await createUserWithEmailAndPassword(auth, userEmail, userPass)
-            await sendEmailVerification(userCredential.user).then(() => {
-                cookies.set("emailVerified", true, { path: "/" });
-                setEmailSent(true);
-            });
+            await sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
             await updateProfile(userCredential.user, { displayName: userName });
             await updateUsername(userName, userCredential.user.uid);
             if(window === window.parent) localStorage.setItem("clientUsername", userName);

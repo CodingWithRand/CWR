@@ -9,8 +9,11 @@ import Client from "@/glient/util";
 import Neutral from"@/geutral/util";
 import EmailVerifificationPage from "./email-verification";
 import { getAllUsernames, updateRegistryData, updateUsername } from "@/gerver/apiCaller";
+import Cookies from "universal-cookie";
 
 export default function SignUp() {
+    const cookies = new Cookies();
+
     const { Switch, Dynamic } = Client.Components;
     const { AlertBox, InputField, InputGroupField } = Dynamic;
 
@@ -51,7 +54,10 @@ export default function SignUp() {
                 return;
             }
             const userCredential = await createUserWithEmailAndPassword(auth, userEmail, userPass)
-            await sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
+            await sendEmailVerification(userCredential.user).then(() => {
+                cookies.set("emailVerified", true, { path: "/" });
+                setEmailSent(true);
+            });
             await updateProfile(userCredential.user, { displayName: userName });
             await updateUsername(userName, userCredential.user.uid);
             if(window === window.parent) localStorage.setItem("clientUsername", userName);

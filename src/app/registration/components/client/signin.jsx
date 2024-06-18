@@ -9,8 +9,10 @@ import { useGlobal } from "@/glient/global";
 import { auth } from "@/glient/firebase";
 import { useLoadingState } from "@/glient/loading";
 import { updateRegistryData } from "@/gerver/apiCaller";
+import Cookies from "universal-cookie";
 
 export default function SignIn() {
+    const cookies = new Cookies();
 
     const { Switch, Dynamic } = Client.Components;
     const { AlertBox, InputField } = Dynamic;
@@ -44,6 +46,7 @@ export default function SignIn() {
             const username = user.displayName;
             if (username === userName.current) {
                 login.logIn(true);
+                cookies.set("emailVerified", user.emailVerified, { path: "/" });
                 if(window !== window.parent){
                     const targetWebsite = [
                         "https://cwr-education.vercel.app",

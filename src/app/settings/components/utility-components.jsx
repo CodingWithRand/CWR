@@ -5,6 +5,7 @@ import { useGlobal } from "@/glient/global";
 import { useLoadingState } from "@/glient/loading";
 import Client from "@/glient/util";
 import { updateRegistryData } from "@/gerver/apiCaller";
+import Cookies from "universal-cookie";
 
 const { Dynamic } = Client.Components;
 const { Image } = Dynamic;
@@ -24,12 +25,14 @@ export function Username(){
 
 export function SignOutBTN() {
     const setLoadingState = useLoadingState();
+    const cookies = new Cookies();
 
     return <button onClick={async () => {
         setLoadingState(true);
         try {
             await updateRegistryData(auth.currentUser.uid, { origin: window.location.origin, authenticated: false, ip: null, date: null });
             await signOut(auth);
+            cookies.set("emailVerified", false, { path: "/" });
         } catch (e) { console.error(e); }
         setLoadingState(false);
         window.location.replace("/registration");

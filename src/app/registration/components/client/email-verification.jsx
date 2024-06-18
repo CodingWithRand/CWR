@@ -22,10 +22,11 @@ export default function EmailVerifificationPage() {
     }, [login.isLoggedIn, auth.currentUser?.emailVerified], 1000);
 
     Client.Hooks.useDelayedEffect(() => {
-        const user = auth.currentUser;
         const intervalId = setInterval(() => {
+            const user = auth.currentUser;
             if(!user) return;
             if(user.emailVerified){
+                console.log('verified');
                 cookies.set("emailVerified", true, { path: "/" });
                 if(window === window.parent) window.location.replace("/")
             }

@@ -4,10 +4,11 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Credit from './asset/components/intro/credit';
-import Dashboard from './asset/components/index/dashboard';
+import { SignOutBTN } from './asset/components/utility-component';
 import RegistrationPage from './asset/components/intro/registration';
 import { Global } from './asset/scripts/global';
 import { GUESTPAGE, UserPage1, UserPage2} from "./asset/components/index/ui";
+import FlashMessage from 'react-native-flash-message';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,10 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1
   };
+  const titleBarStyle = {
+    headerStyle: { backgroundColor: isDarkMode ? Colors.darker : Colors.lighter },
+    headerTintColor: isDarkMode ? Colors.lighter : Colors.darker
+  }
 
   return(
     <Global>
@@ -31,10 +36,11 @@ function App(): React.JSX.Element {
             <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
             <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
             <Stack.Screen name="GuestDashboard" component={GUESTPAGE} />
-            <Stack.Screen name="UserDashboard" component={UserPage1} />
+            <Stack.Screen name="UserDashboard" component={UserPage1} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <SignOutBTN navigation={navigation}/> })} />
             <Stack.Screen name="UserDashboard2" component={UserPage2} />
           </Stack.Navigator>
         </NavigationContainer>
+        <FlashMessage/>
       </SafeAreaView>
     </Global>
   )

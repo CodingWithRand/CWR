@@ -11,6 +11,8 @@ import { GoogleSignin, GoogleSigninButton, statusCodes } from "react-native-goog
 import { FIREBASE_PERSONAL_ADMIN_KEY, FIREBASE_GOOGLE_PROVIDER_WEB_CLIENT_ID } from "@env"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useGlobal } from "../../scripts/global";
+import { Loading } from "../utility-component";
+import { showMessage } from "react-native-flash-message";
 
 GoogleSignin.configure({ 
     webClientId: FIREBASE_GOOGLE_PROVIDER_WEB_CLIENT_ID
@@ -50,6 +52,7 @@ async function signInWithGoogle() {
         }
 
         await retryFetch("https://cwr-api.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+        showMessage({ message: "Welcome back, " + await AsyncStorage.getItem("clientUsername")})
 
     } catch (error: any) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -127,6 +130,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     const [ cwrRegistrationType, setCWRRegistrationType ] = useState<string>("");
     const { authUser, counter } = useGlobal();
     const [ showModal, setShowModal ] = useState(false);
+    const { themedColor } = useGlobal();
     const registrationBtnsFadingAnim = new Animated.Value(0);
     const registrationPageTitle = new Animated.Value(0);
     const appNameFadingAnim = new Animated.Value(0);
@@ -195,11 +199,11 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 style={{ width: "100%", height: "100%", opacity: logoFadingAnim }}
             />
             <Animated.Text style={{ width: width, textAlign: "center", lineHeight: (width > height ? verticalScale(60, height) : verticalScale(45, height)), textAlignVertical: "center", fontSize: (width > height ? moderateScale(20, width) : moderateScale(40, width)), opacity: appNameFadingAnim}}>
-                <TypingText text="Plan Reminder" delay={100} initialDelay={1500}/>
+                <TypingText text="Plan Reminder" delay={100} initialDelay={1500} style={{color: themedColor.comp}}/>
             </Animated.Text>
             </Animated.View>
             <View style={[styles.containerBox, { width: "100%", height: verticalScale(height/(width > height ? 0.65 : 1.35), height), position: "absolute", bottom: 0, rowGap: verticalScale(width > height ? 45 : 75, height) }]}>
-                <Animated.Text style={[styles.btnText, { fontSize: moderateScale(40, width), opacity: registrationPageTitle }]}>Register with...</Animated.Text>
+                <Animated.Text style={[styles.btnText, { fontSize: moderateScale(40, width), opacity: registrationPageTitle, color: themedColor.comp }]}>Register with...</Animated.Text>
                 <Animated.View style={[styles.containerBox, { opacity: registrationBtnsFadingAnim, rowGap: verticalScale(width > height ? 20 : 50, height) }]}>
                     <TouchableHighlight
                         onPress={async () => {
@@ -259,7 +263,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 </Animated.View> 
             </View>
         </View>
-    ), [ width, height ])
+    ), [ width, height, themedColor ])
 
     useEffect(() => {
         // Reset Animation
@@ -349,7 +353,10 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         const userTokens = await auth().currentUser?.getIdTokenResult();
                         const userClaims = userTokens?.claims;
                         if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
-                        await jobDelay(() => navigation.replace("UserDashboard"), 3000);
+                        await jobDelay(() => {
+                            AsyncStorage.getItem("clientUsername").then((un) => showMessage({ message: "Welcome back, " + un }));
+                            navigation.replace("UserDashboard")
+                        }, 3000);
                     }
                 }
             }catch(error){
@@ -396,7 +403,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 }).start();
             }, 1000)
         })();
-    }, [ width, height ]);
+    }, [ width, height, themedColor ]);
 
     useDelayedEffect(() => {
         if(authUser.isAuthUser || auth().currentUser){
@@ -410,6 +417,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 }catch(error){
                     console.error(error);
                 }
+                showMessage({ message: "Welcome back, " + await AsyncStorage.getItem("clientUsername")});
                 navigation.replace("UserDashboard");
             })();
         }
@@ -419,9 +427,9 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
         <View style={[styles.fullPageCenter, { height: height }]}>
             <Modal animationType="slide" visible={showModal} transparent={true}>
                 <View style={[styles.fullPageCenter, { flex: 1 }]}>
-                    <View style={{ display: "flex", rowGap: verticalScale(width > height ? 20 : 10, height), backgroundColor: isDark ? "black" : "white", padding: moderateScale(20, width), borderRadius: moderateScale(10, width) }}>
+                    <View style={{ display: "flex", rowGap: verticalScale(width > height ? 20 : 10, height), backgroundColor: themedColor.bg, padding: moderateScale(20, width), borderRadius: moderateScale(10, width) }}>
                         <Text style={[styles.btnText, { fontSize: 20 }]}>Please enter your new account username</Text>
-                        <TextInput onChangeText={text => cachedUsername.current = text} placeholder="Your username here" style={{ borderColor: isDark ? "white" : "black", borderWidth: 1, padding: 10, borderRadius: 10 }}></TextInput>
+                        <TextInput onChangeText={text => cachedUsername.current = text} placeholder="Your username here" style={{ borderColor: themedColor.comp, borderWidth: 1, padding: 10, borderRadius: 10 }}></TextInput>
                         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <TouchableHighlight onPress={() => { setShowModal(false); cachedUsername.current = ""; usernameInquiryStatus.current = false; }} underlayColor="darkgrey" style={[styles.btn, { backgroundColor: 'lightgrey', width: "45%" }]}>
                                 <Text style={styles.btnText}>Cancel</Text>
@@ -441,12 +449,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 </View>
             </Modal>
             {MainComponent}
-            <Modal animationType="none" visible={loading} transparent={true}>
-                <View style={[styles.fullPageCenter, { position: "absolute", zIndex: 100, top: 0, left: 0, width: width, height: height }]}>
-                    <View style={{ flex: 1, backgroundColor: isDark ? "black" : "white", opacity: 0.5, width: width, height: height }}></View>
-                    <ActivityIndicator size="large" style={{ position: "absolute" }} />
-                </View>
-            </Modal>
+            <Loading loading={loading}/>
             <ProviderWebView 
                 interactingUser={cachedUsername.current || ""}
                 type={providerType}
@@ -484,9 +487,10 @@ function ProviderWebView({ interactingUser, type, webviewState, injectedJavaScri
                             const postedData = JSON.parse(e.nativeEvent.data);
                             if(postedData.authenticated){
                                 setWebviewShow(false);
-                                if(postedData.newClient) Alert.alert("Successfully created your account")
                                 const currentUserId = await verifyUsername(interactingUser);
                                 await implementMobileAuthentication(currentUserId);
+                                if(postedData.newClient) showMessage({ message: "Successfully created and signed into your account"})
+                                else showMessage({ message: "Welcome back, " + await AsyncStorage.getItem("clientUsername")})
                                 navigation.replace("UserDashboard");
                             }
                         }}

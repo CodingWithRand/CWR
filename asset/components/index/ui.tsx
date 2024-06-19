@@ -16,6 +16,7 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { FIREBASE_PERSONAL_ADMIN_KEY } from "@env";
+import { useGlobal } from "../../scripts/global";
 
 const { AppStatisticData } = NativeModules
 
@@ -26,7 +27,8 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const [selectStictMode, setSelectStictMode] = useState(false)
     const [appNamesArrey, setAppNamesArrey] = useState<object[]>([])
-    const { width, height } = useWindowDimensions();
+    const { themedColor } = useGlobal();
+    const topicsTextStyle = { color: themedColor.comp }
 
     useEffect(() => {
         (async () => {
@@ -43,27 +45,6 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
         })()
     }, [])
 
-    async function promptSignOut(){
-        try {
-            const userTokens = await auth().currentUser?.getIdTokenResult();
-            const userClaims = userTokens?.claims;
-            console.log(userClaims?.authenticatedThroughProvider);
-            await retryFetch("https://cwr-api.onrender.com/post/provider/cwr/firestore/update", { path: `util/authenticationSessions/${auth().currentUser?.uid}/Mobile`, writeData: { planreminder :{ authenticated: false, at: { place: null, time: null } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-            if(auth().currentUser?.providerData.some(provider => provider.providerId === "google.com") && userClaims?.authenticatedThroughProvider === "google.com") {
-                await GoogleSignin.revokeAccess();
-                await GoogleSignin.signOut();
-            }
-            await auth().signOut();
-            navigation.replace("Registration");
-        } catch (e) {
-            if((e as Error).message === "SIGN_IN_REQUIRED" && auth().currentUser){
-                await auth().signOut();
-                navigation.replace("Registration");
-            }
-            console.error((e as Error).message);
-        }
-    }
-
     const onSelectedItemsChange = (selectedItems: string[]) => {
         setSelectedItems(selectedItems);
     };
@@ -71,7 +52,7 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
 
     return (
         <ScrollView>
-            <Text style={styles.title}>การกำหนดเเผนการใช้งาน</Text>
+            <Text style={[styles.title, topicsTextStyle]}>การกำหนดเเผนการใช้งาน</Text>
             <Text style={styles.subtitle}>หน่วยเวลา</Text>
 
 
@@ -191,11 +172,6 @@ export function UserPage1({ navigation }: { navigation: NativeStackNavigationPro
             })}>
                 <Text style={{ fontSize: 50, textAlign: "center" }}>→</Text>
             </TouchableOpacity>
-
-
-            <TouchableHighlight onPress={promptSignOut} underlayColor="dimgrey" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "grey", borderRadius: moderateScale(10, width) }}>
-                <Text>Sign Out</Text>
-            </TouchableHighlight>
         </ScrollView>
 
     )
@@ -310,7 +286,6 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     const gathering = route.params?.gathering;
     const isStrictMode = route.params?.isStrictMode;
     
-    const isDarker = useColorScheme() === 'dark';
     const [sliderValue, SetSliderValue] = useState(Array.from((gathering?.body || ["total"]), () => 0));
     const [sliderMaximumValue, SetSliderMaximumValue] = useState(Array.from((gathering?.body || ["total"]), () => constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`]));
     const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
@@ -320,8 +295,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     const [range, setRange] = useState<Array<RangeObject>>([]);
     const isPickingStartTimeN = useRef<number>();
     const isPickingEndTimeN = useRef<number>();
-
-    const themed = isDarker ? Colors.lighter : Colors.darker
+    const { themedColor } = useGlobal();
 
     const showStartTimePicker = (index: number) => {
         isPickingStartTimeN.current = index;
@@ -470,8 +444,8 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity onPress={() => addRange(i)} style={[styles.borderbutton, {borderColor: themed, width: "auto", margin: 10}]}>
-                            <Text style={{textAlign:"center", color: themed}}>Add Range</Text>
+                        <TouchableOpacity onPress={() => addRange(i)} style={[styles.borderbutton, {borderColor: themedColor.comp, width: "auto", margin: 10}]}>
+                            <Text style={{textAlign:"center", color: themedColor.comp}}>Add Range</Text>
                         </TouchableOpacity>
                         <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             {(() => {

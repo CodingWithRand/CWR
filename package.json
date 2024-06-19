@@ -29,6 +29,7 @@
     "react-native": "^0.73.6",
     "react-native-android-native-util": "file:./modules\\android-native-util",
     "react-native-dotenv": "^3.4.11",
+    "react-native-flash-message": "^0.4.2",
     "react-native-google-signin": "^2.1.1",
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-multiple-select": "^0.5.12",

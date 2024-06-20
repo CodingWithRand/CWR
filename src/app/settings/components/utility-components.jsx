@@ -33,6 +33,7 @@ export function SignOutBTN() {
             await updateRegistryData(auth.currentUser.uid, { origin: window.location.origin, authenticated: false, ip: null, date: null });
             await signOut(auth);
             cookies.set("emailVerified", false, { path: "/" });
+            cookies.set("username", undefined, { path: "/" });
         } catch (e) { console.error(e); }
         setLoadingState(false);
         window.location.replace("/registration");

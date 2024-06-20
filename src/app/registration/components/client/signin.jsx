@@ -47,6 +47,7 @@ export default function SignIn() {
             if (username === userName.current) {
                 login.logIn(true);
                 cookies.set("emailVerified", user.emailVerified, { path: "/" });
+                cookies.set("username", user.displayName, { path: "/" });
                 if(window !== window.parent){
                     const targetWebsite = [
                         "https://cwr-education.vercel.app",

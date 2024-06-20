@@ -57,6 +57,7 @@ export default function SignUp() {
             await sendEmailVerification(userCredential.user).then(() => setEmailSent(true));
             await updateProfile(userCredential.user, { displayName: userName });
             await updateUsername(userName, userCredential.user.uid);
+            cookies.set("username", user.displayName, { path: "/" });
             if(window === window.parent) localStorage.setItem("clientUsername", userName);
             else{
                 const targetWebsite = [

@@ -36,8 +36,29 @@ const setCustomUserClaims = async (req, res) => {
     }
 }
 
+const getCustomUserClaims = async (req, res) => {
+    const { uid, securityStage } = req.body;
+    try {
+        let visibleClaims = {};
+        const user = await auth.getUser(uid);
+        for(const claim in user.customClaims){
+            switch(securityStage){
+                case "none":
+                    if(claim !== "adminLevel" || claim !== "premiumLevel") visibleClaims[claim] = user.customClaims[claim];
+                    break;
+                default:
+                    responseStatus.notFound(res, "Invalid security stage!");
+            }
+        }
+        responseStatus.ok(res, "User's claims", visibleClaims);
+    } catch (e) {
+        responseStatus.notFound(res, "Invalid uid!")
+    }
+}
+
 module.exports = {
     createCustomToken,
     verifyToken,
-    setCustomUserClaims
+    setCustomUserClaims,
+    getCustomUserClaims
 }

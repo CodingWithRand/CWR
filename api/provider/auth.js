@@ -50,7 +50,7 @@ const getCustomUserClaims = async (req, res) => {
                     responseStatus.notFound(res, "Invalid security stage!");
             }
         }
-        responseStatus.ok(res, "User's claims", visibleClaims);
+        responseStatus.ok(res, visibleClaims);
     } catch (e) {
         responseStatus.notFound(res, "Invalid uid!")
     }

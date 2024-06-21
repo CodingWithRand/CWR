@@ -378,10 +378,12 @@ function UserPFP(){
 
     useEffect(() => {
         if(authUser.isAuthUser && authUser.isAuthUser.photoURL) (async () => {
-            console.log(authUser.isAuthUser.photoURL);
-            const userProfileImageRef = ref(storage, `userProfileImage/${auth.currentUser.uid}/profile.png`);
-            const imgUrl = await getDownloadURL(userProfileImageRef);
-            setPfpImg(<img alt="user-profile-icon" src={imgUrl} className="rounded-full" width={50} height={50}/>)
+            setPfpImg(<img alt="user-profile-icon" src={authUser.isAuthUser.photoURL} className="rounded-full" width={50} height={50}/>)
+            try{
+                const userProfileImageRef = ref(storage, `userProfileImage/${auth.currentUser.uid}/profile.png`);
+                const imgUrl = await getDownloadURL(userProfileImageRef);
+                setPfpImg(<img alt="user-profile-icon" src={imgUrl} className="rounded-full" width={50} height={50}/>)
+            }catch(err){ console.log(err) }
         })()
         else setPfpImg(<Client.Components.Dynamic.Image alt="programmer-profile-icon" dir="icon/" width={50} height={50} name="programmer.png" cls="rounded-full" />)
     }, [authUser.isAuthUser])

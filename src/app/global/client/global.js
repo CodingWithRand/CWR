@@ -53,7 +53,12 @@ export function Global({ children }){
   useEffect(() => localStorage.setItem("theme", theme), [theme])
 
   useEffect(() => {
-    if(cookies.get("login") === undefined) cookies.set("login", "undefined");
+    if(cookies.get("emailVerified") === undefined) cookies.set("emailVerified", false);
+    if(cookies.get("username") === undefined) cookies.set("username", null);
+  }, [])
+
+  useEffect(() => {
+    if(cookies.get("login") === undefined) cookies.set("login", null);
     else cookies.set("login", isLoggedIn);
   }, [isLoggedIn])
 

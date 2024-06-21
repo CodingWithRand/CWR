@@ -54,7 +54,6 @@ export default function SignIn() {
                     ];
                     targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: userCredential.user.displayName , origin: window.location.origin }, url));
                 }
-                localStorage.setItem("clientUsername", userName.current);
                 const ip = await Neutral.Functions.getClientIp();
                 await updateRegistryData(user.uid, {origin: window.location.origin, authenticated: true, ip: ip, date: Date()})
                 await Neutral.Functions.asyncDelay(1000);

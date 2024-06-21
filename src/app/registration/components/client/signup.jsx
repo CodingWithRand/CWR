@@ -58,8 +58,7 @@ export default function SignUp() {
             await updateProfile(userCredential.user, { displayName: userName });
             await updateUsername(userName, userCredential.user.uid);
             cookies.set("username", user.displayName, { path: "/" });
-            if(window === window.parent) localStorage.setItem("clientUsername", userName);
-            else{
+            if(window !== window.parent){
                 const targetWebsite = [
                     "https://cwr-education.vercel.app",
                 ];

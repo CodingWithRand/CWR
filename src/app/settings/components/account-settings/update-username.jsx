@@ -3,19 +3,21 @@ import Client from "@/glient/util";
 import { updateProfile } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
 import { updateUsername } from "@/gerver/apiCaller";
+import Cookies from "universal-cookie";
 
 const { InputField, Section } = Client.Components.Dynamic;
 
 export default function UpdateUsername() {
     const [userName, setUserName] = useState("");
     const [isValid, validate] = useState()
+    const cookies = new Cookies();
     async function changeDisplayName(e){
         e.preventDefault();
         if(isValid){ 
             await updateUsername(userName, auth.currentUser.uid, auth.currentUser.displayName);
             await updateProfile(auth.currentUser, { displayName: userName });
-            if(window === window.parent) localStorage.setItem("clientUsername", userName);
-            else{
+            cookies.set("username", userName, { path: "/" });
+            if(window !== window.parent){
                 const targetWebsite = [
                     "https://cwr-education.vercel.app",
                 ];

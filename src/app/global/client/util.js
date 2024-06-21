@@ -378,6 +378,7 @@ function UserPFP(){
 
     useEffect(() => {
         if(authUser.isAuthUser && authUser.isAuthUser.photoURL) (async () => {
+            console.log(authUser.isAuthUser.photoURL);
             const userProfileImageRef = ref(storage, `userProfileImage/${auth.currentUser.uid}/profile.png`);
             const imgUrl = await getDownloadURL(userProfileImageRef);
             setPfpImg(<img alt="user-profile-icon" src={imgUrl} className="rounded-full" width={50} height={50}/>)

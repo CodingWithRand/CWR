@@ -12,10 +12,12 @@ import { useGlobal } from "@/glient/global";
 import { signOut, signInWithCustomToken } from "@firebase/auth";
 import { auth } from "@/glient/firebase";
 import { getRegistryData, getAllUsernames, updateRegistryData, createNewCustomToken } from "@/gerver/apiCaller";
+import Cookies from "universal-cookie";
 
 export default function RegistrationPage() {
     const { AuthenticateGate } = Client.Components.Dynamic; 
-    const { authUser, login } = useGlobal();
+    const { authUser } = useGlobal();
+    const cookies = new Cookies();
     return (
         <AuthenticateGate authenticatedAction={async () => {
             if(window !== window.parent){
@@ -33,10 +35,10 @@ export default function RegistrationPage() {
             if(!thisSiteStates.authenticated) signOut(auth);
         }} unauthenticatedAction={async () => {
             const usernames = await getAllUsernames();
-            const userAuthenticatedStates = await getRegistryData(usernames[localStorage.getItem("clientUsername")]);
+            const userAuthenticatedStates = await getRegistryData(usernames[cookies.get("clientUsername")]);
             const thisSiteStates = userAuthenticatedStates[window.location.origin];
             if(thisSiteStates.authenticated){
-                const newToken = await createNewCustomToken(usernames[localStorage.getItem("clientUsername")]);
+                const newToken = await createNewCustomToken(usernames[cookies.get("clientUsername")]);
                 await signInWithCustomToken(auth, newToken);
                 const ip = await Neutral.Functions.getClientIp();
                 await updateRegistryData(auth.currentUser.uid, { origin: window.location.origin, authenticated: true, ip: ip, date: Date() });

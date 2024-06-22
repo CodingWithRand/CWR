@@ -383,7 +383,7 @@ function UserPFP(){
                 const userProfileImageRef = ref(storage, `userProfileImage/${auth.currentUser.uid}/profile.png`);
                 const imgUrl = await getDownloadURL(userProfileImageRef);
                 setPfpImg(<img alt="user-profile-icon" src={imgUrl} className="rounded-full" width={50} height={50}/>)
-            }catch(err){ console.log(err) }
+            }catch(err){ console.warn(err) }
         })()
         else setPfpImg(<Client.Components.Dynamic.Image alt="programmer-profile-icon" dir="icon/" width={50} height={50} name="programmer.png" cls="rounded-full" />)
     }, [authUser.isAuthUser])

@@ -54,8 +54,12 @@ export function Global({ children }){
 
   useEffect(() => {
     if(cookies.get("emailVerified") === undefined) cookies.set("emailVerified", false);
+    else if(isAuthUser) cookies.set("emailVerified", isAuthUser.emailVerified);
+    else cookies.set("emailVerified", false);
     if(cookies.get("username") === undefined) cookies.set("username", null);
-  }, [])
+    else if(isAuthUser) cookies.set("username", isAuthUser.displayName);
+    else cookies.set("username", null);
+  }, [isAuthUser])
 
   useEffect(() => {
     if(cookies.get("login") === undefined) cookies.set("login", null);

@@ -13,7 +13,7 @@ const updateRegistryData = async (userId, data) => await update(`util/authentica
 const getRegistryData = async (userId) => await read(`util/authenticationSessions/${userId}/Web`);
 
 async function createNewCustomToken(userId){
-    const newTokenResponse = await fetch("https://cwr-api.onrender.com/post/provider/cwr/auth/createCustomToken", {
+    const newTokenResponse = await fetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/createCustomToken", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: userId, adminKey: process.env.FIREBASE_PERSONAL_ADMIN_KEY })

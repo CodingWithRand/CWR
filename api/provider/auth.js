@@ -56,9 +56,20 @@ const getCustomUserClaims = async (req, res) => {
     }
 }
 
+const getUserProviderData = async (req, res) => {
+    const { uid } = req.body;
+    try {
+        const user = await auth.getUser(uid);
+        responseStatus.ok(res, user.providerData);
+    } catch (e) {
+        responseStatus.notFound(res, "Invalid uid!")
+    }
+}
+
 module.exports = {
     createCustomToken,
     verifyToken,
     setCustomUserClaims,
-    getCustomUserClaims
+    getCustomUserClaims,
+    getUserProviderData
 }

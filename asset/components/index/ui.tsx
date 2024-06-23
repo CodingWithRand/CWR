@@ -173,7 +173,7 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                 ranges: ranges,
                 isStrictMode: selectStictMode
             })}>
-                <Text style={{ fontSize: 50, textAlign: "center" }}>→</Text>
+                <Text style={[{ fontSize: 50, textAlign: "center" }, topicsTextStyle]}>→</Text>
             </TouchableOpacity>
         </ScrollView>
 
@@ -366,8 +366,8 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
             (gathering?.body || ["ทุกแอปพลิเคชัน"]).forEach((v, i) => {
                 tempJSXArray.push(
                     <View key={i}>
-                        <Text style={{ fontSize: 20, fontWeight: "bold", marginHorizontal: 15, marginTop: 10 }}>{v}</Text>
-                        <Text style={{ marginHorizontal: 15, textAlign: "center", fontWeight: "bold" }}>{Math.floor(sliderValue[i] / 60) !== 0 ? Math.floor(sliderValue[i] / 60) + " ชั่วโมง " : ""}{sliderValue[i] % 60 !== 0 ? sliderValue[i] % 60 + " นาที" : ""}</Text>
+                        <Text style={[{ fontSize: 20, fontWeight: "bold", marginHorizontal: 15, marginTop: 10 }, topicsTextStyle]}>{v}</Text>
+                        <Text style={[{ marginHorizontal: 15, textAlign: "center", fontWeight: "bold" }, topicsTextStyle]}>{Math.floor(sliderValue[i] / 60) !== 0 ? Math.floor(sliderValue[i] / 60) + " ชั่วโมง " : ""}{sliderValue[i] % 60 !== 0 ? sliderValue[i] % 60 + " นาที" : ""}</Text>
                         <Slider maximumValue={constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`]} upperLimit={sliderMaximumValue[i]} minimumValue={0} step={1} value={sliderValue[i]} onValueChange={function (slidervalue) {
                             SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => index === i ? slidervalue : val))
                             SetSliderMaximumValue(prevSliderMax => {
@@ -382,8 +382,8 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
                             });
                         }} />
                         <View style={[styles.options, { justifyContent: "space-between", marginHorizontal: 15 }]}>
-                            <Text>0 นาที</Text>
-                            <Text>{constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`] / 60} ชั่วโมง</Text>
+                            <Text style={topicsTextStyle}>0 นาที</Text>
+                            <Text style={topicsTextStyle}>{constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`] / 60} ชั่วโมง</Text>
                         </View>
 
                     </View>
@@ -403,7 +403,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
             isStrictMode: isStrictMode || false,
         }
         )}>
-            <Text style={{ fontSize: 50, textAlign: "center" }}>←</Text>
+            <Text style={[{ fontSize: 50, textAlign: "center" }, topicsTextStyle]}>←</Text>
         </TouchableOpacity>
 
         <TouchableHighlight onPress={() => {
@@ -472,7 +472,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
             ranges: range,
             isStrictMode: isStrictMode || false
         })}>
-            <Text style={{ fontSize: 50, textAlign: "center" }}>←</Text>
+            <Text style={[{ fontSize: 50, textAlign: "center" }, topicsTextStyle]}>←</Text>
         </TouchableOpacity>
         <TouchableHighlight onPress={() => {
             for(const r of range){

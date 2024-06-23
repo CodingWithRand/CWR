@@ -35,7 +35,7 @@ function App(): React.JSX.Element {
           <Stack.Navigator screenOptions={{ presentation: "transparentModal" }}>
             <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
             <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
-            <Stack.Screen name="GuestDashboard" component={GUESTPAGE} />
+            <Stack.Screen name="GuestDashboard" component={GUESTPAGE} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <SignOutBTN navigation={navigation} guest/> })}/>
             <Stack.Screen name="UserDashboard" component={UserPage1} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <SignOutBTN navigation={navigation}/> })} />
             <Stack.Screen name="UserDashboard2" component={UserPage2} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <SignOutBTN navigation={navigation}/> })} />
           </Stack.Navigator>

@@ -485,23 +485,28 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
 
     useDelayedEffect(() => {
         if(authUser.isAuthUser || auth().currentUser){
-            console.log("authenticated user");
-            (async () => {
-                const userTokens = await auth().currentUser?.getIdTokenResult();
-                const userClaims = userTokens?.claims;
-                try{
-                    await GoogleSignin.hasPlayServices();
-                    if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
-                }catch(error){
-                    console.error(error);
-                }
-                showMessage({ 
-                    message: "Welcome back, " + await AsyncStorage.getItem("clientUsername"),
-                    type: "success",
-                    icon: "success",
-                });
-                navigation.replace("UserDashboard");
-            })();
+            if(auth().currentUser?.isAnonymous) {
+                console.log("Guest user");
+                navigation.replace("GuestDashboard");
+            } else {
+                console.log("authenticated user");
+                (async () => {
+                    const userTokens = await auth().currentUser?.getIdTokenResult();
+                    const userClaims = userTokens?.claims;
+                    try{
+                        await GoogleSignin.hasPlayServices();
+                        if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
+                    }catch(error){
+                        console.error(error);
+                    }
+                    showMessage({ 
+                        message: "Welcome back, " + await AsyncStorage.getItem("clientUsername"),
+                        type: "success",
+                        icon: "success",
+                    });
+                    navigation.replace("UserDashboard");
+                })();
+            }
         }
     }, [authUser.isAuthUser], 3000)
 

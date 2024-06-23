@@ -46,7 +46,7 @@ export function Loading({ loading }: { loading: boolean }){
   )
 }
 
-export function SignOutBTN({ navigation }: { navigation: any }){
+export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boolean }) {
   /* 
       Suggestion
       Make a modal that asks user whether to sign out or not.
@@ -80,9 +80,12 @@ export function SignOutBTN({ navigation }: { navigation: any }){
           <Button onPress={() =>
             Alert.alert(
               "Info",
-              "You're about to sign out, do you confirm this operation?",
+              `You're about to sign out. ${guest && "As being a guest user, your account will be deleted, and you won't be able to sign in again."} Do you confirm this operation?`,
               [
-                { text: "Yes, I'd like to sign out", onPress: promptSignOut },
+                { text: "Yes, I'd like to sign out", onPress: guest ? async () => {
+                  await auth().currentUser?.delete();
+                  navigation.replace("Registration");
+                } : promptSignOut },
                 { text: "Cancel", style: "cancel" },
               ]
             )

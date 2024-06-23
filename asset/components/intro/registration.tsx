@@ -53,7 +53,11 @@ async function signInWithGoogle() {
 
         await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
         if(!userCredential.user.providerData.some(provider => provider.providerId === "password")) await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { createdAccountWithGoogleAccount: true }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-        showMessage({ message: "Welcome back, " + await AsyncStorage.getItem("clientUsername")})
+        showMessage({ 
+            message: "Welcome back, " + await AsyncStorage.getItem("clientUsername"),
+            type: "success",
+            icon: "success"
+        })
 
     } catch (error: any) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -428,7 +432,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         const userClaims = userTokens?.claims;
                         if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
                         await jobDelay(() => {
-                            AsyncStorage.getItem("clientUsername").then((un) => showMessage({ message: "Welcome back, " + un }));
+                            AsyncStorage.getItem("clientUsername").then((un) => showMessage({ message: "Welcome back, " + un, type: "success", icon: "success" }));
                             navigation.replace("UserDashboard")
                         }, 3000);
                     }
@@ -491,7 +495,11 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 }catch(error){
                     console.error(error);
                 }
-                showMessage({ message: "Welcome back, " + await AsyncStorage.getItem("clientUsername")});
+                showMessage({ 
+                    message: "Welcome back, " + await AsyncStorage.getItem("clientUsername"),
+                    type: "success",
+                    icon: "success",
+                });
                 navigation.replace("UserDashboard");
             })();
         }
@@ -538,8 +546,16 @@ function ProviderWebView({ type, webviewState, injectedJavaScript, navigation, c
                                 setWebviewShow(false);
                                 const currentUserId = await verifyUsername(postedData.username);
                                 await implementMobileAuthentication(currentUserId);
-                                if(postedData.newClient) showMessage({ message: "Successfully created and signed into your account"})
-                                else showMessage({ message: "Welcome back, " + await AsyncStorage.getItem("clientUsername")})
+                                if(postedData.newClient) showMessage({ 
+                                    message: "Successfully created and signed into your account",
+                                    type: "success",
+                                    icon: "success",
+                                })
+                                else showMessage({ 
+                                    message: "Welcome back, " + await AsyncStorage.getItem("clientUsername"),
+                                    type: "success",
+                                    icon: "success",
+                                })
                                 navigation.replace("UserDashboard");
                             }else if(postedData.actionCancel){
                                 setWebviewShow(false);

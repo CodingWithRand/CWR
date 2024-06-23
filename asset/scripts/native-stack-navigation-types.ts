@@ -1,3 +1,15 @@
+export type RangeObject = {
+    owner: string,
+    startTime: {
+        hour?: number,
+        minute?: number
+    },
+    endTime: {
+        hour?: number,
+        minute?: number
+    }
+}
+
 export type RouteStackParamList = {
     Credit: undefined,
     Registration: undefined,
@@ -9,6 +21,7 @@ export type RouteStackParamList = {
             name: string,
             body?: string[]
         },
+        ranges?: RangeObject[]
         isStrictMode: boolean
     }, 
     GuestDashboard: undefined, 
@@ -19,6 +32,7 @@ export type RouteStackParamList = {
             name: string,
             body?: string[]
         },
+        ranges?: RangeObject[],
         isStrictMode: boolean
     }
 }

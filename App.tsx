@@ -37,7 +37,7 @@ function App(): React.JSX.Element {
             <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
             <Stack.Screen name="GuestDashboard" component={GUESTPAGE} />
             <Stack.Screen name="UserDashboard" component={UserPage1} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <SignOutBTN navigation={navigation}/> })} />
-            <Stack.Screen name="UserDashboard2" component={UserPage2} />
+            <Stack.Screen name="UserDashboard2" component={UserPage2} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <SignOutBTN navigation={navigation}/> })} />
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage/>

@@ -4,7 +4,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Credit from './asset/components/intro/credit';
-import { SignOutBTN } from './asset/components/utility-component';
+import { SignOutBTN } from './asset/components/util';
 import RegistrationPage from './asset/components/intro/registration';
 import { Global } from './asset/scripts/global';
 import { GUESTPAGE, UserPage1, UserPage2} from "./asset/components/index/ui";
@@ -19,7 +19,7 @@ function App(): React.JSX.Element {
     flex: 1
   };
   const titleBarStyle = {
-    headerStyle: { backgroundColor: isDarkMode ? Colors.darker : Colors.lighter },
+    headerStyle: { backgroundColor: isDarkMode ? "black" : "white" },
     headerTintColor: isDarkMode ? Colors.lighter : Colors.darker
   }
 

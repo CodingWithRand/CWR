@@ -20,7 +20,7 @@ import { useGlobal } from "../../scripts/global";
 
 const { AppStatisticData } = NativeModules
 
-export function UserPage1({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard"> }) {
+export function UserPage1({ navigation, route }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard">, route: RouteProp<RouteStackParamList, "UserDashboard"> }) {
     const [selectedUnit, setSelectedUnit] = useState('daily');
     const [selectedPlan, setSelectedPlan] = useState("duration");
     const [selectedGathering, setSelectedGathering] = useState("total");
@@ -453,7 +453,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
                                 range?.forEach((val, j) => {
                                     if(val.owner === v)
                                         anotherTempJSXArray.push(
-                                            <View key={j} style={{ borderStyle: "solid", borderColor: themed, borderWidth: 2, borderRadius: 999, padding: 10, paddingVertical: 5, marginLeft: 10, margin: 5, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "29%", opacity: 0.6 }}>
+                                            <View key={j} style={{ borderStyle: "solid", borderColor: themedColor.comp, borderWidth: 2, borderRadius: 999, padding: 10, paddingVertical: 5, marginLeft: 10, margin: 5, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "29%", opacity: 0.6 }}>
                                                 <Text style={{ textAlign: "center" }}>{`${val.startTime.hour}:${val.startTime.minute !== undefined && val.startTime.minute < 10 ? `0${val.startTime.minute}` : val.startTime} - ${val.endTime.hour}:${val.endTime.minute !== undefined && val.endTime.minute < 10 ? `0${val.endTime.minute}` : val.endTime}`}</Text>
                                                 <Pressable onPress={() => removeRange(j)}><Text>X</Text></Pressable>
                                             </View>

@@ -43,7 +43,6 @@ export function Global({ children }: { children: JSX.Element }){
   const isDark = useColorScheme() === "dark";
 
   useEffect(() => {
-    console.log(isDark)
     setThemedColor({
       bg: isDark ? Colors.darker : Colors.lighter,
       comp: isDark ? Colors.lighter : Colors.darker

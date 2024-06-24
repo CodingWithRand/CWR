@@ -85,10 +85,10 @@ function ToolBar({ navigation, guest }: { navigation: NativeStackNavigationProp<
               { text: langs[lang.lang].license.acceptBTN, style: "default" }
             ]
           )}>
-            <Text style={mutableStyles.menuBtnText}>License</Text>
+            <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu["licensebutton"]}</Text>
           </TouchableOpacity>
         </View>
-        <Text style={mutableStyles.sectionTitle}>Language</Text>
+        <Text style={mutableStyles.sectionTitle}>{langs[lang.lang].menu["languagetext"]}</Text>
         <View style={mutableStyles.menuBtn}>
           <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => setShowModal(true)}>
             {/* <a href="https://www.flaticon.com/free-icons/thailand" title="thailand icons">Thailand icons created by Freepik - Flaticon</a> */}
@@ -108,11 +108,11 @@ function ToolBar({ navigation, guest }: { navigation: NativeStackNavigationProp<
               <View style={{ backgroundColor: isDark ? "black" : "white", padding: 30 }}>
                 <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => setLang("en")}>
                   <Image source={require("./asset/imgs/en.png")} style={{ width: iconSize, height: iconSize }}/>
-                  <Text style={mutableStyles.menuBtnText}>English</Text>
+                  <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu["englishtext"]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => setLang("th")}>
                   <Image source={require("./asset/imgs/th.png")} style={{ width: iconSize, height: iconSize }}/>
-                  <Text style={mutableStyles.menuBtnText}>Thai</Text>
+                  <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu["thaitext"]}</Text>
                 </TouchableOpacity>
               </View>
             </Modal>

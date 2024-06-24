@@ -28,6 +28,12 @@ const th = {
         }
     },
     menu: {
+        licensebutton:"การอนุญาต",
+        signoutbutton:"ออกจากระบบ",
+        languagetext:"ภาษา",
+        englishtext:"ภาษาอังกฤษ",
+        thaitext:"ภาษาไทย"
+        
 
     },
     userpage1: {
@@ -71,6 +77,11 @@ const en = {
         }
     },
     menu: {
+        licensebutton:"License",
+        signoutbutton:"Signout",
+        languagetext:"Language",
+        englishtext:"English",
+        thaitext:"Thai"
 
     },
     userpage1: {

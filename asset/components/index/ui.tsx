@@ -11,6 +11,7 @@ import moment from "moment";
 import { useGlobal } from "../../scripts/global";
 import { showMessage } from "react-native-flash-message";
 import { RangeObject } from "../../scripts/native-stack-navigation-types";
+import langs from "../../../langs";
 
 const { AppStatisticData } = NativeModules
 
@@ -28,6 +29,8 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
     const [appNamesArrey, setAppNamesArrey] = useState<object[]>([])
     const { themedColor } = useGlobal();
     const topicsTextStyle = { color: themedColor.comp }
+    const { lang } = useGlobal();
+
 
     useEffect(() => {
         (async () => {

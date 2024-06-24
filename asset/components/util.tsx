@@ -6,6 +6,8 @@ import { retryFetch } from "../scripts/util";
 import { useGlobal } from "../scripts/global";
 import { GoogleSignin } from "react-native-google-signin";
 import auth from "@react-native-firebase/auth"
+import langs from "../../langs";
+
 
 type TypingTextPropsType= { animated?: boolean, text: string, style?: StyleProp<TextStyle>, delay: number, initialDelay?: number };
 export function TypingText({ animated, text, style, delay, initialDelay }: TypingTextPropsType) {
@@ -53,6 +55,7 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
   const [ loading, setLoading ] = useState(false);
   const { themedColor } = useGlobal();
   const { width, height } = useWindowDimensions();
+  const { lang } = useGlobal();
   async function promptSignOut(){
       try {
           setLoading(true);
@@ -91,7 +94,7 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
               ]
             )
           }>
-            <Text style={{ fontSize: width > height ? 25 : 15, color: themedColor.comp, padding: 15, width: "100%" }}>Sign Out</Text>
+            <Text style={{ fontSize: width > height ? 25 : 15, color: themedColor.comp, padding: 15, width: "100%" }}>{langs[lang.lang].menu["signoutbutton"]}</Text>
           </TouchableOpacity>
           <Loading loading={loading} />
       </>

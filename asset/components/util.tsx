@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { asyncDelay, jobDelay } from '../scripts/util';
-import { Animated, Text, StyleProp, TextStyle, Modal, ActivityIndicator, View, useWindowDimensions, Alert } from 'react-native';
+import { Animated, Text, StyleProp, TextStyle, Modal, ActivityIndicator, View, useWindowDimensions, Alert, TouchableOpacity } from 'react-native';
 import { FIREBASE_PERSONAL_ADMIN_KEY } from "@env"
 import { retryFetch } from "../scripts/util";
-import { Button } from "react-native-paper";
 import { useGlobal } from "../scripts/global";
 import { GoogleSignin } from "react-native-google-signin";
 import auth from "@react-native-firebase/auth"
@@ -52,6 +51,8 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
       Make a modal that asks user whether to sign out or not.
   */
   const [ loading, setLoading ] = useState(false);
+  const { themedColor } = useGlobal();
+  const { width, height } = useWindowDimensions();
   async function promptSignOut(){
       try {
           setLoading(true);
@@ -77,7 +78,7 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
 
   return(
       <>
-          <Button onPress={() =>
+          <TouchableOpacity onPress={() =>
             Alert.alert(
               "Info",
               `You're about to sign out. ${guest && "As being a guest user, your account will be deleted, and you won't be able to sign in again."} Do you confirm this operation?`,
@@ -89,7 +90,9 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
                 { text: "Cancel", style: "cancel" },
               ]
             )
-          }>Sign Out</Button>
+          }>
+            <Text style={{ fontSize: width > height ? 25 : 15, color: themedColor.comp, padding: 15, width: "100%" }}>Sign Out</Text>
+          </TouchableOpacity>
           <Loading loading={loading} />
       </>
   )

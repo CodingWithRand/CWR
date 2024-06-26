@@ -37,6 +37,21 @@ const th = {
 
     },
     userpage1: {
+        usageplanningbutton:"การกำหนดเเผนการใช้งาน",
+        unitoftimetext:"หน่วยเวลา",
+        Dailybutton:"รายวัน",
+        weeklybutton:"รายสัปดาห์",
+        Monthlybutton:"รายเดือน",
+        Planningformattext:"รูปเเบบการกำหนดเเผน",
+        Setappperdaytext:"กำหนดระยะเวลาที่จะใช้ในเเต่ละแอปต่อวัน",
+        Settimeusageappperday:"กำหนดช่วงเวลาที่จะใช้ในเเต่ละแอปต่อวัน",
+        datacollectionformat:"รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน",
+        Allinclusiveplanbutton:"เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)",
+        Separatebutton:"เเบบเเยกกัน",
+        Allowstext:"ให้การใช้เเอปพลิเคชั่นได้บ้าง"
+
+
+
 
     },
     userpage2: {
@@ -85,6 +100,19 @@ const en = {
 
     },
     userpage1: {
+        usageplanningbutton:"Usage planning",
+        unitoftimetext:"Unit of time",
+        Dailybutton:"Daily",
+        weeklybutton:"Weekly",
+        Monthlybutton:"Monthly",
+        Planningformattext:"Planing format",
+        Setappperdaytext:"Set the amount of time to spend on each app per day",
+        Settimeusageappperday:"Set time usage app per day",
+        datacollectionformat:"data collecttion format",
+        Allinclusiveplanbutton:"All-inclusive plan",
+        Separatebutton:"Separate",
+        Allowstext:"Allows"
+
 
     },
     userpage2: {

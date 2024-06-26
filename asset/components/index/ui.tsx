@@ -54,8 +54,8 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
 
     return (
         <ScrollView>
-            <Text style={[styles.title, topicsTextStyle]}>การกำหนดเเผนการใช้งาน</Text>
-            <Text style={[styles.subtitle,topicsTextStyle]}>หน่วยเวลา</Text>
+            <Text style={[styles.title, topicsTextStyle]}>{langs[lang.lang].userpage1["usageplanningbutton"]}</Text>
+            <Text style={[styles.subtitle,topicsTextStyle]}>{langs[lang.lang].userpage1["unitoftimetext"]}</Text>
 
 
             <View style={styles.options}>
@@ -66,7 +66,7 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                     onPress={() => setSelectedUnit('daily')}
                     color="#007BFF"
                 />
-                <Text style={[styles.optionsLabel,topicsTextStyle]}>รายวัน</Text>
+                <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].userpage1["Dailybutton"]}</Text>
             </View>
             <View style={styles.options}>
                 <RadioButton.Android
@@ -76,7 +76,7 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                     onPress={() => setSelectedUnit('weekly')}
                     color="#007BFF"
                 />
-                <Text style={[styles.optionsLabel,topicsTextStyle]}>รายสัปดาห์</Text>
+                <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].userpage1["weeklybutton"]}</Text>
             </View>
 
             <View style={styles.options}>
@@ -87,10 +87,10 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                     onPress={() => setSelectedUnit('mouthly')}
                     color="#007BFF"
                 />
-                <Text style={[styles.optionsLabel,topicsTextStyle]}>รายเดือน</Text>
+                <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].userpage1["Monthlybutton"]}</Text>
             </View>
 
-            <Text style={[styles.subtitle,topicsTextStyle]}>รูปเเบบการกำหนดเเผน</Text>
+            <Text style={[styles.subtitle,topicsTextStyle]}>{langs[lang.lang].userpage1["Planningformattext"]}</Text>
             <View style={styles.options}>
                 <RadioButton.Android
                     value="duration"
@@ -99,7 +99,7 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                     onPress={() => setSelectedPlan('duration')}
                     color="#007BFF"
                 />
-                <Text style={[styles.optionsLabel,topicsTextStyle]}>กำหนดระยะเวลาที่จะใช้ในเเต่ละแอปต่อวัน</Text>
+                <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].userpage1["Setappperdaytext"]}</Text>
 
             </View>
             <View style={styles.options}>
@@ -110,9 +110,9 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                     onPress={() => setSelectedPlan('range')}
                     color="#007BFF"
                 />
-                <Text style={[styles.optionsLabel,topicsTextStyle]}>กำหนดช่วงเวลาที่จะใช้ในเเต่ละแอปต่อวัน</Text>
+                <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].userpage1["Settimeusageappperday"]}</Text>
             </View>
-            <Text style={[styles.title,topicsTextStyle]}>รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน</Text>
+            <Text style={[styles.title,topicsTextStyle]}>{langs[lang.lang].userpage1["datacollectionformat"]}</Text>
             <View style={styles.options}>
                 <RadioButton.Android
                     value="total"
@@ -121,7 +121,7 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                     onPress={() => setSelectedGathering('total')}
                     color="#007BFF"
                 />
-                <Text style={[styles.optionsLabel,topicsTextStyle]}>เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)</Text>
+                <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].userpage1["Allinclusiveplanbutton"]}</Text>
 
             </View>
             <View style={styles.options}>
@@ -132,12 +132,12 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                     onPress={() => setSelectedGathering('separate')}
                     color="#007BFF"
                 />
-                <Text style={[styles.optionsLabel,topicsTextStyle]}>เเบบเเยกกัน</Text>
+                <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].userpage1["Separatebutton"]}</Text>
             </View>
             { 
                 selectedGathering === "separate" ? 
                 <>
-                    <Text style={[styles.subtitle,topicsTextStyle]}>ให้การใช้เเอปพลิเคชั่นได้บ้าง</Text>
+                    <Text style={[styles.subtitle,topicsTextStyle]}>{langs[lang.lang].userpage1["Allowstext"]}</Text>
                     <View style={{ margin: 10 }}>
                         <MultiSelect
                             items={appNamesArrey}

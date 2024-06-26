@@ -2,6 +2,8 @@ import { createContext, useState, useEffect, useContext } from "react";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useColorScheme } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import langs from "../../langs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Mutable<T> = T | null | undefined;
 
@@ -16,6 +18,10 @@ type GlobalStateType = {
   themedColor: {
     bg: string
     comp: string
+  },
+  lang: {
+    lang: keyof typeof langs,
+    setLang: Mutable<React.Dispatch<React.SetStateAction<string>>>,
   }
 }
 
@@ -28,6 +34,10 @@ const GlobalStateConstructor = {
   themedColor: {
     bg: Colors.lighter,
     comp: Colors.lighter
+  },
+  lang: {
+    lang: "en" as keyof typeof langs,
+    setLang: null
   }
 }
 
@@ -40,6 +50,7 @@ export function Global({ children }: { children: JSX.Element }){
     bg: Colors.lighter,
     comp: Colors.lighter
   });
+  const [lang, setLang] = useState("en")
   const isDark = useColorScheme() === "dark";
 
   useEffect(() => {
@@ -50,11 +61,23 @@ export function Global({ children }: { children: JSX.Element }){
   }, [isDark])
 
   useEffect(() => {
+    (async () => {
+      setLang(await AsyncStorage.getItem("preferredLang") as keyof typeof langs);
+    })()
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      await AsyncStorage.setItem("preferredLang", lang);
+    })()
+  }, [lang]);
+
+  useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged((user) => getCurrentUser(user));
     return () => unsubscribe();
   }, []);
   
-  return <GlobalState.Provider value={{ authUser: {isAuthUser}, counter: {globalCounter, setGlobalCounter}, themedColor: themedColor }}>{children}</GlobalState.Provider>;
+  return <GlobalState.Provider value={{ authUser: {isAuthUser}, counter: {globalCounter, setGlobalCounter}, themedColor: themedColor, lang: { lang, setLang } }}>{children}</GlobalState.Provider>;
 }
 
 export function useGlobal(){

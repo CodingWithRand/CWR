@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef } from "react"
-import { Animated, StyleSheet, Text, TouchableHighlight, Easing, View, useColorScheme, TextInput, Modal, useWindowDimensions, Alert, ActivityIndicator, TouchableOpacity } from "react-native"
+import { Animated, StyleSheet, Text, TouchableHighlight, Easing, View, useColorScheme, Modal, useWindowDimensions, Alert, TouchableOpacity } from "react-native"
 import WebView from "react-native-webview"
 import { jobDelay, asyncDelay, getClientIp, useDelayedEffect, retryFetch } from "../../scripts/util"
 import { TypingText } from "../util";
@@ -13,12 +13,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useGlobal } from "../../scripts/global";
 import { Loading } from "../util";
 import { showMessage } from "react-native-flash-message";
+import langs from "../../../langs";
 
 GoogleSignin.configure({ 
     webClientId: FIREBASE_GOOGLE_PROVIDER_WEB_CLIENT_ID
 })
 
-async function signInWithGoogle() {
+async function signInWithGoogle(lang: keyof typeof langs) {
     try {
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();
@@ -54,7 +55,7 @@ async function signInWithGoogle() {
         await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
         if(!userCredential.user.providerData.some(provider => provider.providerId === "password")) await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { createdAccountWithGoogleAccount: true }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
         showMessage({ 
-            message: "Welcome back, " + await AsyncStorage.getItem("clientUsername"),
+            message: langs[lang].registration.showMessageFunc.welcomeBack + await AsyncStorage.getItem("clientUsername"),
             type: "success",
             icon: "success"
         })
@@ -137,7 +138,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ injectJS, setInjectJS ] = useState<string>();
     const [ cwrRegistrationType, setCWRRegistrationType ] = useState<string>("");
-    const { authUser, counter } = useGlobal();
+    const { authUser, counter, lang } = useGlobal();
     const { themedColor } = useGlobal();
     const registrationBtnsFadingAnim = new Animated.Value(0);
     const registrationPageTitle = new Animated.Value(0);
@@ -229,7 +230,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
             </Animated.Text>
             </Animated.View>
             <View style={[styles.containerBox, { width: "100%", height: verticalScale(height/(width > height ? 0.65 : 1.35), height), position: "absolute", bottom: 0, rowGap: verticalScale(width > height ? 45 : 75, height) }]}>
-                <Animated.Text style={[styles.btnText, { fontSize: moderateScale(40, width), opacity: registrationPageTitle, color: themedColor.comp }]}>Register with...</Animated.Text>
+                <Animated.Text style={[styles.btnText, { fontSize: moderateScale(40, width), opacity: registrationPageTitle, color: themedColor.comp }]}>{langs[lang.lang].registration.subtitle}</Animated.Text>
                 <Animated.View style={[styles.containerBox, { opacity: registrationBtnsFadingAnim, rowGap: verticalScale(width > height ? 20 : 50, height) }]}>
                     <TouchableHighlight
                         onPress={async () => {
@@ -243,16 +244,16 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         underlayColor="dodgerblue"
                         style={[styles.btn, { backgroundColor: 'deepskyblue', width: horizontalScale(200, width) }]}
                     >   
-                        <Text style={styles.btnText}>Email</Text>
+                        <Text style={styles.btnText}>{langs[lang.lang].registration.button.email}</Text>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor="darkgrey" onPress={async () => { setLoading(true); await auth().signInAnonymously(); setLoading(false); }} style={[styles.btn, { backgroundColor: 'lightgrey', width: horizontalScale(200, width) }]}>
-                        <Text style={[styles.btnText, { fontSize: 20 }]}>Sign Up as a Guest</Text>
+                        <Text style={[styles.btnText, { fontSize: 20 }]}>{langs[lang.lang].registration.button.guest}</Text>
                     </TouchableHighlight>
                     <GoogleSigninButton
                         style={{ width: horizontalScale(200, width), height: verticalScale(width > height ? 100 : 50, height) }}
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
-                        onPress={async () => { await signInWithGoogle(); if(auth().currentUser) navigation.replace("UserDashboard") }}
+                        onPress={async () => { await signInWithGoogle(lang.lang); if(auth().currentUser) navigation.replace("UserDashboard") }}
                     />
                     <TouchableOpacity onPress={async () => {
                         setLoading(true);
@@ -261,12 +262,12 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         if(uid) {
                             const inquiryCheck = await new Promise((resolve) => {
                                 Alert.alert(
-                                    "Warning",
-                                    "You've previously signed in with an account. Do you want to continue in the account or sign into the new one?",
+                                    langs[lang.lang].registration.alertMessage.warningTitle,
+                                    langs[lang.lang].registration.alertMessage.previouslySignedIn.message,
                                     [
-                                        { text: "Cancel", onPress: () => resolve(undefined) },
-                                        { text: "Continue in this account", onPress: () => resolve(true) },
-                                        { text: "Sign into the new account", onPress: () => resolve(false) },
+                                        { text: langs[lang.lang].registration.alertMessage.previouslySignedIn.cancel, onPress: () => resolve(undefined) },
+                                        { text: langs[lang.lang].registration.alertMessage.previouslySignedIn.continueInThisAccount, onPress: () => resolve(true) },
+                                        { text: langs[lang.lang].registration.alertMessage.previouslySignedIn.signIntoNewAccount, onPress: () => resolve(false) },
                                     ]
                                 )
                             })
@@ -288,8 +289,8 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                                     const userClaims = await userClaimsRequest.json();
                                     if(userClaims.createdAccountWithGoogleAccount){
                                         Alert.alert(
-                                            "Warning", 
-                                            "You have created an account with Google before. Therefore, your password has not been set. Please sign in with your google account instead by choosing the above option.", // You can still proceed if you want to sign into a different account. But you'll have to set your new password first. Do you want to proceed?",
+                                            langs[lang.lang].registration.alertMessage.warningTitle, 
+                                            langs[lang.lang].registration.alertMessage.haveCreatedAccountWithGoogle, // You can still proceed if you want to sign into a different account. But you'll have to set your new password first. Do you want to proceed?",
                                             /* Developing dynamically prompt send reset password link to user postponed */
                                             /*
                                                 [
@@ -336,7 +337,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         }
                         setLoading(false);
                     }}>
-                        <Text>I already have an account</Text>
+                        <Text>{langs[lang.lang].registration.button.signin}</Text>
                     </TouchableOpacity>
                 </Animated.View> 
             </View>
@@ -432,7 +433,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         const userClaims = userTokens?.claims;
                         if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
                         await jobDelay(() => {
-                            AsyncStorage.getItem("clientUsername").then((un) => showMessage({ message: "Welcome back, " + un, type: "success", icon: "success" }));
+                            AsyncStorage.getItem("clientUsername").then((un) => showMessage({ message: langs[lang.lang].registration.showMessageFunc.welcomeBack + un, type: "success", icon: "success" }));
                             navigation.replace("UserDashboard")
                         }, 3000);
                     }
@@ -500,7 +501,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         console.error(error);
                     }
                     showMessage({ 
-                        message: "Welcome back, " + await AsyncStorage.getItem("clientUsername"),
+                        message: langs[lang.lang].registration.showMessageFunc.welcomeBack + await AsyncStorage.getItem("clientUsername"),
                         type: "success",
                         icon: "success",
                     });
@@ -535,6 +536,7 @@ type ProviderWebViewProps = {
 function ProviderWebView({ type, webviewState, injectedJavaScript, navigation, cwrRegistrationType }: ProviderWebViewProps) {
     const { width, height } = useWindowDimensions()
     const [ webviewShow, setWebviewShow ] = webviewState;
+    const { lang } = useGlobal();
     if(type === "cwr")
         return(
             <Modal visible={webviewShow} animationType="slide">
@@ -552,12 +554,12 @@ function ProviderWebView({ type, webviewState, injectedJavaScript, navigation, c
                                 const currentUserId = await verifyUsername(postedData.username);
                                 await implementMobileAuthentication(currentUserId);
                                 if(postedData.newClient) showMessage({ 
-                                    message: "Successfully created and signed into your account",
+                                    message: langs[lang.lang].registration.showMessageFunc.create,
                                     type: "success",
                                     icon: "success",
                                 })
                                 else showMessage({ 
-                                    message: "Welcome back, " + await AsyncStorage.getItem("clientUsername"),
+                                    message: langs[lang.lang].registration.showMessageFunc.welcomeBack + await AsyncStorage.getItem("clientUsername"),
                                     type: "success",
                                     icon: "success",
                                 })

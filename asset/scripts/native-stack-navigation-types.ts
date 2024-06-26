@@ -34,5 +34,8 @@ export type RouteStackParamList = {
         },
         ranges?: RangeObject[],
         isStrictMode: boolean
+    },
+    Menu: {
+        guest?: boolean
     }
 }

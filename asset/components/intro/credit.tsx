@@ -1,23 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { jobDelay } from "../../scripts/util";
-import { Animated, View, useWindowDimensions, StyleSheet, useColorScheme } from "react-native";
+import { Animated, View, useWindowDimensions, StyleSheet, useColorScheme, Alert, BackHandler, Image } from "react-native";
 import { verticalScale } from "../../scripts/Metric";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteStackParamList } from "../../scripts/native-stack-navigation-types";
+import langs from '../../../langs';
+import { useGlobal } from "../../scripts/global";
 
 export default function Credit({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "Credit"> }) {
-  const logoFadingAnim = new Animated.Value(0);
+  const logoFadingAnim = useRef(new Animated.Value(0)).current
   const isDark = useColorScheme() === 'dark';
+  const { lang } = useGlobal();
   const { width, height } = useWindowDimensions()
 
   useEffect(() => {
     (async () => {
+      Alert.alert(
+        langs[lang.lang].license.title,
+        langs[lang.lang].license.content,
+        [
+          { text: langs[lang.lang].license.rejectBTN, onPress: () => BackHandler.exitApp() },
+          { text: langs[lang.lang].license.acceptBTN, style: "default" }
+        ]
+      )
       await jobDelay(() => {
         Animated.timing(logoFadingAnim, {
           toValue: 1,
           duration: 1000,
           useNativeDriver: true,
-        }).start();
+        }).start(() => {console.log("im completed")});
       }, 1000);
       await jobDelay(() => {
         Animated.timing(logoFadingAnim, {

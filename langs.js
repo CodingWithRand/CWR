@@ -39,6 +39,21 @@ const th = {
         thaitext:"ภาษาไทย"
     },
     userpage1: {
+        usageplanningbutton:"การกำหนดเเผนการใช้งาน",
+        unitoftimetext:"หน่วยเวลา",
+        Dailybutton:"รายวัน",
+        weeklybutton:"รายสัปดาห์",
+        Monthlybutton:"รายเดือน",
+        Planningformattext:"รูปเเบบการกำหนดเเผน",
+        Setappperdaytext:"กำหนดระยะเวลาที่จะใช้ในเเต่ละแอปต่อวัน",
+        Settimeusageappperday:"กำหนดช่วงเวลาที่จะใช้ในเเต่ละแอปต่อวัน",
+        datacollectionformat:"รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน",
+        Allinclusiveplanbutton:"เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)",
+        Separatebutton:"เเบบเเยกกัน",
+        Allowstext:"ให้เก็บจากเเอปพลิเคชั่นใดบ้าง"
+
+
+
 
     },
     userpage2: {
@@ -108,6 +123,19 @@ const en = {
         thaitext:"Thai"
     },
     userpage1: {
+        usageplanningbutton:"Apps usage planning",
+        unitoftimetext:"Unit of time",
+        Dailybutton:"Daily",
+        weeklybutton:"Weekly",
+        Monthlybutton:"Monthly",
+        Planningformattext:"Planning format",
+        Setappperdaytext:"Set the amount of time to spend on each app per day",
+        Settimeusageappperday:"Set the range of time of using app per day",
+        datacollectionformat:"Apps usage data collecttion format",
+        Allinclusiveplanbutton:"All-inclusively",
+        Separatebutton:"Individually",
+        Allowstext:"Collect usage data from..."
+
 
     },
     userpage2: {

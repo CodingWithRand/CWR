@@ -111,6 +111,7 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                 },
                 {
                     name: "Processor",
+                    mlang: "th",
                     jobs: {
                         // totalAppUsageRestriction: {
                         //     restrictedPeriod: 1,
@@ -141,9 +142,12 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                 <Text>Revoke Example Task</Text>
             </TouchableHighlight>
             <TouchableHighlight onPress={async () => await BackgroundProcess.registerAppInForegroundEventListener({
+                mlang: "th",
                 YouTube: {
-                    from: 14,
-                    to: 16
+                    fromHour: 14,
+                    fromMinute: 4,
+                    toHour: 16,
+                    toMinute: 16
                 },
                 isStrictModeOn: false
             })} underlayColor="cyan" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "lightblue", borderRadius: moderateScale(10, width) }}>

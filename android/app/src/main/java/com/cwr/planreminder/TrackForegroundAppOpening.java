@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.cwr.androidnativeutil.AppStatisticData;
+import com.cwr.androidnativeutil.Notification;
 import com.cwr.androidnativeutil.PackageUtilities;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
@@ -16,7 +17,13 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class TrackForegroundAppOpening extends AccessibilityService {
-
+    private boolean isWithinTenMinutes(Calendar nowTime, Calendar startTime) {
+        Calendar tenMinutesBeforeStart = (Calendar) startTime.clone();
+        tenMinutesBeforeStart.add(Calendar.MINUTE, -10);
+        return nowTime.after(tenMinutesBeforeStart) && nowTime.before(startTime);
+    }
+    // ฟังก์ชันแจ้งเตือนผู้ใช้
+    
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         if(accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
@@ -40,20 +47,71 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                 if(asd.getAppName(accessibilityEvent.getPackageName().toString()).equals(appName)){
                     Calendar nowTime = Calendar.getInstance();
                     Calendar startTime = Calendar.getInstance();
-                    startTime.set(Calendar.HOUR_OF_DAY, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("from"));
+                    startTime.set(Calendar.HOUR_OF_DAY, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("fromHour"));
+                    startTime.set(Calendar.MINUTE, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("fromMinute"));
+                
                     Calendar endTime = Calendar.getInstance();
-                    endTime.set(Calendar.HOUR_OF_DAY, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("to"));
+                    endTime.set(Calendar.HOUR_OF_DAY, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("toHour"));
+                    endTime.set(Calendar.MINUTE, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("toMinute"));
+                
 
                     Log.d("TrackForegroundAppService", String.valueOf(nowTime.after(startTime)));
                     Log.d("TrackForegroundAppService", String.valueOf(nowTime.before(endTime)));
-
-                    if(nowTime.after(startTime) && nowTime.before(endTime)){
-                        Log.i("TrackForegroundAppService", "You're using " + appName + " during the prohibited period");
+// ฟังก์ชันเพื่อเช็คว่าช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก 10 นาที
+                    Notification notification = new Notification(getApplicationContext());
+                    try{
+                        notification.createNotificationChannel(
+                                "App alert It's not time yet.",
+                                "App Do not disobey",
+                                "This channel is used for Reminds users that it is not yet time to play."
+                        );
+                    } catch (Exception e) {
+                        Log.e("AppStatisticProcessor", "Unable to create notification channel: " + e.getMessage());
                     }
+
+                   
+                    if (nowTime.after(startTime) && nowTime.before(endTime)) {
+                        // แจ้งเตือนผู้ใช้ให้หยุดใช้แอป และบอกว่าช่วงที่ห้ามใช้แอปจะหมดอีกเมื่อไรถ้ากดเข้าใช้แอป
+                        long remainingTime = endTime.getTimeInMillis() - nowTime.getTimeInMillis();
+                        int remainingMinutes = (int) (remainingTime / (1000 * 60));
+                        notification.createAndSendNotification(
+                                "App alert It's not time yet.",
+                                "Master of Time",
+                                configs.getString("mlang") == "th" ? "กรุณาหยุดใช้แอป " + appName + " ช่วงที่ห้ามใช้แอปจะหมดในอีก"+ remainingMinutes + " นาที" :
+                                configs.getString("mlang") == "en" ? "Please stop using " + appName + ". Your app usage prohibited interval will end in " + remainingMinutes + " minutes" :
+                                "",
+                                configs.getString("mlang") == "th" ? "คุณกำลังใช้แอป " + appName + " ในช่วงเวลาที่ถูกห้ามใช้งาน กรุณาหยุดใช้แอปนี้ตอนนี้" :
+                                configs.getString("mlang") == "en" ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
+                                "",
+                                configs.getString("mlang") == "th" ? "คุณกำลังใช้แอป " + appName + " ในช่วงเวลาที่ถูกห้ามใช้งาน กรุณาหยุดใช้แอปนี้ตอนนี้" :
+                                configs.getString("mlang") == "en" ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
+                                ""
+                        );
+                    } else if (isWithinTenMinutes(nowTime, startTime)) {
+                        // แจ้งเตือนผู้ใช้ว่าช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีกกี่ () นาที
+                        long timeUntilStart = startTime.getTimeInMillis() - nowTime.getTimeInMillis();
+                        int minutesUntilStart = (int) (timeUntilStart / (1000 * 60));
+                        notification.createAndSendNotification(
+                                "App alert It's not time yet.",
+                                "Master of Time",
+                                configs.getString("mlang") == "th" ? "คุณควรหยุดใช้แอป " + appName + " ตอนนี้" :
+                                configs.getString("mlang") == "en" ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                "",
+                                configs.getString("mlang") == "th" ? "ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที" :
+                                configs.getString("mlang") == "en" ? "The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                "",
+                                configs.getString("mlang") == "th" ? "คุณควรหยุดใช้แอป " + appName + " ตอนนี้ ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที" :
+                                configs.getString("mlang") == "en" ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                ""
+                        );
+                    }
+                }
+
+
                 }
             }
         }
-    }
+
 
     @Override
     public void onInterrupt() {

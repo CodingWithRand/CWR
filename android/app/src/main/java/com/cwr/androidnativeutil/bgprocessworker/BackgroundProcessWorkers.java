@@ -187,8 +187,21 @@ public class BackgroundProcessWorkers {
                     notification.createAndSendNotification(
                             "AppUsageStatisticDataAlert",
                             "Master of Time",
-                            "Your " + configs.getString("watchInterval") + " total apps usage has reached limited of " + usageRestrictionIntervalValue + " " + intervalUnit,
-                            "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass",
+                            notificationTextsLang == "en" ? "Your " + theAppConfigs.getString("watchInterval") + " apps usage has reached limited of " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit :
+                                notificationTextsLang == "th" ? "ระยะเวลาการใช้งานแอป ต่อ" + 
+                                    theAppConfigs.getString("watchInterval") == "daily" ? "วัน" :
+                                    theAppConfigs.getString("watchInterval") == "weekly" ? "สัปดาห์" :
+                                    theAppConfigs.getString("watchInterval") == "monthly" ? "เดือน" :
+                                    ""
+                                + "ของคุณเกิน " + theAppUsageRestrictionIntervalValue + " " + 
+                                    theAppIntervalUnit == "minute" ? "นาที" :
+                                    theAppIntervalUnit == "hour" ? "ชั่วโมง" :
+                                    theAppIntervalUnit == "day" ? "วัน" :
+                                    ""
+                                :
+                                "",
+                            notificationTextsLang == "en" ? "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass" :
+                            notificationTextsLang == "th" ? "ใช้เวลากับหน้าจอนานเกินไปแล้ว พักกันสักหน่อย คุณควรวางโทรศัพท์มือถือลงแล้วออกไปเดินเล่นด้านนอกบ้านบ้าง" : "",
                             "You've been spending " + usageRestrictionIntervalValue + " " + intervalUnit + " on the screen already. Come on man, get some break!"
                     );
                     Log.i("AppStatisticProcessor", "You've spent " + TotalAppsUsageInPeriod + " milliseconds on screen. Go touch grass now man.");
@@ -234,9 +247,21 @@ public class BackgroundProcessWorkers {
                                 "AppUsageStatisticDataAlert",
                                 "Master of Time",
                                 notificationTextsLang == "en" ? "Your " + theAppConfigs.getString("watchInterval") + " " + appName + " apps usage has reached limited of " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit :
-                                notificationTextsLang == "th" ? "ระยะเวลาการใช้งานแอป " + appName + " ต่อวันของคุณเกิน " + theAppUsageRestrictionIntervalValue + " นาที" :
+                                notificationTextsLang == "th" ? "ระยะเวลาการใช้งานแอป " + appName + " ต่อ" + 
+                                    theAppConfigs.getString("watchInterval") == "daily" ? "วัน" :
+                                    theAppConfigs.getString("watchInterval") == "weekly" ? "สัปดาห์" :
+                                    theAppConfigs.getString("watchInterval") == "monthly" ? "เดือน" :
+                                    ""
+                                + "ของคุณเกิน " + theAppUsageRestrictionIntervalValue + " " + 
+                                    theAppIntervalUnit == "minute" ? "นาที" :
+                                    theAppIntervalUnit == "hour" ? "ชั่วโมง" :
+                                    theAppIntervalUnit == "day" ? "วัน" :
+                                    ""
+                                :
                                 "",
-                                "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass",
+                                
+                            notificationTextsLang == "en" ? "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass" :
+                            notificationTextsLang == "th" ? "ใช้เวลากับหน้าจอนานเกินไปแล้ว พักกันสักหน่อย คุณควรวางโทรศัพท์มือถือลงแล้วออกไปเดินเล่นด้านนอกบ้านบ้าง" : "",
                                 "You've been spending " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit + " on the screen already. Come on man, get some break!"
                         );
                         Log.i("AppStatisticProcessor", "You've spent " + usedTimeInApp + " milliseconds on " + appName + ". Go touch grass now man.");
@@ -262,7 +287,7 @@ public class BackgroundProcessWorkers {
             String RawRetrievedAppUsageStatisticData = getInputData().getString("appStatisticData");
             assert RawProcessorConfigs != null;
             WritableMap ProcessorConfigs = PackageUtilities.JSON_Parse(RawProcessorConfigs);
-            notificationTextsLang = ProcessConfigs.getString("mlang");
+            notificationTextsLang = Objects.requireNonNullElse(ProcessConfigs.getString("mlang"), "en");
             ReadableMapKeySetIterator processorConfigKeys = ProcessorConfigs.keySetIterator();
             while(processorConfigKeys.hasNextKey()) {
                 String processorConfigKey = processorConfigKeys.nextKey();

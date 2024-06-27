@@ -201,9 +201,10 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
     const { width, height } = useWindowDimensions()
     const { themedColor } = useGlobal(); 
     const topicsTextStyle = { color: themedColor.comp }
+    const { lang } = useGlobal();
     return (
         <View style={{ height: height, flex: 1, display: "flex", justifyContent: "space-between" }}>
-            <View><Text style={[styles.title,topicsTextStyle]}>รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน</Text>
+            <View><Text style={[styles.title,topicsTextStyle]}>{langs[lang.lang].guestpage["formatapplicationcollect"]}</Text>
                 <View style={styles.options}>
                     <RadioButton.Android
                         value="total"
@@ -212,7 +213,7 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                         onPress={() => setSelectedGathering('total')}
                         color="#007BFF"
                     />
-                    <Text style={[styles.optionsLabel,topicsTextStyle]}>เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)</Text>
+                    <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].guestpage["allinclusiveapp"]}</Text>
                 </View>
                 <View style={[styles.options, {opacity: 0.5}]}>
                     <RadioButton.Android
@@ -223,9 +224,9 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                         onPress={() => setSelectedGathering('separate')}
                         color="#007BFF"
                     />
-                    <Text style={[styles.optionsLabel,topicsTextStyle]}>เเบบเเยกกัน</Text>
+                    <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].guestpage["separate"]}</Text>
                 </View>
-                <Text style={[styles.title,topicsTextStyle]}>ระยะเวลาที่ใช้ในเเต่ระวัน</Text>
+                <Text style={[styles.title,topicsTextStyle]}>{langs[lang.lang].guestpage["timespentperday"]}</Text>
                 <View style={styles.options}>
                     <RadioButton.Android
                         value="15min"
@@ -234,7 +235,7 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                         onPress={() => setSelectedDuration(15)}
                         color="#007BFF"
                     />
-                    <Text style={[styles.optionsLabel,topicsTextStyle]}>15 นาที</Text>
+                    <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].guestpage["fifteenminutes"]}</Text>
                 </View>
                 <View style={styles.options}>
                     <RadioButton.Android
@@ -244,7 +245,7 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                         onPress={() => setSelectedDuration(30)}
                         color="#007BFF"
                     />
-                    <Text style={[styles.optionsLabel,topicsTextStyle]}>30 นาที</Text>
+                    <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].guestpage["thirtymin"]}</Text>
                 </View>
                 <View style={styles.options}>
                     <RadioButton.Android
@@ -254,7 +255,7 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                         onPress={() => setSelectedDuration(60)}
                         color="#007BFF"
                     />
-                    <Text style={[styles.optionsLabel,topicsTextStyle]}>1 ชั่วโมง</Text>
+                    <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].guestpage["oneh"]}</Text>
                 </View>
                 <View style={styles.options}>
                     <RadioButton.Android
@@ -264,7 +265,7 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                         onPress={() => setSelectedDuration(120)}
                         color="#007BFF"
                     />
-                    <Text style={[styles.optionsLabel,topicsTextStyle]}>2 ชั่วโมง</Text>
+                    <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].guestpage["twoh"]}</Text>
                 </View>
             </View>
 
@@ -303,6 +304,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     const isStrictMode = route.params?.isStrictMode;
     const ranges = route.params?.ranges;
     const durations = route.params?.durations
+    const { lang } = useGlobal();
     const [sliderValue, SetSliderValue] = useState<Array<{ owner: string, duration: number }>>(
         gathering?.name === "separate" && durations && gathering && gathering.body && durations.length <= gathering?.body?.length
         ?
@@ -405,7 +407,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     return (plan === "duration" ? 
     <ScrollView>
         {/*page3*/}
-        <Text style={[styles.title,topicsTextStyle]}>ระยะเวลาในการใช้ต่อ{unit === "daily" ? "วัน" : unit === "monthly" ? "เดือน" : "สัปดาห์"}</Text>
+        <Text style={[styles.title,topicsTextStyle]}>{langs[lang.lang].userpage2["timetouse"]}{unit === "daily" ? "วัน" : unit === "monthly" ? "เดือน" : "สัปดาห์"}</Text>
         {(() => {
             let tempJSXArray: JSX.Element[] = [];
             (gathering?.body || ["ทุกแอปพลิเคชัน"]).forEach((v, i) => {
@@ -480,7 +482,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
 
     </ScrollView> : 
     <ScrollView>
-        <Text style={[styles.title,topicsTextStyle]}>กำหนดช่วงเวลาที่ไม่ให้ใช้เเอปพลิเคชัน</Text>
+        <Text style={[styles.title,topicsTextStyle]}>{langs[lang.lang].userpage2["periodcantuseapp"]}</Text>
         {(() => {
             let tempJSXArray: JSX.Element[] = [];
             (gathering?.body || ["ทุกแอปพลิเคชัน"]).forEach((v, i) => {

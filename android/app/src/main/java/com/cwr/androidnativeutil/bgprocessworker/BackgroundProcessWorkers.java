@@ -122,6 +122,7 @@ public class BackgroundProcessWorkers {
 
     public static class Processor extends Worker {
         private final Context backgroundContext;
+        private String notificationTextsLang = "en";
         public Processor(@NonNull Context context, @NonNull WorkerParameters params){
             super(context, params);
             this.backgroundContext = context;
@@ -232,7 +233,9 @@ public class BackgroundProcessWorkers {
                         notification.createAndSendNotification(
                                 "AppUsageStatisticDataAlert",
                                 "Master of Time",
-                                "Your " + theAppConfigs.getString("watchInterval") + " " + appName + " apps usage has reached limited of " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit,
+                                notificationTextsLang == "en" ? "Your " + theAppConfigs.getString("watchInterval") + " " + appName + " apps usage has reached limited of " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit :
+                                notificationTextsLang == "th" ? "ระยะเวลาการใช้งานแอป " + appName + " ต่อวันของคุณเกิน " + theAppUsageRestrictionIntervalValue + " นาที" :
+                                "",
                                 "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass",
                                 "You've been spending " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit + " on the screen already. Come on man, get some break!"
                         );
@@ -259,6 +262,7 @@ public class BackgroundProcessWorkers {
             String RawRetrievedAppUsageStatisticData = getInputData().getString("appStatisticData");
             assert RawProcessorConfigs != null;
             WritableMap ProcessorConfigs = PackageUtilities.JSON_Parse(RawProcessorConfigs);
+            notificationTextsLang = ProcessConfigs.getString("mlang");
             ReadableMapKeySetIterator processorConfigKeys = ProcessorConfigs.keySetIterator();
             while(processorConfigKeys.hasNextKey()) {
                 String processorConfigKey = processorConfigKeys.nextKey();

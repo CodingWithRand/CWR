@@ -110,6 +110,15 @@ public class BackgroundProcess extends MainNativeUtil{
     }
 
     @ReactMethod
+    public void revokeAppInForegroundEventListener(){
+        SharedPreferences preferences = NativeModuleContext.getSharedPreferences(
+                PreferenceManager.getDefaultSharedPreferencesName(NativeModuleContext),
+                Context.MODE_PRIVATE
+        );
+        preferences.edit().remove("tiaoifConfig").apply();
+    }
+
+    @ReactMethod
     public void isRunningOnBackground(Promise promise){
         if(getCurrentActivity() == null) {
             promise.resolve(true);

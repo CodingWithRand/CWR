@@ -57,9 +57,20 @@ const th = {
 
     },
     userpage2: {
+        timetouse:"ระยะเวลาในการใช้ต่อ",
+        periodcantuseapp:"กำหนดช่วงเวลาที่ไม่ให้ใช้เเอปพลิเคชัน"
 
     },
     guestpage: {
+        formatapplicationcollect:"รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน",
+        allinclusiveapp:"เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)",
+        separate:"เเบบเเยกกัน",
+        timespentperday:"ระยะเวลาที่ใช้ในเเต่ระวัน",
+        fifteenminutes:"15 นาที",
+        thirtymin:"30 นาที",
+        oneh:"1 ชั่วโมง",
+        twoh:"2 ชั่วโมง"
+
 
     },
     permissionRequestPage: {
@@ -139,9 +150,19 @@ const en = {
 
     },
     userpage2: {
+        timetouse:"Period of continued use",
+        periodcantuseapp:"Set a time period during which applications are not used"
 
     },
     guestpage: {
+        formatapplicationcollect:"Format application collect",
+        allinclusiveapp:"All-inclusive plan",
+        separate:"Separate",
+        timespentperday:"Amount of time spent each day",
+        fifteenminutes:"15 minutes",
+        thirtymin:"30 minutes",
+        oneh:"1 hours",
+        twoh:"2 hours"
         
     },
     permissionRequestPage: {

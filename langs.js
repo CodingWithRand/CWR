@@ -48,7 +48,7 @@ const th = {
         datacollectionformat:"รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน",
         Allinclusiveplanbutton:"เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)",
         Separatebutton:"เเบบเเยกกัน",
-        Allowstext:"ให้การใช้เเอปพลิเคชั่นได้บ้าง"
+        Allowstext:"ให้เก็บจากเเอปพลิเคชั่นใดบ้าง"
 
 
 
@@ -100,18 +100,18 @@ const en = {
 
     },
     userpage1: {
-        usageplanningbutton:"Usage planning",
+        usageplanningbutton:"Apps usage planning",
         unitoftimetext:"Unit of time",
         Dailybutton:"Daily",
         weeklybutton:"Weekly",
         Monthlybutton:"Monthly",
-        Planningformattext:"Planing format",
+        Planningformattext:"Planning format",
         Setappperdaytext:"Set the amount of time to spend on each app per day",
-        Settimeusageappperday:"Set time usage app per day",
-        datacollectionformat:"data collecttion format",
-        Allinclusiveplanbutton:"All-inclusive plan",
-        Separatebutton:"Separate",
-        Allowstext:"Allows"
+        Settimeusageappperday:"Set the range of time of using app per day",
+        datacollectionformat:"Apps usage data collecttion format",
+        Allinclusiveplanbutton:"All-inclusively",
+        Separatebutton:"Individually",
+        Allowstext:"Collect usage data from..."
 
 
     },

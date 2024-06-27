@@ -23,7 +23,7 @@ public class TrackForegroundAppOpening extends AccessibilityService {
         return nowTime.after(tenMinutesBeforeStart) && nowTime.before(startTime);
     }
     // ฟังก์ชันแจ้งเตือนผู้ใช้
-
+    
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         if(accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
@@ -49,11 +49,11 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                     Calendar startTime = Calendar.getInstance();
                     startTime.set(Calendar.HOUR_OF_DAY, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("fromHour"));
                     startTime.set(Calendar.MINUTE, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("fromMinute"));
-                    startTime.set(Calendar.SECOND, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("fromSecond"));
+                
                     Calendar endTime = Calendar.getInstance();
                     endTime.set(Calendar.HOUR_OF_DAY, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("toHour"));
                     endTime.set(Calendar.MINUTE, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("toMinute"));
-                    endTime.set(Calendar.SECOND, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("toSecond"));
+                
 
                     Log.d("TrackForegroundAppService", String.valueOf(nowTime.after(startTime)));
                     Log.d("TrackForegroundAppService", String.valueOf(nowTime.before(endTime)));
@@ -69,14 +69,7 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                         Log.e("AppStatisticProcessor", "Unable to create notification channel: " + e.getMessage());
                     }
 
-                    notification.createAndSendNotification(
-                            "App alert It's not time yet.",
-                            "Master of Time",
-                            "Your  + appName +  apps usage has reached limited of " ,
-                            "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass",
-                            "You've been spending  on the screen already. Come on man, get some break!"
-
-                    );
+                   
                     if (nowTime.after(startTime) && nowTime.before(endTime)) {
                         // แจ้งเตือนผู้ใช้ให้หยุดใช้แอป และบอกว่าช่วงที่ห้ามใช้แอปจะหมดอีกเมื่อไรถ้ากดเข้าใช้แอป
                         long remainingTime = endTime.getTimeInMillis() - nowTime.getTimeInMillis();
@@ -84,23 +77,32 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                         notification.createAndSendNotification(
                                 "App alert It's not time yet.",
                                 "Master of Time",
-                                "กรุณาหยุดใช้แอป ช่วงที่ห้ามใช้แอปจะหมดในอีก"+ remainingMinutes + " นาที",
-                                "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass",
-                                "You've been spending  on the screen already. Come on man, get some break!"
-
+                                configs.getString("mlang") == "th" ? "กรุณาหยุดใช้แอป " + appName + " ช่วงที่ห้ามใช้แอปจะหมดในอีก"+ remainingMinutes + " นาที" :
+                                configs.getString("mlang") == "en" ? "Please stop using " + appName + ". Your app usage prohibited interval will end in " + remainingMinutes + " minutes" :
+                                "",
+                                configs.getString("mlang") == "th" ? "คุณกำลังใช้แอป " + appName + " ในช่วงเวลาที่ถูกห้ามใช้งาน กรุณาหยุดใช้แอปนี้ตอนนี้" :
+                                configs.getString("mlang") == "en" ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
+                                "",
+                                configs.getString("mlang") == "th" ? "คุณกำลังใช้แอป " + appName + " ในช่วงเวลาที่ถูกห้ามใช้งาน กรุณาหยุดใช้แอปนี้ตอนนี้" :
+                                configs.getString("mlang") == "en" ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
+                                ""
                         );
                     } else if (isWithinTenMinutes(nowTime, startTime)) {
                         // แจ้งเตือนผู้ใช้ว่าช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีกกี่ () นาที
                         long timeUntilStart = startTime.getTimeInMillis() - nowTime.getTimeInMillis();
                         int minutesUntilStart = (int) (timeUntilStart / (1000 * 60));
-                        String message = "ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที";
                         notification.createAndSendNotification(
                                 "App alert It's not time yet.",
                                 "Master of Time",
-                                "ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก "+ minutesUntilStart + " นาที",
-                                "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass",
-                                "You've been spending  on the screen already. Come on man, get some break!"
-
+                                configs.getString("mlang") == "th" ? "คุณควรหยุดใช้แอป " + appName + " ตอนนี้" :
+                                configs.getString("mlang") == "en" ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                "",
+                                configs.getString("mlang") == "th" ? "ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที" :
+                                configs.getString("mlang") == "en" ? "The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                "",
+                                configs.getString("mlang") == "th" ? "คุณควรหยุดใช้แอป " + appName + " ตอนนี้ ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที" :
+                                configs.getString("mlang") == "en" ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                ""
                         );
                     }
                 }

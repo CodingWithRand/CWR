@@ -1,9 +1,9 @@
-import { Text, View, TouchableHighlight, useWindowDimensions, StyleSheet, Switch, TouchableOpacity, NativeModules, ScrollView, Pressable } from "react-native";
+import { Text, View, TouchableHighlight, useWindowDimensions, StyleSheet, Switch, TouchableOpacity, NativeModules, ScrollView, Pressable, Image } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteStackParamList } from "../../scripts/native-stack-navigation-types";
 import { useEffect, useRef, useState } from "react";
 import { RadioButton } from "react-native-paper";
-import MultiSelect from "react-native-multiple-select";
+import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import Slider from "@react-native-community/slider";
 import { RouteProp } from "@react-navigation/native";
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -11,6 +11,7 @@ import moment from "moment";
 import { useGlobal } from "../../scripts/global";
 import { showMessage } from "react-native-flash-message";
 import { RangeObject } from "../../scripts/native-stack-navigation-types";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import langs from "../../../langs";
 
 const { AppStatisticData } = NativeModules
@@ -21,10 +22,11 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
     const gathering = route.params?.gathering;
     const isStrictMode = route.params?.isStrictMode;
     const ranges = route.params?.ranges;
+    const durations = route.params?.durations;
     const [selectedUnit, setSelectedUnit] = useState(unit || 'daily');
     const [selectedPlan, setSelectedPlan] = useState(plan || "duration");
     const [selectedGathering, setSelectedGathering] = useState(gathering?.name || "total");
-    const [selectedItems, setSelectedItems] = useState<string[]>([])
+    const [selectedItems, setSelectedItems] = useState<string[]>(gathering?.body || [])
     const [selectStictMode, setSelectStictMode] = useState(isStrictMode || false)
     const [appNamesArrey, setAppNamesArrey] = useState<object[]>([])
     const { themedColor } = useGlobal();
@@ -51,6 +53,9 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
         setSelectedItems(selectedItems);
     };
 
+    useEffect(() => {
+        if(selectedGathering === "total") setSelectedItems([])
+    }, [selectedGathering])
 
     return (
         <ScrollView>
@@ -139,23 +144,19 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                 <>
                     <Text style={[styles.subtitle,topicsTextStyle]}>ให้การใช้เเอปพลิเคชั่นได้บ้าง</Text>
                     <View style={{ margin: 10 }}>
-                        <MultiSelect
+                        {/* <a href="https://www.flaticon.com/free-icons/tick" title="tick icons">Tick icons created by Maxim Basinski Premium - Flaticon</a> */}
+                        {/* <a href="https://www.flaticon.com/free-icons/close" title="close icons">Close icons created by Pixel perfect - Flaticon</a> */}
+                        {/* <a href="https://www.flaticon.com/free-icons/triangle" title="triangle icons">Triangle icons created by Dave Gandy - Flaticon</a> */}
+                        <SectionedMultiSelect
                             items={appNamesArrey}
                             uniqueKey="id"
                             onSelectedItemsChange={onSelectedItemsChange}
                             selectedItems={selectedItems}
-                            selectText="Pick Items"
-                            searchInputPlaceholderText="Search Items..."
-                            tagRemoveIconColor="#CCC"
-                            tagBorderColor="#CCC"
-                            tagTextColor="#CCC"
-                            selectedItemTextColor="#CCC"
-                            selectedItemIconColor="#CCC"
-                            itemTextColor="#000"
-                            displayKey="name"
-                            searchInputStyle={{ color: '#CCC' }}
-                            submitButtonColor="#48d22b"
-                            submitButtonText="Submit"
+                            IconRenderer={Icon}
+                            searchIconComponent={<Image source={require("../../imgs/search-symbol.png")} style={{ width: 30, height: 30 }} />}
+                            selectedIconComponent={<Image source={require("../../imgs/check.png")} style={{ width: 30, height: 30 }} />}
+                            selectToggleIconComponent={<Image source={require("../../imgs/arrow-down.png")} style={{ width: 15, height: 15 }} />}
+                            chipRemoveIconComponent={<Image source={require("../../imgs/close.png")} style={{ width: 10, height: 10 }} />}
                         />
                     </View>
                 </>
@@ -166,16 +167,27 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                 <Text style={[styles.title,topicsTextStyle]}>Stirct Mode</Text>
                 <Switch onValueChange={() => setSelectStictMode(prevSelectStictMode => !prevSelectStictMode)} value={selectStictMode} />
             </View>
-            <TouchableOpacity style={{ height: 50 }} onPress={() => navigation.replace("UserDashboard2", {
-                unit: selectedUnit,
-                plan: selectedPlan,
-                gathering: {
-                    name: selectedGathering,
-                    body: selectedItems.length > 0 ? selectedItems : undefined
-                },
-                ranges: ranges,
-                isStrictMode: selectStictMode
-            })}>
+            <TouchableOpacity style={{ height: 100 }} onPress={() => {
+                if(selectedGathering === "separate" && selectedItems.length === 0){
+                    showMessage({
+                        message: "Please select at least 1 app to proceed!",
+                        type: "danger",
+                        icon: "danger"
+                    })
+                    return
+                }
+                navigation.replace("UserDashboard2", {
+                    unit: selectedUnit,
+                    plan: selectedPlan,
+                    gathering: {
+                        name: selectedGathering,
+                        body: selectedItems.length > 0 ? selectedItems : undefined
+                    },
+                    ranges: ranges,
+                    durations: durations, 
+                    isStrictMode: selectStictMode
+                })
+            }}>
                 <Text style={[{ fontSize: 50, textAlign: "center" }, topicsTextStyle]}>→</Text>
             </TouchableOpacity>
         </ScrollView>
@@ -282,8 +294,26 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     const gathering = route.params?.gathering;
     const isStrictMode = route.params?.isStrictMode;
     const ranges = route.params?.ranges;
-    
-    const [sliderValue, SetSliderValue] = useState(Array.from((gathering?.body || ["ทุกแอปพลิเคชัน"]), () => 0));
+    const durations = route.params?.durations
+    const [sliderValue, SetSliderValue] = useState<Array<{ owner: string, duration: number }>>(
+        gathering?.name === "separate" && durations && gathering && gathering.body && durations.length <= gathering?.body?.length
+        ?
+            Array.from((gathering?.body || ["ทุกแอปพลิเคชัน"]), (v, i) => {
+                if(durations.some(c => c.owner === v)) return { owner: v, duration: durations.find(c => c.owner === v)?.duration || 0 }
+                else return { owner: v, duration: 0 }
+            }).filter(items => items !== undefined) as Array<{ owner: string, duration: number }>
+        :
+        gathering?.name === "separate" && durations && gathering && gathering.body && durations.length > gathering?.body?.length
+        ?
+            Array.from(durations, (v) => {
+                if((gathering?.body || ["ทุกแอปพลิเคชัน"]).some(appName => appName === v.owner)) return { owner: v.owner, duration: v.duration }
+                else return undefined
+            }).filter(items => items !== undefined) as Array<{ owner: string, duration: number }>
+        :
+        Array.from((gathering?.body || ["ทุกแอปพลิเคชัน"]), (v) => { 
+            return { owner: v, duration: 0 } 
+        })
+    );
     const [sliderMaximumValue, SetSliderMaximumValue] = useState(Array.from((gathering?.body || ["ทุกแอปพลิเคชัน"]), () => constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`]));
     const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
     const [isEndTimePickerVisible, setEndTimePickerVisibility] = useState(false);
@@ -294,6 +324,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     const isPickingEndTimeN = useRef<number>();
     const { themedColor } = useGlobal();
     const topicsTextStyle = {color : themedColor.comp}
+
     const showStartTimePicker = (index: number) => {
         isPickingStartTimeN.current = index;
         setStartTimePickerVisibility(true);
@@ -352,8 +383,11 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
 
     useEffect(() => {
         SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => {
-            if (prevSliderValue[index] > sliderMaximumValue[index]) {
-                return sliderMaximumValue[index]
+            if (prevSliderValue[index].duration > sliderMaximumValue[index]) {
+                return {
+                    ...prevSliderValue[index],
+                    duration: sliderMaximumValue[index]
+                }
             } else {
                 return prevSliderValue[index]
             }
@@ -370,14 +404,14 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
                 tempJSXArray.push(
                     <View key={i}>
                         <Text style={[{ fontSize: 20, fontWeight: "bold", marginHorizontal: 15, marginTop: 10 }, topicsTextStyle]}>{v}</Text>
-                        <Text style={[{ marginHorizontal: 15, textAlign: "center", fontWeight: "bold" }, topicsTextStyle]}>{Math.floor(sliderValue[i] / 60) !== 0 ? Math.floor(sliderValue[i] / 60) + " ชั่วโมง " : ""}{sliderValue[i] % 60 !== 0 ? sliderValue[i] % 60 + " นาที" : ""}</Text>
-                        <Slider maximumValue={constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`]} upperLimit={sliderMaximumValue[i]} minimumValue={0} step={1} value={sliderValue[i]} onValueChange={function (slidervalue) {
-                            SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => index === i ? slidervalue : val))
+                        <Text style={[{ marginHorizontal: 15, textAlign: "center", fontWeight: "bold" }, topicsTextStyle]}>{Math.floor(sliderValue[i].duration / 60) !== 0 ? Math.floor(sliderValue[i].duration / 60) + " ชั่วโมง " : ""}{sliderValue[i].duration % 60 !== 0 ? sliderValue[i].duration % 60 + " นาที" : ""}</Text>
+                        <Slider maximumValue={constraint[`PER_${unit === "daily" ? "DAY" : unit === "monthly" ? "MONTH" : "WEEK"}`]} upperLimit={sliderMaximumValue[i]} minimumValue={0} step={1} value={sliderValue[i].duration} onValueChange={function (slidervalue) {
+                            SetSliderValue(prevSliderValue => prevSliderValue.map((val, index) => index === i ? {...val, duration: slidervalue} : val))
                             SetSliderMaximumValue(prevSliderMax => {
-                                if (slidervalue > sliderValue[i]) {
-                                    return prevSliderMax.map((val, index) => index !== i ? val - (slidervalue - sliderValue[i]) : val)
-                                } else if (slidervalue < sliderValue[i]) {
-                                    return prevSliderMax.map((val, index) => index !== i ? val + (sliderValue[i] - slidervalue) : val)
+                                if (slidervalue > sliderValue[i].duration) {
+                                    return prevSliderMax.map((val, index) => index !== i ? val - (slidervalue - sliderValue[i].duration) : val)
+                                } else if (slidervalue < sliderValue[i].duration) {
+                                    return prevSliderMax.map((val, index) => index !== i ? val + (sliderValue[i].duration - slidervalue) : val)
                                 }
                                 else {
                                     return prevSliderMax
@@ -402,7 +436,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
                 name: gathering?.name || "total",
                 body: gathering?.body || ["ทุกแอปพลิเคชัน"]
             },
-            ranges: range,
+            durations: sliderValue,
             isStrictMode: isStrictMode || false,
         }
         )}>

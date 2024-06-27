@@ -73,6 +73,7 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
       } catch (e) {
           if((e as Error).message === "SIGN_IN_REQUIRED" && auth().currentUser){
               await auth().signOut();
+              navigation.goBack();
               navigation.replace("Registration");
           }
           console.error((e as Error).message);
@@ -84,10 +85,11 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
           <TouchableOpacity onPress={() =>
             Alert.alert(
               "Info",
-              `You're about to sign out. ${guest && "As being a guest user, your account will be deleted, and you won't be able to sign in again."} Do you confirm this operation?`,
+              `You're about to sign out. ${guest ? "As being a guest user, your account will be deleted, and you won't be able to sign in again." : ""} Do you confirm this operation?`,
               [
                 { text: "Yes, I'd like to sign out", onPress: guest ? async () => {
                   await auth().currentUser?.delete();
+                  navigation.goBack();
                   navigation.replace("Registration");
                 } : promptSignOut },
                 { text: "Cancel", style: "cancel" },

@@ -9,8 +9,10 @@ import android.media.AudioManager;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
+import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -27,15 +29,18 @@ public class MainNativeUtil extends ReactContextBaseJavaModule {
 
     protected final Context NativeModuleContext;
     protected final ContentResolver NativeModuleContentResolver;
+    protected final Activity NativeModuleActivity;
     public MainNativeUtil(ReactApplicationContext context){
         super(context);
         this.NativeModuleContext = context;
         this.NativeModuleContentResolver = context.getContentResolver();
+        this.NativeModuleActivity = context.getCurrentActivity();
     }
 
     public MainNativeUtil(Context context){
         this.NativeModuleContext = context;
         this.NativeModuleContentResolver = context.getContentResolver();
+        this.NativeModuleActivity = getCurrentActivity();
     }
 
     @NonNull

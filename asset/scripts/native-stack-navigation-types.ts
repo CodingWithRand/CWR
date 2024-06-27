@@ -10,6 +10,12 @@ export type RangeObject = {
     }
 }
 
+type DurationObject = {
+    owner: string,
+    // in minute
+    duration: number
+}
+
 export type RouteStackParamList = {
     Credit: undefined,
     Registration: undefined,
@@ -21,7 +27,8 @@ export type RouteStackParamList = {
             name: string,
             body?: string[]
         },
-        ranges?: RangeObject[]
+        ranges?: RangeObject[],
+        durations?: DurationObject[],
         isStrictMode: boolean
     }, 
     GuestDashboard: undefined, 
@@ -33,6 +40,7 @@ export type RouteStackParamList = {
             body?: string[]
         },
         ranges?: RangeObject[],
+        durations?: DurationObject[],
         isStrictMode: boolean
     },
     Menu: {

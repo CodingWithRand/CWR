@@ -3,15 +3,24 @@ package com.cwr.androidnativeutil;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Process;
 import android.provider.Settings;
 import android.view.accessibility.AccessibilityManager;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
+
+import java.util.Objects;
 
 public class PermissionCheck extends MainNativeUtil {
     public PermissionCheck(ReactApplicationContext context) {
@@ -50,6 +59,17 @@ public class PermissionCheck extends MainNativeUtil {
         promise.resolve(isServiceEnabled);
     }
 
+    @ReactMethod
+    public void checkForNotificationPermission(Promise promise) {
+        String permission = "android.permission.POST_NOTIFICATIONS";
+        int permissionCheck = ContextCompat.checkSelfPermission(NativeModuleContext, permission);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            promise.resolve(true);
+        } else {
+            promise.resolve(false);
+        }
+    }
+
     private void requestSettingsPermission(String permission){
         Intent intent = new Intent(permission);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -69,5 +89,19 @@ public class PermissionCheck extends MainNativeUtil {
     @ReactMethod
     public void requestAccessibilityServicePermission() {
         requestSettingsPermission(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+    }
+
+    @ReactMethod
+    public void requestNotificationPermission() {
+        Intent intent;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, NativeModuleContext.getPackageName());
+        }else{
+            intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + NativeModuleContext.getPackageName()));
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        NativeModuleContext.startActivity(intent);
     }
 }

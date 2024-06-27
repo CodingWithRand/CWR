@@ -27,14 +27,16 @@ const th = {
             haveCreatedAccountWithGoogle: "คุณเคยสร้างบัญชีผู้ใช้ด้วย Google แล้ว ดังนั้นรหัสผ่านของบัญชีนั้นจึงไม่ได้ถูกตั้งค่าไว้ โปรดลงทะเบียนด้วยบัญชี Google ของคุณแทนโดยเลือกกดปุ่มด้านบน",
         }
     },
+    headerTitles: {
+        guestpage: "แผงควบคุมของผู้เยี่ยมชม",
+        userpage: "แผงควบคุมของผู้ใช้",
+    },
     menu: {
         licensebutton:"การอนุญาต",
         signoutbutton:"ออกจากระบบ",
         languagetext:"ภาษา",
         englishtext:"ภาษาอังกฤษ",
         thaitext:"ภาษาไทย"
-        
-
     },
     userpage1: {
 
@@ -44,6 +46,24 @@ const th = {
     },
     guestpage: {
 
+    },
+    permissionRequestPage: {
+        header: "การขออนุญาตในการเข้าถึงของแอปพลิเคชัน",
+        description: "แอปพลิเคชันจำเป็นต้องได้รับอนุญาตต่อไปนี้เพื่อรักษาฟังก์ชันการทำงานของแอป นี่คือคำอธิบาย",
+        titles: {
+            writeSetting: "การแก้ไขการตั้งค่าระบบของตัวอุปกรณ์",
+            appUsageStats: "การขอข้อมูลสถิติการใช้แอปพลิเคชัน",
+            accessibilityService: "การใช้งาน Accessibility Service",
+            notifications: "การส่งการแจ้งเตือนแบบพุช"
+        },
+        explanations: {
+            writeSetting: "การอนุญาตนี้จำเป็นสำหรับการแก้ไขการตั้งค่าระบบ การอนุญาตนี้เกี่ยวข้องกับ \"โหมดเข้มงวด\" เป็นหลัก ซึ่งจะเปลี่ยนแปลงเสียงและความสว่างของอุปกรณ์ ในการตรวจสอบแต่ละครั้งว่าการใช้งานแอปเกินขีดจำกัด เมื่อเปิดการตั้งค่านี้",
+            appUsageStats: "การอนุญาตนี้จำเป็นสำหรับการตรวจสอบการใช้งานแอปพลิเคชันเป็นหลัก และจะถูกเปรียบเทียบกับขีดจำกัดที่ผู้ใช้กำหนด การใช้งานแอปพลิเคชันจะถูกตรวจสอบทุกๆ 1 นาทีหรือทุกครั้งที่ผู้ใช้เปิดแอปพลิเคชัน",
+            accessibilityService: "การอนุญาตนี้จำเป็นสำหรับการเปิดใช้งาน Accessibility Service ซึ่งใช้ในการติดตามกิจกรรมของผู้ใช้บนอุปกรณ์ ในกรณีนี้ เราจะใช้เพื่อติดตามว่าผู้ใช้เปิดแอปใหม่หรือไม่",
+            notifications: "การอนุญาตนี้จำเป็นพื้นฐานในการส่งการแจ้งเตือนแบบพุชเมื่อเตือนผู้ใช้เกี่ยวกับเวลาหน้าจอ"
+        },
+        conclusion: "กรุณาอนุญาตให้แอปพลิเคชันเข้าถึงสิทธิ์เหล่านี้ก่อนเข้าใช้งาน",
+        permitBtn: "อนุญาตทั้งหมด"
     }
 }
 
@@ -76,13 +96,16 @@ const en = {
             haveCreatedAccountWithGoogle: "You have created an account with Google before. Therefore, your password has not been set. Please sign in with your google account instead by choosing the above option."
         }
     },
+    headerTitles: {
+        guestpage: "Guest Dashboard",
+        userpage: "User Dashboard",
+    },
     menu: {
         licensebutton:"License",
         signoutbutton:"Signout",
         languagetext:"Language",
         englishtext:"English",
         thaitext:"Thai"
-
     },
     userpage1: {
 
@@ -92,6 +115,24 @@ const en = {
     },
     guestpage: {
         
+    },
+    permissionRequestPage: {
+        header: "Permissions Request",
+        description: "The following permissions are required in order to maintain the app functionalities. Here are the explanations",
+        titles: {
+            writeSetting: "System Write Settings",
+            appUsageStats: "Applications Usage Stats Query",
+            accessibilityService: "Using Accessibility Service",
+            notifications: "Sending Notifications"
+        },
+        explanations: {
+            writeSetting: "This permission is required to modify the system settings. This permission mainly relates to the \"Strict Mode\", which will alter the device audio and brightness each check that the app usage exceeds the limit, when this setting is switched on.",
+            appUsageStats: "This permission is mainly required to monitor the usage of the application, and will be compared with the limit set by the user. The usage of the application will be queried every 1 minute or every time user open an application.",
+            accessibilityService: "This permission is required to enable the accessibility service, which is used for tracking user activity on the device. In this case, we use it to track whether the user is open a new app or not",
+            notifications: "This permission is fundamentally required to send push notifications when reminding the user about their screen time"
+        },
+        conclusion: "Please grant these permissions before continue using the app",
+        permitBtn: "Grant all permissions"
     }
 }
 

@@ -11,7 +11,8 @@ import { GUESTPAGE, UserPage1, UserPage2} from "./asset/components/index/ui";
 import FlashMessage from 'react-native-flash-message';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { RouteStackParamList } from './asset/scripts/native-stack-navigation-types';
-import { horizontalScale, verticalScale } from './asset/scripts/Metric';
+import { horizontalScale } from './asset/scripts/Metric';
+import { RouteProp } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth"
 import langs from './langs';
 
@@ -29,7 +30,7 @@ function ToolBarBTN({ navigation, guest }: { navigation: any, guest?: boolean })
   )
 }
 
-function ToolBar({ navigation, guest }: { navigation: NativeStackNavigationProp<RouteStackParamList, "Menu">, guest?: boolean }) {
+function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<RouteStackParamList, "Menu">, route: RouteProp<RouteStackParamList, "Menu"> }) {
   const isDark = useColorScheme() === 'dark';
   const { width, height } = useWindowDimensions();
   const { themedColor, lang } = useGlobal();
@@ -73,7 +74,7 @@ function ToolBar({ navigation, guest }: { navigation: NativeStackNavigationProp<
       <Pressable style={{ width: width, height: height }} onPress={() => navigation.goBack()} />
       <View style={{ position: "absolute", zIndex: 10, opacity: 1, top: 0, right: 0, width: horizontalScale(200, width), height: height, backgroundColor: isDark ? "#080808" : "#f8f8f8", elevation: 5 }}>
         <View style={[mutableStyles.row, { columnGap: 10, padding: 15 }]}>
-          <Image source={auth().currentUser?.photoURL ? { uri: auth().currentUser?.photoURL } : isDark ? require("./asset/imgs/dark-account.png") : require("./asset/imgs/light-account.png")} style={{ borderRadius: 999 }} width={iconSize} height={iconSize}/>
+          <Image source={auth().currentUser?.photoURL ? { uri: auth().currentUser?.photoURL } : isDark ? require("./asset/imgs/dark-account.png") : require("./asset/imgs/light-account.png")} style={{ borderRadius: 999, width: iconSize, height: iconSize }} />
           <Text style={{ fontSize: menuFontSize, color: "deepskyblue" }}>{auth().currentUser?.displayName}</Text>
         </View>
         <View style={mutableStyles.menuBtn}>
@@ -100,8 +101,8 @@ function ToolBar({ navigation, guest }: { navigation: NativeStackNavigationProp<
               require("./asset/imgs/err.png")
             } style={{ width: iconSize, height: iconSize }}/>
             <Text style={mutableStyles.menuBtnText}>{
-              lang.lang === "en" ? "English" :
-              lang.lang === "th" ? "Thai" :
+              lang.lang === "en" ? langs[lang.lang].menu["englishtext"] :
+              lang.lang === "th" ? langs[lang.lang].menu["thaitext"] :
               ""
             }</Text>
             <Modal visible={showModal} animationType="fade">
@@ -118,9 +119,31 @@ function ToolBar({ navigation, guest }: { navigation: NativeStackNavigationProp<
             </Modal>
           </TouchableOpacity>
         </View>
-        <SignOutBTN navigation={navigation} guest={guest}/>
+        <SignOutBTN navigation={navigation} guest={route.params.guest}/>
       </View>
     </>
+  )
+}
+
+function Pages(){
+  const isDarkMode = useColorScheme() === 'dark';
+  const titleBarStyle = {
+    headerStyle: { backgroundColor: isDarkMode ? "black" : "white" },
+    headerTintColor: isDarkMode ? Colors.lighter : Colors.darker
+  }
+  const { lang } = useGlobal();
+
+  return(
+    <NavigationContainer theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: "transparent" } }}>
+      <Stack.Navigator screenOptions={{ presentation: "transparentModal" }}>
+        <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
+        <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
+        <Stack.Screen name="GuestDashboard" component={GUESTPAGE} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.guestpage, headerRight: () => <ToolBarBTN navigation={navigation} guest/> })}/>
+        <Stack.Screen name="UserDashboard" component={UserPage1} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.userpage, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
+        <Stack.Screen name="UserDashboard2" component={UserPage2} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.userpage, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
+        <Stack.Screen name="Menu" component={ToolBar} options={{ headerShown: false }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
 
@@ -130,10 +153,6 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1
   };
-  const titleBarStyle = {
-    headerStyle: { backgroundColor: isDarkMode ? "black" : "white" },
-    headerTintColor: isDarkMode ? Colors.lighter : Colors.darker
-  }
 
   return(
     <Global>
@@ -143,16 +162,7 @@ function App(): React.JSX.Element {
           backgroundColor={backgroundStyle.backgroundColor}
         />
 
-        <NavigationContainer theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: "transparent" } }}>
-          <Stack.Navigator screenOptions={{ presentation: "transparentModal" }}>
-            <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
-            <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
-            <Stack.Screen name="GuestDashboard" component={GUESTPAGE} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <SignOutBTN navigation={navigation} guest/> })}/>
-            <Stack.Screen name="UserDashboard" component={UserPage1} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
-            <Stack.Screen name="UserDashboard2" component={UserPage2} options={({ navigation }) => ({...titleBarStyle, headerRight: () => <SignOutBTN navigation={navigation}/> })} />
-            <Stack.Screen name="Menu" component={ToolBar} options={{ headerShown: false }}/>
-          </Stack.Navigator>
-        </NavigationContainer>
+        <Pages/>      
         <FlashMessage/>
       </SafeAreaView>
     </Global>

@@ -1,9 +1,6 @@
 package com.cwr.androidnativeutil.bgprocessworker;
 
-import android.app.ActivityManager;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,16 +13,13 @@ import com.cwr.androidnativeutil.Notification;
 import com.cwr.androidnativeutil.PackageUtilities;
 import com.cwr.androidnativeutil.settings.Audio;
 import com.cwr.androidnativeutil.settings.Brightness;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
 
 import org.json.JSONException;
 
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -187,21 +181,20 @@ public class BackgroundProcessWorkers {
                     notification.createAndSendNotification(
                             "AppUsageStatisticDataAlert",
                             "Master of Time",
-                            notificationTextsLang == "en" ? "Your " + theAppConfigs.getString("watchInterval") + " apps usage has reached limited of " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit :
-                                notificationTextsLang == "th" ? "ระยะเวลาการใช้งานแอป ต่อ" + 
-                                    theAppConfigs.getString("watchInterval") == "daily" ? "วัน" :
-                                    theAppConfigs.getString("watchInterval") == "weekly" ? "สัปดาห์" :
-                                    theAppConfigs.getString("watchInterval") == "monthly" ? "เดือน" :
+                            Objects.equals(notificationTextsLang, "en") ? "Your " + configs.getString("watchInterval") + " apps usage has reached limited of " + usageRestrictionIntervalValue + " " + intervalUnit :
+                            Objects.equals(notificationTextsLang, "th") ? "ระยะเวลาการใช้งานแอป ต่อ" + (
+                                    Objects.equals(configs.getString("watchInterval"), "daily") ? "วัน" :
+                                    Objects.equals(configs.getString("watchInterval"), "weekly") ? "สัปดาห์" :
+                                    Objects.equals(configs.getString("watchInterval"), "monthly") ? "เดือน" :
                                     ""
-                                + "ของคุณเกิน " + theAppUsageRestrictionIntervalValue + " " + 
-                                    theAppIntervalUnit == "minute" ? "นาที" :
-                                    theAppIntervalUnit == "hour" ? "ชั่วโมง" :
-                                    theAppIntervalUnit == "day" ? "วัน" :
+                            ) + "ของคุณเกิน " + usageRestrictionIntervalValue + " " + (
+                                    Objects.equals(intervalUnit, "minute") ? "นาที" :
+                                    Objects.equals(intervalUnit, "hour") ? "ชั่วโมง" :
+                                    Objects.equals(intervalUnit, "day") ? "วัน" :
                                     ""
-                                :
-                                "",
-                            notificationTextsLang == "en" ? "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass" :
-                            notificationTextsLang == "th" ? "ใช้เวลากับหน้าจอนานเกินไปแล้ว พักกันสักหน่อย คุณควรวางโทรศัพท์มือถือลงแล้วออกไปเดินเล่นด้านนอกบ้านบ้าง" : "",
+                            ) : "",
+                            Objects.equals(notificationTextsLang, "en") ? "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass" :
+                            Objects.equals(notificationTextsLang, "th") ? "ใช้เวลากับหน้าจอนานเกินไปแล้ว พักกันสักหน่อย คุณควรวางโทรศัพท์มือถือลงแล้วออกไปเดินเล่นด้านนอกบ้านบ้าง" : "",
                             "You've been spending " + usageRestrictionIntervalValue + " " + intervalUnit + " on the screen already. Come on man, get some break!"
                     );
                     Log.i("AppStatisticProcessor", "You've spent " + TotalAppsUsageInPeriod + " milliseconds on screen. Go touch grass now man.");
@@ -246,22 +239,21 @@ public class BackgroundProcessWorkers {
                         notification.createAndSendNotification(
                                 "AppUsageStatisticDataAlert",
                                 "Master of Time",
-                                notificationTextsLang == "en" ? "Your " + theAppConfigs.getString("watchInterval") + " " + appName + " apps usage has reached limited of " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit :
-                                notificationTextsLang == "th" ? "ระยะเวลาการใช้งานแอป " + appName + " ต่อ" + 
-                                    theAppConfigs.getString("watchInterval") == "daily" ? "วัน" :
-                                    theAppConfigs.getString("watchInterval") == "weekly" ? "สัปดาห์" :
-                                    theAppConfigs.getString("watchInterval") == "monthly" ? "เดือน" :
+                                Objects.equals(notificationTextsLang, "en") ? "Your " + theAppConfigs.getString("watchInterval") + " " + appName + " apps usage has reached limited of " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit :
+                                Objects.equals(notificationTextsLang, "th") ? "ระยะเวลาการใช้งานแอป " + appName + " ต่อ" + (
+                                    Objects.equals(theAppConfigs.getString("watchInterval"), "daily") ? "วัน" :
+                                    Objects.equals(theAppConfigs.getString("watchInterval"), "weekly") ? "สัปดาห์" :
+                                    Objects.equals(theAppConfigs.getString("watchInterval"), "monthly") ? "เดือน" :
                                     ""
-                                + "ของคุณเกิน " + theAppUsageRestrictionIntervalValue + " " + 
-                                    theAppIntervalUnit == "minute" ? "นาที" :
-                                    theAppIntervalUnit == "hour" ? "ชั่วโมง" :
-                                    theAppIntervalUnit == "day" ? "วัน" :
+                                ) + "ของคุณเกิน " + theAppUsageRestrictionIntervalValue + " " + (
+                                    Objects.equals(theAppIntervalUnit, "minute") ? "นาที" :
+                                    Objects.equals(theAppIntervalUnit, "hour") ? "ชั่วโมง" :
+                                    Objects.equals(theAppIntervalUnit, "day") ? "วัน" :
                                     ""
-                                :
-                                "",
-                                
-                            notificationTextsLang == "en" ? "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass" :
-                            notificationTextsLang == "th" ? "ใช้เวลากับหน้าจอนานเกินไปแล้ว พักกันสักหน่อย คุณควรวางโทรศัพท์มือถือลงแล้วออกไปเดินเล่นด้านนอกบ้านบ้าง" : "",
+                                ) : "",
+
+                                Objects.equals(notificationTextsLang, "en") ? "Enough screen time for today, let's have some rest. You should put your phone down and go touch grass" :
+                                Objects.equals(notificationTextsLang, "th") ? "ใช้เวลากับหน้าจอนานเกินไปแล้ว พักกันสักหน่อย คุณควรวางโทรศัพท์มือถือลงแล้วออกไปเดินเล่นด้านนอกบ้านบ้าง" : "",
                                 "You've been spending " + theAppUsageRestrictionIntervalValue + " " + theAppIntervalUnit + " on the screen already. Come on man, get some break!"
                         );
                         Log.i("AppStatisticProcessor", "You've spent " + usedTimeInApp + " milliseconds on " + appName + ". Go touch grass now man.");
@@ -287,7 +279,7 @@ public class BackgroundProcessWorkers {
             String RawRetrievedAppUsageStatisticData = getInputData().getString("appStatisticData");
             assert RawProcessorConfigs != null;
             WritableMap ProcessorConfigs = PackageUtilities.JSON_Parse(RawProcessorConfigs);
-            notificationTextsLang = Objects.requireNonNullElse(ProcessConfigs.getString("mlang"), "en");
+            notificationTextsLang = Objects.requireNonNullElse(ProcessorConfigs.getString("mlang"), "en");
             ReadableMapKeySetIterator processorConfigKeys = ProcessorConfigs.keySetIterator();
             while(processorConfigKeys.hasNextKey()) {
                 String processorConfigKey = processorConfigKeys.nextKey();

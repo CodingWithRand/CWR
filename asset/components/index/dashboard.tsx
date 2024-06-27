@@ -1,4 +1,4 @@
-import { Text, View, TouchableHighlight, useWindowDimensions, StyleSheet, Switch, TouchableOpacity, NativeModules, ScrollView, Pressable, Image } from "react-native";
+import { Text, View, TouchableHighlight, useWindowDimensions, StyleSheet, Switch, TouchableOpacity, NativeModules, ScrollView, Pressable, Image, Alert } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteStackParamList } from "../../scripts/native-stack-navigation-types";
 import { useEffect, useRef, useState } from "react";
@@ -197,7 +197,7 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
 
 export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "GuestDashboard"> }) {
     const [selectedGathering, setSelectedGathering] = useState("total");
-    const [selectedDuration, setSelectedDuration] = useState("1h")
+    const [selectedDuration, setSelectedDuration] = useState(60)
     const { width, height } = useWindowDimensions()
     const { themedColor } = useGlobal(); 
     const topicsTextStyle = { color: themedColor.comp }
@@ -214,8 +214,9 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                     />
                     <Text style={[styles.optionsLabel,topicsTextStyle]}>เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)</Text>
                 </View>
-                <View style={styles.options}>
+                <View style={[styles.options, {opacity: 0.5}]}>
                     <RadioButton.Android
+                        disabled
                         value="separate"
                         status={selectedGathering === 'separate' ?
                             'checked' : 'unchecked'}
@@ -228,9 +229,9 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                 <View style={styles.options}>
                     <RadioButton.Android
                         value="15min"
-                        status={selectedDuration === '15min' ?
+                        status={selectedDuration === 15 ?
                             'checked' : 'unchecked'}
-                        onPress={() => setSelectedDuration('15min')}
+                        onPress={() => setSelectedDuration(15)}
                         color="#007BFF"
                     />
                     <Text style={[styles.optionsLabel,topicsTextStyle]}>15 นาที</Text>
@@ -238,9 +239,9 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                 <View style={styles.options}>
                     <RadioButton.Android
                         value="30min"
-                        status={selectedDuration === '30min' ?
+                        status={selectedDuration === 30 ?
                             'checked' : 'unchecked'}
-                        onPress={() => setSelectedDuration('30min')}
+                        onPress={() => setSelectedDuration(30)}
                         color="#007BFF"
                     />
                     <Text style={[styles.optionsLabel,topicsTextStyle]}>30 นาที</Text>
@@ -248,9 +249,9 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                 <View style={styles.options}>
                     <RadioButton.Android
                         value="1h"
-                        status={selectedDuration === '1h' ?
+                        status={selectedDuration === 60 ?
                             'checked' : 'unchecked'}
-                        onPress={() => setSelectedDuration('1h')}
+                        onPress={() => setSelectedDuration(60)}
                         color="#007BFF"
                     />
                     <Text style={[styles.optionsLabel,topicsTextStyle]}>1 ชั่วโมง</Text>
@@ -258,18 +259,25 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
                 <View style={styles.options}>
                     <RadioButton.Android
                         value="2h"
-                        status={selectedDuration === '2h' ?
+                        status={selectedDuration === 120 ?
                             'checked' : 'unchecked'}
-                        onPress={() => setSelectedDuration('2h')}
+                        onPress={() => setSelectedDuration(120)}
                         color="#007BFF"
                     />
                     <Text style={[styles.optionsLabel,topicsTextStyle]}>2 ชั่วโมง</Text>
                 </View>
             </View>
 
-            <TouchableHighlight onPress={() => {
-
-            }}
+            <TouchableHighlight onPress={() => navigation.navigate("SettingsApplied", {
+                gathering: {
+                    name: "total",
+                    body: ["total"]
+                },
+                durations: [{
+                    owner: "total",
+                    duration: selectedDuration
+                }]
+            })}
                 style={styles.savebutton}
                 activeOpacity={0.5}
                 underlayColor="mediumseagreen"
@@ -444,7 +452,22 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
         </TouchableOpacity>
 
         <TouchableHighlight onPress={() => {
-
+            for(const config of sliderValue){
+                if(config.duration === 0){
+                    Alert.alert("Cannot set the duration to 0 minute");
+                    return;
+                }
+            }
+            navigation.navigate("SettingsApplied", {
+                unit: unit || "daily",
+                plan: plan || "duration",
+                gathering: {
+                    name: gathering?.name || "total",
+                    body: gathering?.body || ["ทุกแอปพลิเคชัน"]
+                },
+                durations: sliderValue,
+                isStrictMode: isStrictMode || false,
+            })
         }}
             style={styles.savebutton}
             activeOpacity={0.5}
@@ -521,9 +544,19 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
                         type: "danger",
                         icon: "danger"
                     })
-                    break
+                    return;
                 }
             }
+            navigation.navigate("SettingsApplied", {
+                unit: unit || "daily",
+                plan: plan || "duration",
+                gathering: {
+                    name: gathering?.name || "total",
+                    body: gathering?.body || ["ทุกแอปพลิเคชัน"]
+                },
+                ranges: range,
+                isStrictMode: isStrictMode || false,
+            })
         }}
             style={styles.savebutton}
             activeOpacity={0.5}

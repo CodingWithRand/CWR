@@ -7,7 +7,7 @@ import Credit from './asset/components/intro/credit';
 import { SignOutBTN } from './asset/components/util';
 import RegistrationPage from './asset/components/intro/registration';
 import { Global, useGlobal } from './asset/scripts/global';
-import { GUESTPAGE, UserPage1, UserPage2} from "./asset/components/index/ui";
+import { GUESTPAGE, UserPage1, UserPage2} from "./asset/components/index/dashboard";
 import FlashMessage from 'react-native-flash-message';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { RouteStackParamList } from './asset/scripts/native-stack-navigation-types';
@@ -15,6 +15,7 @@ import { horizontalScale } from './asset/scripts/Metric';
 import { RouteProp } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth"
 import langs from './langs';
+import SettingsApplied from './asset/components/index/settingsApplied';
 
 const Stack = createNativeStackNavigator();
 
@@ -142,6 +143,7 @@ function Pages(){
         <Stack.Screen name="UserDashboard" component={UserPage1} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.userpage, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
         <Stack.Screen name="UserDashboard2" component={UserPage2} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.userpage, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
         <Stack.Screen name="Menu" component={ToolBar} options={{ headerShown: false }}/>
+        <Stack.Screen name="SettingsApplied" component={SettingsApplied} options={{ title: "" }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

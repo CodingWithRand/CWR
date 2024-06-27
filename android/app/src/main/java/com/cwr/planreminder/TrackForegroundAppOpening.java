@@ -32,7 +32,7 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                     Context.MODE_PRIVATE
             );
             String RawConfigs = preferences.getString("tiaoifConfig", "");
-            if(RawConfigs.equals("")){
+            if(RawConfigs.isEmpty()){
                 Log.d("TrackForegroundAppService", "Hasn't setup configs yet");
                 return;
             }
@@ -77,14 +77,14 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                         notification.createAndSendNotification(
                                 "App alert It's not time yet.",
                                 "Master of Time",
-                                configs.getString("mlang") == "th" ? "กรุณาหยุดใช้แอป " + appName + " ช่วงที่ห้ามใช้แอปจะหมดในอีก"+ remainingMinutes + " นาที" :
-                                configs.getString("mlang") == "en" ? "Please stop using " + appName + ". Your app usage prohibited interval will end in " + remainingMinutes + " minutes" :
+                                Objects.equals(configs.getString("mlang"), "th") ? "กรุณาหยุดใช้แอป " + appName + " ช่วงที่ห้ามใช้แอปจะหมดในอีก"+ remainingMinutes + " นาที" :
+                                Objects.equals(configs.getString("mlang"), "en") ? "Please stop using " + appName + ". Your app usage prohibited interval will end in " + remainingMinutes + " minutes" :
                                 "",
-                                configs.getString("mlang") == "th" ? "คุณกำลังใช้แอป " + appName + " ในช่วงเวลาที่ถูกห้ามใช้งาน กรุณาหยุดใช้แอปนี้ตอนนี้" :
-                                configs.getString("mlang") == "en" ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
+                                Objects.equals(configs.getString("mlang"), "th") ? "คุณกำลังใช้แอป " + appName + " ในช่วงเวลาที่ถูกห้ามใช้งาน กรุณาหยุดใช้แอปนี้ตอนนี้" :
+                                Objects.equals(configs.getString("mlang"), "en") ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
                                 "",
-                                configs.getString("mlang") == "th" ? "คุณกำลังใช้แอป " + appName + " ในช่วงเวลาที่ถูกห้ามใช้งาน กรุณาหยุดใช้แอปนี้ตอนนี้" :
-                                configs.getString("mlang") == "en" ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
+                                Objects.equals(configs.getString("mlang"), "th") ? "คุณกำลังใช้แอป " + appName + " ในช่วงเวลาที่ถูกห้ามใช้งาน กรุณาหยุดใช้แอปนี้ตอนนี้" :
+                                Objects.equals(configs.getString("mlang"), "en") ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
                                 ""
                         );
                     } else if (isWithinTenMinutes(nowTime, startTime)) {
@@ -94,14 +94,14 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                         notification.createAndSendNotification(
                                 "App alert It's not time yet.",
                                 "Master of Time",
-                                configs.getString("mlang") == "th" ? "คุณควรหยุดใช้แอป " + appName + " ตอนนี้" :
-                                configs.getString("mlang") == "en" ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                Objects.equals(configs.getString("mlang"), "th") ? "คุณควรหยุดใช้แอป " + appName + " ตอนนี้" :
+                                Objects.equals(configs.getString("mlang"), "en") ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
                                 "",
-                                configs.getString("mlang") == "th" ? "ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที" :
-                                configs.getString("mlang") == "en" ? "The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                Objects.equals(configs.getString("mlang"), "th") ? "ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที" :
+                                Objects.equals(configs.getString("mlang"), "en") ? "The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
                                 "",
-                                configs.getString("mlang") == "th" ? "คุณควรหยุดใช้แอป " + appName + " ตอนนี้ ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที" :
-                                configs.getString("mlang") == "en" ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
+                                Objects.equals(configs.getString("mlang"), "th") ? "คุณควรหยุดใช้แอป " + appName + " ตอนนี้ ช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก " + minutesUntilStart + " นาที" :
+                                Objects.equals(configs.getString("mlang"), "en") ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
                                 ""
                         );
                     }

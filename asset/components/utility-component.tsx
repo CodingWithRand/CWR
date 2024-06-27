@@ -92,17 +92,31 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                 />
                 <Text>Intense Mode</Text>
             </View>
+
+            {/* หมายเหตุ1: TouchableHighlight เป็นปุ่มชนิดหนึ่งใน React Native ไปศึกษาเพิ่มเติมได้เอง */}
+            {/* หมายเหตุ2: i: number */}
+            {/* ตัวอย่างการใช้งาน Native Module สำหรับการตรวจจับระยะเวลาการใช้งาน */}
+
             <TouchableHighlight onPress={async () => await BackgroundProcess.registerInvoker([
+                /* ประกอบไปด้วย object ที่มีข้อมูล configs ของ workers สองตัว (Retriever และ Processor) */
+                /* Retriever ทำหน้าที่รับข้อมูล และส่งต่อไปให้ Processor ประมวลผล */
                 {
-                    name: "Retriever",
+                    name: "Retriever", // ชื่อ Worker (*Required)
+
+                    /* ตรวจจับการใช้งานแอปทุกแอปพลิเคชัน */
                     // retrieveTotalAppsStatistic: {
-                    //     interval: "daily"
+                    //     interval: "daily" // ได้จากตัวแปร unit (*Required)
                     // }
+
+                    /* ตรวจจับการใช้งานแอปแต่ละแอปพลิเคชัน */
                     retrieveAppsStatistic: [
+                        /* ตัวอย่าง */
+                        //1. YouTube
                         {
-                            appName: "YouTube",
-                            interval: "daily"
+                            appName: "YouTube", // ชื่อ App (*Required)
+                            interval: "daily" // ได้จากตัวแปร unit (*Required)
                         },
+                        //2. planreminder (this app)
                         {
                             appName: "planreminder",
                             interval: "daily"
@@ -111,15 +125,23 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                 },
                 {
                     name: "Processor",
-                    mlang: "th",
+                    mlang: "th", //ภาษาที่จะแสดงใน message ของการแจ้งเตือนแบบพุช ได้จาก lang.lang (*Required)
+                    /* รายการงานที่จะให้ประมวลผล */
                     jobs: {
+
+                        // ชื่องาน(*Fix): { // configs }
+
+                        /* งานตรวจจับระยะเวลาการใช้แอปทั้งหมด */
                         // totalAppUsageRestriction: {
-                        //     restrictedPeriod: 1,
-                        //     inUnit: "hour",
-                        //     watchInterval: "daily",
-                        //     isIntenselyStricted: true
+                        //     restrictedPeriod: 1, // ระยะเวลาที่ให้ใช้ ได้จาก durations[i].duration (*Required)
+                        //     inUnit: "hour", // ใช้หน่วย "minute"(นาที) เท่านั้น (*Required)
+                        //     watchInterval: "daily", // ได้จากตัวแปร unit (*Required)
+                        //     isIntenselyStricted: true // ได้จากตัวแปร isStrictMode (*Required)
                         // }
+
+                        /* งานตรวจจับระยะเวลาการใช้แอปต่างๆ */
                         appsUsageRestriction: {
+                            /* ชื่อแอป (ได้จาก durations[i].owner): { // configs } */
                             YouTube: {
                                 restrictedPeriod: 1,
                                 inUnit: "hour",
@@ -138,21 +160,37 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
             ])} underlayColor="darkgreen" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "green", borderRadius: moderateScale(10, width) }}>
                 <Text>Register Example Task</Text>
             </TouchableHighlight>
+
+            {/* ตัวอย่างการใช้งาน Native Module สำหรับยกเลิกการทำงานของ Worker */}
+
             <TouchableHighlight onPress={async () => await BackgroundProcess.revokeInvokerRegistry()} underlayColor="maroon" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "red", borderRadius: moderateScale(10, width) }}>
                 <Text>Revoke Example Task</Text>
             </TouchableHighlight>
+
+            {/* ตัวอย่างการใช้งาน Native Module สำหรับการเริ่มการตรวจจับว่าเปิดแอปในช่วงเวลาต้องห้ามหรือไม่ */}
+
             <TouchableHighlight onPress={async () => await BackgroundProcess.registerAppInForegroundEventListener({
-                mlang: "th",
+                mlang: "th", //ภาษาที่จะแสดงใน message ของการแจ้งเตือนแบบพุช ได้จาก lang.lang (*Required)
+
+                /* ชื่อแอป (ได้จาก ranges[i].owner): { //configs } */
                 YouTube: {
-                    fromHour: 14,
-                    fromMinute: 4,
-                    toHour: 16,
-                    toMinute: 16
+                    fromHour: 14, //ได้จาก ranges[i].startTime.hour
+                    fromMinute: 4, //ได้จาก ranges[i].startTime.minute
+                    toHour: 16, //ได้จาก ranges[i].endTime.hour
+                    toMinute: 16 //ได้จาก ranges[i].endTime.minute
                 },
-                isStrictModeOn: false
+
+                isStrictModeOn: false // ได้จากตัวแปร isStrictMode (*Required)
             })} underlayColor="cyan" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "lightblue", borderRadius: moderateScale(10, width) }}>
                 <Text>Start Tracking 3rd Party Foreground App</Text>
             </TouchableHighlight>
+
+            {/* ตัวอย่างการใช้งาน Native Module สำหรับการหยุดการตรวจจับว่าเปิดแอปในช่วงเวลาต้องห้ามหรือไม่ */}
+
+            <TouchableHighlight onPress={async () => await BackgroundProcess.revokeAppInForegroundEventListener()}>
+                <Text>Stop Tracking 3rd Party Foreground App</Text>
+            </TouchableHighlight>
+
             <TouchableHighlight onPress={promptSignOut} underlayColor="dimgrey" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "grey", borderRadius: moderateScale(10, width) }}>
                 <Text>Sign Out</Text>
             </TouchableHighlight>

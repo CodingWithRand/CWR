@@ -29,18 +29,15 @@ public class MainNativeUtil extends ReactContextBaseJavaModule {
 
     protected final Context NativeModuleContext;
     protected final ContentResolver NativeModuleContentResolver;
-    protected final Activity NativeModuleActivity;
     public MainNativeUtil(ReactApplicationContext context){
         super(context);
         this.NativeModuleContext = context;
         this.NativeModuleContentResolver = context.getContentResolver();
-        this.NativeModuleActivity = context.getCurrentActivity();
     }
 
     public MainNativeUtil(Context context){
         this.NativeModuleContext = context;
         this.NativeModuleContentResolver = context.getContentResolver();
-        this.NativeModuleActivity = getCurrentActivity();
     }
 
     @NonNull

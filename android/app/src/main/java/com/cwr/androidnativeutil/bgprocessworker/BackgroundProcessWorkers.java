@@ -207,6 +207,7 @@ public class BackgroundProcessWorkers {
         }
 
         private void trackLaunchableApps(@NonNull ReadableMap configs, @NonNull String RawAppUsageStatisticData){
+            /* TODO: Fixing the Problem (Only one app notification show -> Must show all app notification) */
             try {
                 Map<String, Object> RetrievedAppUsageStatisticData = PackageUtilities.JSON_Map_Parse(RawAppUsageStatisticData);
                 for(Map.Entry<String, Object> AppUsageInPeriod: RetrievedAppUsageStatisticData.entrySet()){

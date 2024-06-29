@@ -16,6 +16,7 @@ import { RouteProp } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth"
 import langs from './langs';
 import SettingsApplied from './asset/components/index/settingsApplied';
+import { Dashboard } from './asset/components/utility-component';
 
 const Stack = createNativeStackNavigator();
 
@@ -139,7 +140,7 @@ function Pages(){
       <Stack.Navigator screenOptions={{ presentation: "transparentModal" }}>
         <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
         <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
-        <Stack.Screen name="GuestDashboard" component={GUESTPAGE} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.guestpage, headerRight: () => <ToolBarBTN navigation={navigation} guest/> })}/>
+        <Stack.Screen name="GuestDashboard" component={Dashboard} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.guestpage, headerRight: () => <ToolBarBTN navigation={navigation} guest/> })}/>
         <Stack.Screen name="UserDashboard" component={UserPage1} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.userpage, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
         <Stack.Screen name="UserDashboard2" component={UserPage2} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.userpage, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
         <Stack.Screen name="Menu" component={ToolBar} options={{ headerShown: false }}/>

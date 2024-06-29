@@ -10,7 +10,7 @@ export type RangeObject = {
     }
 }
 
-type DurationObject = {
+export type DurationObject = {
     owner: string,
     // in minute
     duration: number

@@ -15,7 +15,7 @@ import { useGlobal } from "../scripts/global";
 
 const { AppStatisticData, PermissionCheck, BackgroundProcess } = NativeModules;
 
-export function Dashboard({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "Dashboard"> }) {
+export function Dashboard({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard"> }) {
     const isDark = useColorScheme() === "dark"
     const { width } = useWindowDimensions();
     const switchesEvent = {
@@ -24,7 +24,7 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
 
     useEffect(() => {
         (async () => {
-            console.log(await AppStatisticData.getAllInstalledLaunchableAppNames());
+            // console.log(await AppStatisticData.getAllInstalledLaunchableAppNames());
             // await PermissionCheck.requestAccessibilityServicePermission();
             if(!await PermissionCheck.checkWriteSettingsPermission()) AsyncStorage.setItem("intenseMode", "false");
         })()
@@ -134,7 +134,7 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                         /* งานตรวจจับระยะเวลาการใช้แอปทั้งหมด */
                         // totalAppUsageRestriction: {
                         //     restrictedPeriod: 1, // ระยะเวลาที่ให้ใช้ ได้จาก durations[i].duration (*Required)
-                        //     inUnit: "hour", // ใช้หน่วย "minute"(นาที) เท่านั้น (*Required)
+                        //     inUnit: "minute", // ใช้หน่วย "minute"(นาที) เท่านั้น (*Required)
                         //     watchInterval: "daily", // ได้จากตัวแปร unit (*Required)
                         //     isIntenselyStricted: true // ได้จากตัวแปร isStrictMode (*Required)
                         // }
@@ -144,13 +144,13 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                             /* ชื่อแอป (ได้จาก durations[i].owner): { // configs } */
                             YouTube: {
                                 restrictedPeriod: 1,
-                                inUnit: "hour",
+                                inUnit: "minute",
                                 watchInterval: "daily",
                                 isIntenselyStricted: true
                             },
                             planreminder: {
                                 restrictedPeriod: 1,
-                                inUnit: "hour",
+                                inUnit: "minute",
                                 watchInterval: "daily",
                                 isIntenselyStricted: true
                             }
@@ -174,10 +174,16 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
 
                 /* ชื่อแอป (ได้จาก ranges[i].owner): { //configs } */
                 YouTube: {
-                    fromHour: 14, //ได้จาก ranges[i].startTime.hour
-                    fromMinute: 4, //ได้จาก ranges[i].startTime.minute
-                    toHour: 16, //ได้จาก ranges[i].endTime.hour
-                    toMinute: 16 //ได้จาก ranges[i].endTime.minute
+                    fromHour: 22, //ได้จาก ranges[i].startTime.hour
+                    fromMinute: 40, //ได้จาก ranges[i].startTime.minute
+                    toHour: 23, //ได้จาก ranges[i].endTime.hour
+                    toMinute: 30 //ได้จาก ranges[i].endTime.minute
+                },
+                Google: {
+                    fromHour: 22,
+                    fromMinute: 0,
+                    toHour: 23,
+                    toMinute: 0
                 },
 
                 isStrictModeOn: false // ได้จากตัวแปร isStrictMode (*Required)

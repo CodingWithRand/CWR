@@ -31,12 +31,18 @@ const th = {
         guestpage: "แผงควบคุมของผู้เยี่ยมชม",
         userpage: "แผงควบคุมของผู้ใช้",
     },
+    defaultApp: "ทุกแอปพลิเคชัน",
     menu: {
         licensebutton:"การอนุญาต",
         signoutbutton:"ออกจากระบบ",
         languagetext:"ภาษา",
         englishtext:"ภาษาอังกฤษ",
-        thaitext:"ภาษาไทย"
+        thaitext:"ภาษาไทย",
+        signOutAlertPart1: "คุณกำลังจะออกจากระบบ",
+        signOutGuestCase: "ในฐานะผู้เยี่ยมชม บัญชีขของคุณจะถูกลบออก และคุณจะไม่สามารถเข้าสู่ระบบในบัญชีนี้ได้อีก",
+        signOutAlertPart2: "คุณยืนยันหรือไม่?",
+        proceedBtn: "ใช่ ฉันต้องการออกจากระบบ",
+        cancelBtn: "ยกเลิก",
     },
     userpage1: {
         usageplanningbutton:"การกำหนดเเผนการใช้งาน",
@@ -46,20 +52,22 @@ const th = {
         Monthlybutton:"รายเดือน",
         Planningformattext:"รูปเเบบการกำหนดเเผน",
         Setappperdaytext:"กำหนดระยะเวลาที่จะใช้ในเเต่ละแอปต่อวัน",
-        Settimeusageappperday:"กำหนดช่วงเวลาที่จะใช้ในเเต่ละแอปต่อวัน",
+        Settimeusageappperday:"กำหนดช่วงเวลาที่จะไม่ให้ใช้ในเเต่ละแอปต่อวัน",
         datacollectionformat:"รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน",
         Allinclusiveplanbutton:"เเบบเหมารวม(รวมเวลาการใช้ทุกแอปพลิเคชั่น)",
         Separatebutton:"เเบบเเยกกัน",
-        Allowstext:"ให้เก็บจากเเอปพลิเคชั่นใดบ้าง"
-
-
-
-
+        Allowstext:"ให้เก็บจากเเอปพลิเคชั่นใดบ้าง",
+        showMessageText: "โปรดเลือกอย่างน้อย 1 แอปพลิเคชัน"
+        
     },
     userpage2: {
         timetouse:"ระยะเวลาในการใช้ต่อ",
-        periodcantuseapp:"กำหนดช่วงเวลาที่ไม่ให้ใช้เเอปพลิเคชัน"
-
+        timetouseUnit: (unit) => unit === "daily" ? "วัน" : unit === "weekly" ? "สัปดาห์" : "เดือน",
+        alertMessage: "ไม่สามารถกำหนดเวลาการใช้งานสูงสุดเป็น 0 นาทีได้",
+        periodcantuseapp:"กำหนดช่วงเวลาที่ไม่ให้ใช้เเอปพลิเคชัน",
+        showMessageText: "ช่วงเวลาไม่ถูกต้อง",
+        minuteUnit: () => "นาที",
+        hourUnit: () => "ชั่วโมง",
     },
     guestpage: {
         formatapplicationcollect:"รูปแบบการเก็บข้อมูลการใช้แอปพลิเคชัน",
@@ -73,6 +81,7 @@ const th = {
 
 
     },
+    saveSettingsBtn: "บันทึกการตั้งค่า",
     permissionRequestPage: {
         header: "การขออนุญาตในการเข้าถึงของแอปพลิเคชัน",
         description: "แอปพลิเคชันจำเป็นต้องได้รับอนุญาตต่อไปนี้เพื่อรักษาฟังก์ชันการทำงานของแอป นี่คือคำอธิบาย",
@@ -131,8 +140,14 @@ const en = {
         signoutbutton:"Signout",
         languagetext:"Language",
         englishtext:"English",
-        thaitext:"Thai"
+        thaitext:"Thai",
+        signOutAlertPart1: "You're about to sign out.",
+        signOutGuestCase: "As being a guest user, your account will be deleted, and you won't be able to sign into this account again.",
+        signOutAlertPart2: "Do you confirm this operation?",
+        proceedBtn: "Yes, I'd like to sign out",
+        cancelBtn: "Cancel",
     },
+    defaultApp: "All-inclusive apps",
     userpage1: {
         usageplanningbutton:"Apps usage planning",
         unitoftimetext:"Unit of time",
@@ -141,30 +156,34 @@ const en = {
         Monthlybutton:"Monthly",
         Planningformattext:"Planning format",
         Setappperdaytext:"Set the amount of time to spend on each app per day",
-        Settimeusageappperday:"Set the range of time of using app per day",
+        Settimeusageappperday:"Set the period of time of prohibited app usage per day",
         datacollectionformat:"Apps usage data collecttion format",
         Allinclusiveplanbutton:"All-inclusively",
-        Separatebutton:"Individually",
-        Allowstext:"Collect usage data from..."
-
-
+        Separatebutton:"Separately",
+        Allowstext:"Collect usage data from...",
+        showMessageText: "Please select at least 1 app to proceed!"
     },
     userpage2: {
-        timetouse:"Period of continued use",
-        periodcantuseapp:"Set a time period during which applications are not used"
-
+        timetouse:"Apps usage period per",
+        timetouseUnit: (unit) => unit === "daily" ? " day" : unit === "weekly" ? " week" : " month",
+        alertMessage: "Cannot set the duration to 0 minute",
+        periodcantuseapp:"Set a time period during which applications are not used",
+        showMessageText: "Time period is incorrect",
+        minuteUnit: (i) => i > 1 ? "minutes" : "minute",
+        hourUnit: (i) => i > 1 ? "hours" : "hour",
     },
     guestpage: {
-        formatapplicationcollect:"Format application collect",
-        allinclusiveapp:"All-inclusive plan",
-        separate:"Separate",
-        timespentperday:"Amount of time spent each day",
+        formatapplicationcollect:"Apps usage data collection format",
+        allinclusiveapp:"All-inclusively",
+        separate:"Separately",
+        timespentperday:"Apps usage period per day",
         fifteenminutes:"15 minutes",
         thirtymin:"30 minutes",
         oneh:"1 hours",
         twoh:"2 hours"
         
     },
+    saveSettingsBtn: "Save Settings",
     permissionRequestPage: {
         header: "Permissions Request",
         description: "The following permissions are required in order to maintain the app functionalities. Here are the explanations",

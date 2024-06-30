@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useColorScheme, SafeAreaView, StatusBar, Image, View, TouchableOpacity, useWindowDimensions, Pressable, Text, Alert, BackHandler, StyleSheet, Modal } from 'react-native';
+import { useColorScheme, SafeAreaView, StatusBar, Image, View, TouchableOpacity, useWindowDimensions, Pressable, ScrollView, Text, Alert, BackHandler, StyleSheet, Modal, FlatList, Linking } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -36,7 +36,10 @@ function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<
   const isDark = useColorScheme() === 'dark';
   const { width, height } = useWindowDimensions();
   const { themedColor, lang } = useGlobal();
-  const [showModal, setShowModal] = useState(false);
+  const modal = {
+    lang: useState(false),
+    attrb: useState(false),
+  }
   
   const iconSize = width > height ? 50 : 35
   const menuFontSize = width > height ? 30 : 15
@@ -66,16 +69,31 @@ function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<
     }
   })
 
+  const imgSources = [
+    {link:"https://www.flaticon.com/free-icons/order", title: "Order icons created by Dave Gandy - Flaticon", img: isDark ? require("./asset/imgs/dark-menu.png") : require("./asset/imgs/light-menu.png") },
+    {link:"https://www.flaticon.com/free-icons/thailand", title: "Thailand icons created by Freepik - Flaticon", img: require("./asset/imgs/th.png")},
+    {link:"https://www.flaticon.com/free-icons/united-states", title: "United states icons created by CorelisOP - Flaticon", img: require("./asset/imgs/en.png")},
+    {link:"https://www.flaticon.com/free-icons/question-mark", title: "Question mark icons created by Fathema Khanom - Flaticon", img: require("./asset/imgs/err.png")},
+    {link:"https://www.flaticon.com/free-icons/tick", title: "Tick icons created by Maxim Basinski Premium - Flaticon", img: require("./asset/imgs/check.png")},
+    {link:"https://www.flaticon.com/free-icons/close", title: "Close icons created by Pixel perfect - Flaticon", img: require("./asset/imgs/close.png")},
+    {link:"https://www.flaticon.com/free-icons/triangle", title: "Triangle icons created by Dave Gandy - Flaticon", img: require("./asset/imgs/arrow-down.png")},
+    {link:"https://www.flaticon.com/free-icons/search", title: "Search icons created by Catalin Fertu - Flaticon", img: require("./asset/imgs/search-symbol.png")},
+    {link:"https://www.flaticon.com/free-icons/user", title: "User icons created by Freepik - Flaticon", img: isDark ? require("./asset/imgs/dark-account.png") : require("./asset/imgs/light-account.png")},
+  ]
+
   const setLang = (langCode: keyof typeof langs) => {
     if(lang.setLang) lang.setLang(langCode);
-    setShowModal(false);
+    modal.lang[1](false);
   }
+
+  const openImageSource = (url: string) => Linking.openURL(url);
 
   return(
     <>
       <Pressable style={{ width: width, height: height }} onPress={() => navigation.goBack()} />
       <View style={{ position: "absolute", zIndex: 10, opacity: 1, top: 0, right: 0, width: horizontalScale(200, width), height: height, backgroundColor: isDark ? "#080808" : "#f8f8f8", elevation: 5 }}>
         <View style={[mutableStyles.row, { columnGap: 10, padding: 15 }]}>
+          {/* <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Freepik - Flaticon</a> */}
           <Image source={auth().currentUser?.photoURL ? { uri: auth().currentUser?.photoURL } : isDark ? require("./asset/imgs/dark-account.png") : require("./asset/imgs/light-account.png")} style={{ borderRadius: 999, width: iconSize, height: iconSize }} />
           <Text style={{ fontSize: menuFontSize, color: "deepskyblue" }}>{auth().currentUser?.displayName}</Text>
         </View>
@@ -90,10 +108,32 @@ function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<
           )}>
             <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu["licensebutton"]}</Text>
           </TouchableOpacity>
+          <Modal visible={modal.attrb[0]} animationType='fade'>
+            <ScrollView style={{ backgroundColor: isDark ? "black" : "white", padding: 30 }}>
+              <FlatList
+                keyExtractor={(source) => source.link}
+                data={imgSources}
+                renderItem={({ item }) => 
+                  <TouchableOpacity onPress={() => openImageSource(item.link)} style={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 10, marginVertical: 5 }}>
+                    <Image source={item.img} style={{ width: 30, height: 30 }} />
+                    <Text style={{ color: themedColor.comp }}>{item.title}</Text>
+                  </TouchableOpacity>
+                }
+              />
+            </ScrollView>
+            <Pressable onPress={() => modal.attrb[1](false)} style={{ backgroundColor: isDark ? "black" : "white" }}>
+              <Text style={{ color: themedColor.comp, textAlign: "center", fontSize: 30, marginVertical: 20 }}>X</Text>
+            </Pressable>
+          </Modal>
+        </View>
+        <View style={mutableStyles.menuBtn}>
+          <TouchableOpacity onPress={() => modal.attrb[1](true)}>
+            <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu.attributionbutton}</Text>
+          </TouchableOpacity>
         </View>
         <Text style={mutableStyles.sectionTitle}>{langs[lang.lang].menu["languagetext"]}</Text>
         <View style={mutableStyles.menuBtn}>
-          <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => setShowModal(true)}>
+          <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => modal.lang[1](true)}>
             {/* <a href="https://www.flaticon.com/free-icons/thailand" title="thailand icons">Thailand icons created by Freepik - Flaticon</a> */}
             {/* <a href="https://www.flaticon.com/free-icons/united-states" title="united states icons">United states icons created by CorelisOP - Flaticon</a> */}
             {/* <a href="https://www.flaticon.com/free-icons/question-mark" title="question mark icons">Question mark icons created by Fathema Khanom - Flaticon</a> */}
@@ -107,19 +147,19 @@ function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<
               lang.lang === "th" ? langs[lang.lang].menu["thaitext"] :
               ""
             }</Text>
-            <Modal visible={showModal} animationType="fade">
-              <View style={{ backgroundColor: isDark ? "black" : "white", padding: 30 }}>
-                <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => setLang("en")}>
-                  <Image source={require("./asset/imgs/en.png")} style={{ width: iconSize, height: iconSize }}/>
-                  <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu["englishtext"]}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => setLang("th")}>
-                  <Image source={require("./asset/imgs/th.png")} style={{ width: iconSize, height: iconSize }}/>
-                  <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu["thaitext"]}</Text>
-                </TouchableOpacity>
-              </View>
-            </Modal>
           </TouchableOpacity>
+          <Modal visible={modal.lang[0]} animationType="fade">
+            <View style={{ backgroundColor: isDark ? "black" : "white", padding: 30, height: height }}>
+              <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => setLang("en")}>
+                <Image source={require("./asset/imgs/en.png")} style={{ width: iconSize, height: iconSize }}/>
+                <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu["englishtext"]}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[mutableStyles.row, { paddingHorizontal: 20 }]} onPress={() => setLang("th")}>
+                <Image source={require("./asset/imgs/th.png")} style={{ width: iconSize, height: iconSize }}/>
+                <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu["thaitext"]}</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
         </View>
         <SignOutBTN navigation={navigation} guest={route.params.guest}/>
       </View>

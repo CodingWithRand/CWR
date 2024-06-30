@@ -640,6 +640,7 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
                 ranges: range,
                 isStrictMode: isStrictMode || false,
             }
+            await firestore().collection("planreminder").doc(auth().currentUser?.uid).set(rangePageSettings);
             await AsyncStorage.setItem("userPageSettings", JSON.stringify(rangePageSettings))
             navigation.navigate("SettingsApplied", rangePageSettings)
         }}

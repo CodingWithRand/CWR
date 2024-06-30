@@ -43,6 +43,7 @@ export async function retryFetch(url: string, body: object, retryLimit: number =
             console.log(fetchResponse?.status)
             await asyncDelay(1000)
             if(counter === retryLimit) break;
+            counter++;
             continue
         } else {
             console.log(fetchResponse?.status)

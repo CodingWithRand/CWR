@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import { Animated, StyleSheet, Text, TouchableHighlight, Easing, View, useColorScheme, Modal, useWindowDimensions, Alert, TouchableOpacity } from "react-native"
 import WebView from "react-native-webview"
 import { jobDelay, asyncDelay, getClientIp, useDelayedEffect, retryFetch } from "../../scripts/util"
@@ -14,12 +14,13 @@ import { useGlobal } from "../../scripts/global";
 import { Loading } from "../util";
 import { showMessage } from "react-native-flash-message";
 import langs from "../../../langs";
+import { useNavigationState } from "@react-navigation/native";
 
 GoogleSignin.configure({ 
     webClientId: FIREBASE_GOOGLE_PROVIDER_WEB_CLIENT_ID
 })
 
-async function signInWithGoogle(lang: keyof typeof langs) {
+async function signInWithGoogle() {
     try {
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();
@@ -54,11 +55,6 @@ async function signInWithGoogle(lang: keyof typeof langs) {
 
         await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
         if(!userCredential.user.providerData.some(provider => provider.providerId === "password")) await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { createdAccountWithGoogleAccount: true }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-        showMessage({ 
-            message: langs[lang].registration.showMessageFunc.welcomeBack + await AsyncStorage.getItem("clientUsername"),
-            type: "success",
-            icon: "success"
-        })
 
     } catch (error: any) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -148,6 +144,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
         translateY: new Animated.Value(0),
         scale: new Animated.Value(1),
     };
+    const currentRoute = useNavigationState(state => state.routes[state.index].name);
 
     /* Try clearing the cookie as well, because the problem is that you can't change to other account with email sign in method */
     const clearDB = () => `
@@ -226,7 +223,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 style={{ width: "100%", height: "100%", opacity: logoFadingAnim }}
             />
             <Animated.Text style={{ width: width, textAlign: "center", lineHeight: (width > height ? verticalScale(60, height) : verticalScale(45, height)), textAlignVertical: "center", fontSize: (width > height ? moderateScale(20, width) : moderateScale(40, width)), opacity: appNameFadingAnim}}>
-                <TypingText text="Plan Reminder" delay={100} initialDelay={1500} style={{color: themedColor.comp}}/>
+                <TypingText text="Remind Me!" delay={100} initialDelay={1500} style={{color: themedColor.comp}}/>
             </Animated.Text>
             </Animated.View>
             <View style={[styles.containerBox, { width: "100%", height: verticalScale(height/(width > height ? 0.65 : 1.35), height), position: "absolute", bottom: 0, rowGap: verticalScale(width > height ? 45 : 75, height) }]}>
@@ -253,7 +250,17 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         style={{ width: horizontalScale(200, width), height: verticalScale(width > height ? 100 : 50, height) }}
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
-                        onPress={async () => { await signInWithGoogle(lang.lang); if(auth().currentUser) navigation.replace("UserDashboard") }}
+                        onPress={async () => { 
+                            await signInWithGoogle();
+                            if(auth().currentUser && currentRoute === "Registration"){
+                                showMessage({ 
+                                    message: langs[lang.lang].registration.showMessageFunc.welcomeBack + await AsyncStorage.getItem("clientUsername"),
+                                    type: "success",
+                                    icon: "success"
+                                })
+                                navigation.replace("UserDashboard")
+                            }
+                        }}
                     />
                     <TouchableOpacity onPress={async () => {
                         setLoading(true);
@@ -500,12 +507,15 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                     }catch(error){
                         console.error(error);
                     }
-                    showMessage({ 
-                        message: langs[lang.lang].registration.showMessageFunc.welcomeBack + await AsyncStorage.getItem("clientUsername"),
-                        type: "success",
-                        icon: "success",
-                    });
-                    navigation.replace("UserDashboard");
+                    if(currentRoute === "Registration"){
+                        showMessage({ 
+                            message: langs[lang.lang].registration.showMessageFunc.welcomeBack + await AsyncStorage.getItem("clientUsername"),
+                            type: "success",
+                            icon: "success",
+                        });
+                        
+                        navigation.replace("UserDashboard");
+                    }
                 })();
             }
         }

@@ -21,6 +21,7 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
     const switchesEvent = {
         intenseMode: useState(false),
     };
+    const { lang } = useGlobal();
 
     useEffect(() => {
         (async () => {
@@ -170,13 +171,13 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
             {/* ตัวอย่างการใช้งาน Native Module สำหรับการเริ่มการตรวจจับว่าเปิดแอปในช่วงเวลาต้องห้ามหรือไม่ */}
 
             <TouchableHighlight onPress={async () => await BackgroundProcess.registerAppInForegroundEventListener({
-                mlang: "th", //ภาษาที่จะแสดงใน message ของการแจ้งเตือนแบบพุช ได้จาก lang.lang (*Required)
+                mlang: lang.lang, //ภาษาที่จะแสดงใน message ของการแจ้งเตือนแบบพุช ได้จาก lang.lang (*Required)
 
                 /* ชื่อแอป (ได้จาก ranges[i].owner): { //configs } */
                 YouTube: {
-                    fromHour: 22, //ได้จาก ranges[i].startTime.hour
+                    fromHour: 13, //ได้จาก ranges[i].startTime.hour
                     fromMinute: 40, //ได้จาก ranges[i].startTime.minute
-                    toHour: 23, //ได้จาก ranges[i].endTime.hour
+                    toHour: 15, //ได้จาก ranges[i].endTime.hour
                     toMinute: 30 //ได้จาก ranges[i].endTime.minute
                 },
                 Google: {
@@ -186,7 +187,7 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                     toMinute: 0
                 },
 
-                isStrictModeOn: false // ได้จากตัวแปร isStrictMode (*Required)
+                isStrictModeOn: switchesEvent.intenseMode[0]// ได้จากตัวแปร isStrictMode (*Required)
             })} underlayColor="cyan" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "lightblue", borderRadius: moderateScale(10, width) }}>
                 <Text>Start Tracking 3rd Party Foreground App</Text>
             </TouchableHighlight>

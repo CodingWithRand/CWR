@@ -10,6 +10,8 @@ import android.view.accessibility.AccessibilityEvent;
 import com.cwr.androidnativeutil.AppStatisticData;
 import com.cwr.androidnativeutil.Notification;
 import com.cwr.androidnativeutil.PackageUtilities;
+import com.cwr.androidnativeutil.settings.Audio;
+import com.cwr.androidnativeutil.settings.Brightness;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
 
@@ -56,8 +58,9 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                     endTime.set(Calendar.MINUTE, (int) Objects.requireNonNull(configs.getMap(appName)).getDouble("toMinute"));
                 
 
-//                    Log.d("TrackForegroundAppService", String.valueOf(nowTime.after(startTime)));
-//                    Log.d("TrackForegroundAppService", String.valueOf(nowTime.before(endTime)));
+                    Log.d("TrackForegroundAppService", appName + " " + startTime.getTime());
+                    Log.d("TrackForegroundAppService", appName + " " + endTime.getTime());
+                    Log.d("TrackForegroundAppService", String.valueOf(isStrictModeOn));
 // ฟังก์ชันเพื่อเช็คว่าช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีก 10 นาที
                     Notification notification = new Notification(getApplicationContext());
                     try{
@@ -75,6 +78,12 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                         // แจ้งเตือนผู้ใช้ให้หยุดใช้แอป และบอกว่าช่วงที่ห้ามใช้แอปจะหมดอีกเมื่อไรถ้ากดเข้าใช้แอป
                         long remainingTime = endTime.getTimeInMillis() - nowTime.getTimeInMillis();
                         int remainingMinutes = (int) (remainingTime / (1000 * 60));
+                        Brightness brightnessSetting = new Brightness(getApplicationContext());
+                        Audio audioSetting = new Audio(getApplicationContext());
+                        if(isStrictModeOn){
+                            brightnessSetting.setScreenBrightness(0);
+                            audioSetting.setVolume("all", 0);
+                        }
                         notification.createAndSendNotification(
                                 "App alert It's not time yet.",
                                 "Master of Time",
@@ -88,6 +97,7 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                                 Objects.equals(configs.getString("mlang"), "en") ? "You're using " + appName + " in the prohibited interval, please stop using the app" :
                                 ""
                         );
+                        Log.d("TrackForegroundAppService", "You're using " + appName + " during the prohibited period. Don't think I don't know >:(");
                     } else if (isWithinTenMinutes(nowTime, startTime)) {
                         // แจ้งเตือนผู้ใช้ว่าช่วงที่จะห้ามใช้แอปจะเริ่มขึ้นในอีกกี่ () นาที
                         long timeUntilStart = startTime.getTimeInMillis() - nowTime.getTimeInMillis();
@@ -105,6 +115,7 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                                 Objects.equals(configs.getString("mlang"), "en") ? "You should stop using " + appName + " now. The app usage prohibited interval is starting in " + minutesUntilStart + " minutes" :
                                 ""
                         );
+                        Log.d("TrackForegroundAppService", "Hey, why don't you stop using " + appName + " now? The prohibited period is starting soon in " + minutesUntilStart + " minutes!");
                     }
                 }
 

@@ -34,6 +34,7 @@ const th = {
     defaultApp: "ทุกแอปพลิเคชัน",
     menu: {
         licensebutton:"การอนุญาต",
+        attributionbutton:"แหล่งที่มาของรูปภาพ",
         signoutbutton:"ออกจากระบบ",
         languagetext:"ภาษา",
         englishtext:"ภาษาอังกฤษ",
@@ -137,6 +138,7 @@ const en = {
     },
     menu: {
         licensebutton:"License",
+        attributionbutton:"Image Sources",
         signoutbutton:"Signout",
         languagetext:"Language",
         englishtext:"English",

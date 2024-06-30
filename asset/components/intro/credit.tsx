@@ -27,19 +27,28 @@ export default function Credit({ navigation }: { navigation: NativeStackNavigati
   const permissionRequestExplanationTitles = [
     {
       id: "WRITE_SETTINGS",
-      title: langs[lang.lang].permissionRequestPage.titles.writeSetting
+      title: langs[lang.lang].permissionRequestPage.titles.writeSetting,
+      explanation: langs[lang.lang].permissionRequestPage.explanations.writeSetting
     },
     {
       id: "PACKAGE_USAGE_STATS",
-      title: langs[lang.lang].permissionRequestPage.titles.appUsageStats
+      title: langs[lang.lang].permissionRequestPage.titles.appUsageStats,
+      explanation: langs[lang.lang].permissionRequestPage.explanations.appUsageStats
     },
     {
       id: "ACCESSIBILITY_SERVICE",
-      title: langs[lang.lang].permissionRequestPage.titles.accessibilityService
+      title: langs[lang.lang].permissionRequestPage.titles.accessibilityService,
+      explanation: langs[lang.lang].permissionRequestPage.explanations.accessibilityService
     },
     {
       id: "NOTIFICATIONS",
-      title: langs[lang.lang].permissionRequestPage.titles.notifications
+      title: langs[lang.lang].permissionRequestPage.titles.notifications,
+      explanation: langs[lang.lang].permissionRequestPage.explanations.notifications
+    },
+    {
+      id: "WIFI",
+      title: langs[lang.lang].permissionRequestPage.titles.wifi,
+      explanation: langs[lang.lang].permissionRequestPage.explanations.wifi
     }
   ]
 
@@ -104,14 +113,7 @@ export default function Credit({ navigation }: { navigation: NativeStackNavigati
             renderItem={({ item }) => 
               <View style={{ marginVertical: 5 }}>
                 <Text style={[{ fontWeight: "bold" }, textStyle]}>{item.title}</Text>
-                <Text style={textStyle}>
-                  {
-                    item.id === "WRITE_SETTINGS" ? langs[lang.lang].permissionRequestPage.explanations.writeSetting :
-                    item.id === "PACKAGE_USAGE_STATS" ? langs[lang.lang].permissionRequestPage.explanations.appUsageStats :
-                    item.id === "ACCESSIBILITY_SERVICE" ? langs[lang.lang].permissionRequestPage.explanations.accessibilityService :
-                    item.id === "NOTIFICATIONS" ? langs[lang.lang].permissionRequestPage.explanations.notifications : ""
-                  }
-                </Text>
+                <Text style={textStyle}>{item.explanation}</Text>
               </View>
             }
           />

@@ -7,6 +7,7 @@ const th = {
     },
     registration: {
         subtitle: "ลงทะเบียนด้วย",
+        hasNoInternet: "ไม่มีอินเตอร์เน็ต",
         button: {
             email: "อีเมล",
             guest: "ในฐานะผู้เยี่ยมชม",
@@ -90,13 +91,15 @@ const th = {
             writeSetting: "การแก้ไขการตั้งค่าระบบของตัวอุปกรณ์",
             appUsageStats: "การขอข้อมูลสถิติการใช้แอปพลิเคชัน",
             accessibilityService: "การใช้งาน Accessibility Service",
-            notifications: "การส่งการแจ้งเตือนแบบพุช"
+            notifications: "การส่งการแจ้งเตือนแบบพุช",
+            wifi: "การเชื่อมต่ออินเตอร์เน็ต"
         },
         explanations: {
             writeSetting: "การอนุญาตนี้จำเป็นสำหรับการแก้ไขการตั้งค่าระบบ การอนุญาตนี้เกี่ยวข้องกับ \"โหมดเข้มงวด\" เป็นหลัก ซึ่งจะเปลี่ยนแปลงเสียงและความสว่างของอุปกรณ์ ในการตรวจสอบแต่ละครั้งว่าการใช้งานแอปเกินขีดจำกัด เมื่อเปิดการตั้งค่านี้",
             appUsageStats: "การอนุญาตนี้จำเป็นสำหรับการตรวจสอบการใช้งานแอปพลิเคชันเป็นหลัก และจะถูกเปรียบเทียบกับขีดจำกัดที่ผู้ใช้กำหนด การใช้งานแอปพลิเคชันจะถูกตรวจสอบทุกๆ 1 นาทีหรือทุกครั้งที่ผู้ใช้เปิดแอปพลิเคชัน",
             accessibilityService: "การอนุญาตนี้จำเป็นสำหรับการเปิดใช้งาน Accessibility Service ซึ่งใช้ในการติดตามกิจกรรมของผู้ใช้บนอุปกรณ์ ในกรณีนี้ เราจะใช้เพื่อติดตามว่าผู้ใช้เปิดแอปใหม่หรือไม่",
-            notifications: "การอนุญาตนี้จำเป็นพื้นฐานในการส่งการแจ้งเตือนแบบพุชเมื่อเตือนผู้ใช้เกี่ยวกับเวลาหน้าจอ"
+            notifications: "การอนุญาตนี้จำเป็นพื้นฐานในการส่งการแจ้งเตือนแบบพุชเมื่อเตือนผู้ใช้เกี่ยวกับเวลาหน้าจอ",
+            wifi: "แอปพลิเคชันนี้ต้องใช้การเชื่อมต่ออินเทอร์เน็ตเพื่อลงทะเบียนบัญชี ดังนั้นโปรดตรวจสอบให้แน่ใจว่าได้เข้าถึงการเชื่อมต่ออินเทอร์เน็ตจากอุปกรณ์ของคุณ"
         },
         conclusion: "กรุณาอนุญาตให้แอปพลิเคชันเข้าถึงสิทธิ์เหล่านี้ก่อนเข้าใช้งาน",
         permitBtn: "อนุญาตทั้งหมด"
@@ -111,6 +114,7 @@ const en = {
         rejectBTN: "Reject"
     },
     registration: {
+        hasNoInternet: "No Internet Connection",
         subtitle: "Register with...",
         button: {
             email: "Email",
@@ -193,13 +197,15 @@ const en = {
             writeSetting: "System Write Settings",
             appUsageStats: "Applications Usage Stats Query",
             accessibilityService: "Using Accessibility Service",
-            notifications: "Sending Notifications"
+            notifications: "Sending Notifications",
+            wifi: "Intenet Connection"
         },
         explanations: {
             writeSetting: "This permission is required to modify the system settings. This permission mainly relates to the \"Strict Mode\", which will alter the device audio and brightness each check that the app usage exceeds the limit, when this setting is switched on.",
             appUsageStats: "This permission is mainly required to monitor the usage of the application, and will be compared with the limit set by the user. The usage of the application will be queried every 1 minute or every time user open an application.",
             accessibilityService: "This permission is required to enable the accessibility service, which is used for tracking user activity on the device. In this case, we use it to track whether the user is open a new app or not",
-            notifications: "This permission is fundamentally required to send push notifications when reminding the user about their screen time"
+            notifications: "This permission is fundamentally required to send push notifications when reminding the user about their screen time",
+            wifi: "This application requires internet connection to register an account by all means, so please make sure to have internet connection accessed from your device"
         },
         conclusion: "Please grant these permissions before continue using the app",
         permitBtn: "Grant all permissions"

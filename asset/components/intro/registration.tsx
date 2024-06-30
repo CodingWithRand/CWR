@@ -15,6 +15,7 @@ import { Loading } from "../util";
 import { showMessage } from "react-native-flash-message";
 import langs from "../../../langs";
 import { useNavigationState } from "@react-navigation/native";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 GoogleSignin.configure({ 
     webClientId: FIREBASE_GOOGLE_PROVIDER_WEB_CLIENT_ID
@@ -127,6 +128,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
         Suggestion
         Added I already have an account at the bottom, and isolate the signin procession
     */
+    const netinfo = useNetInfo();
     const { width, height } = useWindowDimensions()
     const isDark = useColorScheme() === 'dark';
     const [ providerType, setProvider ] = useState<string>("");
@@ -231,6 +233,13 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 <Animated.View style={[styles.containerBox, { opacity: registrationBtnsFadingAnim, rowGap: verticalScale(width > height ? 20 : 50, height) }]}>
                     <TouchableHighlight
                         onPress={async () => {
+                            if(!netinfo.isConnected){
+                                Alert.alert(
+                                    "Error",
+                                    langs[lang.lang].registration.hasNoInternet,
+                                )
+                                return;
+                            }
                             setLoading(true);
                             setInjectJS(clearDB() + checkCookieJS(true) + disableRegModeButton() + closeButtonAdded());
                             setCWRRegistrationType("register")
@@ -243,7 +252,18 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                     >   
                         <Text style={styles.btnText}>{langs[lang.lang].registration.button.email}</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor="darkgrey" onPress={async () => { setLoading(true); await auth().signInAnonymously(); setLoading(false); }} style={[styles.btn, { backgroundColor: 'lightgrey', width: horizontalScale(200, width) }]}>
+                    <TouchableHighlight underlayColor="darkgrey" onPress={async () => { 
+                        if(!netinfo.isConnected){
+                            Alert.alert(
+                                "Error",
+                                langs[lang.lang].registration.hasNoInternet,
+                            )
+                            return;
+                        }
+                        setLoading(true); 
+                        await auth().signInAnonymously(); 
+                        setLoading(false); 
+                    }} style={[styles.btn, { backgroundColor: 'lightgrey', width: horizontalScale(200, width) }]}>
                         <Text style={[styles.btnText, { fontSize: 20 }]}>{langs[lang.lang].registration.button.guest}</Text>
                     </TouchableHighlight>
                     <GoogleSigninButton
@@ -251,6 +271,13 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         size={GoogleSigninButton.Size.Wide}
                         color={GoogleSigninButton.Color.Dark}
                         onPress={async () => { 
+                            if(!netinfo.isConnected){
+                                Alert.alert(
+                                    "Error",
+                                    langs[lang.lang].registration.hasNoInternet,
+                                )
+                                return;
+                            }
                             await signInWithGoogle();
                             if(auth().currentUser && currentRoute === "Registration"){
                                 showMessage({ 
@@ -263,6 +290,13 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         }}
                     />
                     <TouchableOpacity onPress={async () => {
+                        if(!netinfo.isConnected){
+                            Alert.alert(
+                                "Error",
+                                langs[lang.lang].registration.hasNoInternet,
+                            )
+                            return;
+                        }
                         setLoading(true);
                         let uid;
                         if(await AsyncStorage.getItem("clientUsername")) uid = await verifyUsername(await AsyncStorage.getItem("clientUsername"));
@@ -349,7 +383,9 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 </Animated.View> 
             </View>
         </View>
-    ), [ width, height, themedColor ])
+    ), [ width, height, themedColor, netinfo.isConnected ])
+
+    // useEffect(() => Alert.alert(`${netinfo.isConnected}`), [netinfo])
 
     useEffect(() => {
         // Reset Animation
@@ -401,48 +437,50 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 }).start()
             }, 1000)
             try{
-                (async () => {
-                    if(counter.setGlobalCounter) counter.setGlobalCounter(0);
-                    for(let i = 0; i<10; i++) await asyncDelay(1000);
-                })()
-                const cachedUsername = await AsyncStorage.getItem("clientUsername");
-                const uid = await verifyUsername(cachedUsername);
-                const MobileAuthSessionsResponse = await fetch(`https://cwr-api-us.onrender.com/post/provider/cwr/firestore/query?select=planreminder`, { 
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ path: `util/authenticationSessions/${uid}`, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-                })
-                const MobileAuthSessions = await MobileAuthSessionsResponse.json();
-                const planreminderMobileAuthSession = MobileAuthSessions.docDatas.Mobile.planreminder;
-                if(counter.globalCounter && counter.globalCounter < 10){
-                    if(planreminderMobileAuthSession.authenticated && !auth().currentUser){
-                        console.log("Welcome back", cachedUsername);
-                        const response = await fetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/createCustomToken", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ uid: uid, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-                        })
-                        const mobileAuthToken = await response.json();
-                        const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
-                        const userTokens = await auth().currentUser?.getIdTokenResult();
-                        const userClaims = userTokens?.claims;
-                        if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
-                        const ip = await getClientIp();
-                        await fetch("https://cwr-api-us.onrender.com/post/provider/cwr/firestore/update", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Mobile`, writeData: { planreminder: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-                        });
-                    }
-                    else if(!planreminderMobileAuthSession.authenticated && auth().currentUser) await auth().signOut();
-                    else if(planreminderMobileAuthSession.authenticated && auth().currentUser){
-                        const userTokens = await auth().currentUser?.getIdTokenResult();
-                        const userClaims = userTokens?.claims;
-                        if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
-                        await jobDelay(() => {
-                            AsyncStorage.getItem("clientUsername").then((un) => showMessage({ message: langs[lang.lang].registration.showMessageFunc.welcomeBack + un, type: "success", icon: "success" }));
-                            navigation.replace("UserDashboard")
-                        }, 3000);
+                if(netinfo.isConnected){
+                    (async () => {
+                        if(counter.setGlobalCounter) counter.setGlobalCounter(0);
+                        for(let i = 0; i<10; i++) await asyncDelay(1000);
+                    })()
+                    const cachedUsername = await AsyncStorage.getItem("clientUsername");
+                    const uid = await verifyUsername(cachedUsername);
+                    const MobileAuthSessionsResponse = await fetch(`https://cwr-api-us.onrender.com/post/provider/cwr/firestore/query?select=planreminder`, { 
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ path: `util/authenticationSessions/${uid}`, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                    })
+                    const MobileAuthSessions = await MobileAuthSessionsResponse.json();
+                    const planreminderMobileAuthSession = MobileAuthSessions.docDatas.Mobile.planreminder;
+                    if(counter.globalCounter && counter.globalCounter < 10){
+                        if(planreminderMobileAuthSession.authenticated && !auth().currentUser){
+                            console.log("Welcome back", cachedUsername);
+                            const response = await fetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/createCustomToken", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ uid: uid, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                            })
+                            const mobileAuthToken = await response.json();
+                            const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
+                            const userTokens = await auth().currentUser?.getIdTokenResult();
+                            const userClaims = userTokens?.claims;
+                            if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
+                            const ip = await getClientIp();
+                            await fetch("https://cwr-api-us.onrender.com/post/provider/cwr/firestore/update", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ path: `util/authenticationSessions/${userCredential.user.uid}/Mobile`, writeData: { planreminder: { authenticated: true, at: { place: ip, time: Date() } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+                            });
+                        }
+                        else if(!planreminderMobileAuthSession.authenticated && auth().currentUser) await auth().signOut();
+                        else if(planreminderMobileAuthSession.authenticated && auth().currentUser){
+                            const userTokens = await auth().currentUser?.getIdTokenResult();
+                            const userClaims = userTokens?.claims;
+                            if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
+                            await jobDelay(() => {
+                                AsyncStorage.getItem("clientUsername").then((un) => showMessage({ message: langs[lang.lang].registration.showMessageFunc.welcomeBack + un, type: "success", icon: "success" }));
+                                navigation.replace("UserDashboard")
+                            }, 3000);
+                        }
                     }
                 }
             }catch(error){
@@ -489,7 +527,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                 }).start();
             }, 1000)
         })();
-    }, [ width, height, themedColor ]);
+    }, [ width, height, themedColor, netinfo.isConnected ]);
 
     useDelayedEffect(() => {
         if(authUser.isAuthUser || auth().currentUser){

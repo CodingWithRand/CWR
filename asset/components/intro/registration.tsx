@@ -54,7 +54,7 @@ async function signInWithGoogle() {
             });
         }
 
-        await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+        // await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { authenticatedThroughProvider: "google.com" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
         if(!userCredential.user.providerData.some(provider => provider.providerId === "password")) await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: userCredential.user.uid, claims: { createdAccountWithGoogleAccount: true }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
 
     } catch (error: any) {
@@ -120,7 +120,7 @@ async function implementMobileAuthentication(uid: string) {
         });
     }
 
-    await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "password" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
+    // await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/setCustomUserClaims", { uid: auth().currentUser?.uid, claims: { authenticatedThroughProvider: "password" }, securityStage: "none", adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
 }
 
 export default function RegistrationPage({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "Registration"> }) {
@@ -438,10 +438,13 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
             }, 1000)
             try{
                 if(netinfo.isConnected){
+                    let c = 0;
                     (async () => {
-                        if(counter.setGlobalCounter) counter.setGlobalCounter(0);
-                        for(let i = 0; i<10; i++) await asyncDelay(1000);
-                    })()
+                        for(let i = 0; i<10; i++){
+                            c++;
+                            await asyncDelay(1000);
+                        }
+                    })();
                     const cachedUsername = await AsyncStorage.getItem("clientUsername");
                     const uid = await verifyUsername(cachedUsername);
                     const MobileAuthSessionsResponse = await fetch(`https://cwr-api-us.onrender.com/post/provider/cwr/firestore/query?select=planreminder`, { 
@@ -451,7 +454,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                     })
                     const MobileAuthSessions = await MobileAuthSessionsResponse.json();
                     const planreminderMobileAuthSession = MobileAuthSessions.docDatas.Mobile.planreminder;
-                    if(counter.globalCounter && counter.globalCounter < 10){
+                    if(c < 10){
                         if(planreminderMobileAuthSession.authenticated && !auth().currentUser){
                             console.log("Welcome back", cachedUsername);
                             const response = await fetch("https://cwr-api-us.onrender.com/post/provider/cwr/auth/createCustomToken", {
@@ -461,9 +464,6 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                             })
                             const mobileAuthToken = await response.json();
                             const userCredential = await auth().signInWithCustomToken(mobileAuthToken.data.token);
-                            const userTokens = await auth().currentUser?.getIdTokenResult();
-                            const userClaims = userTokens?.claims;
-                            if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
                             const ip = await getClientIp();
                             await fetch("https://cwr-api-us.onrender.com/post/provider/cwr/firestore/update", {
                                 method: "POST",
@@ -473,9 +473,6 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
                         }
                         else if(!planreminderMobileAuthSession.authenticated && auth().currentUser) await auth().signOut();
                         else if(planreminderMobileAuthSession.authenticated && auth().currentUser){
-                            const userTokens = await auth().currentUser?.getIdTokenResult();
-                            const userClaims = userTokens?.claims;
-                            if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
                             await jobDelay(() => {
                                 AsyncStorage.getItem("clientUsername").then((un) => showMessage({ message: langs[lang.lang].registration.showMessageFunc.welcomeBack + un, type: "success", icon: "success" }));
                                 navigation.replace("UserDashboard")
@@ -537,14 +534,6 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
             } else {
                 console.log("authenticated user");
                 (async () => {
-                    const userTokens = await auth().currentUser?.getIdTokenResult();
-                    const userClaims = userTokens?.claims;
-                    try{
-                        await GoogleSignin.hasPlayServices();
-                        if(userClaims?.authenticatedThroughProvider === "google.com") await GoogleSignin.signInSilently();
-                    }catch(error){
-                        console.error(error);
-                    }
                     if(currentRoute === "Registration"){
                         showMessage({ 
                             message: langs[lang.lang].registration.showMessageFunc.welcomeBack + await AsyncStorage.getItem("clientUsername"),

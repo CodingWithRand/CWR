@@ -67,3 +67,4 @@ yarn-error.log
 
 # preserve environment variable
 .env*.local
+android/gradle.properties

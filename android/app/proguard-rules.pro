@@ -9,3 +9,18 @@
 
 # Add any project specific keep options here:
 -keep class com.transistorsoft.rnbackgroundfetch.HeadlessTask { *; }
+-keep class com.google.android.gms.** { *; }
+-keep class com.google.api.** { *; }
+-keep class com.google.android.gms.auth.** { *; }
+-keep class com.google.android.gms.common.** { *; }
+-keep class com.google.android.gms.common.api.** { *; }
+-keep class com.google.android.gms.common.internal.** { *; }
+-keep class com.google.android.gms.common.internal.safeparcel.** { *; }
+-keep class com.google.android.gms.common.server.response.** { *; }
+-keep class com.google.android.gms.common.util.** { *; }
+-keep class com.google.android.gms.drive.** { *; }
+-keep class com.google.android.gms.dynamic.** { *; }
+-keep class com.google.android.gms.location.** { *; }
+-keep class com.google.android.gms.maps.** { *; }
+-keep class com.google.android.gms.nearby.** { *; }
+-keep class com.google.android.gms.tasks.** { *; }

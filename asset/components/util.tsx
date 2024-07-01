@@ -59,24 +59,12 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
   async function promptSignOut(){
       try {
           setLoading(true);
-          const userTokens = await auth().currentUser?.getIdTokenResult();
-          const userClaims = userTokens?.claims;
-          console.log(userClaims?.authenticatedThroughProvider);
           await retryFetch("https://cwr-api-us.onrender.com/post/provider/cwr/firestore/update", { path: `util/authenticationSessions/${auth().currentUser?.uid}/Mobile`, writeData: { planreminder :{ authenticated: false, at: { place: null, time: null } } }, adminKey: FIREBASE_PERSONAL_ADMIN_KEY })
-          if(auth().currentUser?.providerData.some(provider => provider.providerId === "google.com") && userClaims?.authenticatedThroughProvider === "google.com") {
-              await GoogleSignin.revokeAccess();
-              await GoogleSignin.signOut();
-          }
           await auth().signOut();
           setLoading(false);
           navigation.goBack();
-          setTimeout(() => navigation.replace("Registration"), 100)
+          await jobDelay(() => navigation.replace("Registration"), 1000)
       } catch (e) {
-          if((e as Error).message === "SIGN_IN_REQUIRED" && auth().currentUser){
-              await auth().signOut();
-              navigation.goBack();
-              setTimeout(() => navigation.replace("Registration"), 100)
-          }
           console.error((e as Error).message);
       }
   }

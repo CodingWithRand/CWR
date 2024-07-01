@@ -27,28 +27,28 @@ export default function Credit({ navigation }: { navigation: NativeStackNavigati
   const permissionRequestExplanationTitles = [
     {
       id: "WRITE_SETTINGS",
-      title: langs[lang.lang].permissionRequestPage.titles.writeSetting,
-      explanation: langs[lang.lang].permissionRequestPage.explanations.writeSetting
+      title: langs[lang.lang || "en"].permissionRequestPage.titles.writeSetting,
+      explanation: langs[lang.lang || "en"].permissionRequestPage.explanations.writeSetting
     },
     {
       id: "PACKAGE_USAGE_STATS",
-      title: langs[lang.lang].permissionRequestPage.titles.appUsageStats,
-      explanation: langs[lang.lang].permissionRequestPage.explanations.appUsageStats
+      title: langs[lang.lang || "en"].permissionRequestPage.titles.appUsageStats,
+      explanation: langs[lang.lang || "en"].permissionRequestPage.explanations.appUsageStats
     },
     {
       id: "ACCESSIBILITY_SERVICE",
-      title: langs[lang.lang].permissionRequestPage.titles.accessibilityService,
-      explanation: langs[lang.lang].permissionRequestPage.explanations.accessibilityService
+      title: langs[lang.lang || "en"].permissionRequestPage.titles.accessibilityService,
+      explanation: langs[lang.lang || "en"].permissionRequestPage.explanations.accessibilityService
     },
     {
       id: "NOTIFICATIONS",
-      title: langs[lang.lang].permissionRequestPage.titles.notifications,
-      explanation: langs[lang.lang].permissionRequestPage.explanations.notifications
+      title: langs[lang.lang || "en"].permissionRequestPage.titles.notifications,
+      explanation: langs[lang.lang || "en"].permissionRequestPage.explanations.notifications
     },
     {
       id: "WIFI",
-      title: langs[lang.lang].permissionRequestPage.titles.wifi,
-      explanation: langs[lang.lang].permissionRequestPage.explanations.wifi
+      title: langs[lang.lang || "en"].permissionRequestPage.titles.wifi,
+      explanation: langs[lang.lang || "en"].permissionRequestPage.explanations.wifi
     }
   ]
 
@@ -105,8 +105,8 @@ export default function Credit({ navigation }: { navigation: NativeStackNavigati
       <Modal visible={showModal} animationType="fade">
         <ScrollView style={{ flex: 1, backgroundColor: themedColor.bg, width: width, height: height, padding: 35 }} contentContainerStyle={styles.fullPageCenter}>
           {/* Add language changing button next time */}
-          <Text style={[textStyle, { fontSize: 30, marginTop: 40, marginVertical: 20 }]}>{langs[lang.lang].permissionRequestPage.header}</Text>
-          <Text style={textStyle}>{langs[lang.lang].permissionRequestPage.description}</Text>
+          <Text style={[textStyle, { fontSize: 30, marginTop: 40, marginVertical: 20 }]}>{langs[lang.lang || "en"].permissionRequestPage.header}</Text>
+          <Text style={textStyle}>{langs[lang.lang || "en"].permissionRequestPage.description}</Text>
           <FlatList
             keyExtractor={(permissionRequestExplanationTitles) => permissionRequestExplanationTitles.id}
             data={permissionRequestExplanationTitles}
@@ -117,7 +117,7 @@ export default function Credit({ navigation }: { navigation: NativeStackNavigati
               </View>
             }
           />
-          <Text style={textStyle}>{langs[lang.lang].permissionRequestPage.conclusion}</Text>
+          <Text style={textStyle}>{langs[lang.lang || "en"].permissionRequestPage.conclusion}</Text>
           <TouchableOpacity onPress={async () => {
             if(!await PermissionCheck.checkForNotificationPermission()){
               await PermissionCheck.requestNotificationPermission()
@@ -156,7 +156,7 @@ export default function Credit({ navigation }: { navigation: NativeStackNavigati
             setHasSetup(true);
             setShowModal(false);
           }}>
-            <Text style={[textStyle, { fontSize: 20, marginVertical: 40, color: "red" }]}>{langs[lang.lang].permissionRequestPage.permitBtn}</Text>
+            <Text style={[textStyle, { fontSize: 20, marginVertical: 40, color: "red" }]}>{langs[lang.lang || "en"].permissionRequestPage.permitBtn}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ position: "absolute", top: 0, left: 0 }} onPress={() => {
             if(totalLang.length - langIndex === 1) setLangIndex(0);

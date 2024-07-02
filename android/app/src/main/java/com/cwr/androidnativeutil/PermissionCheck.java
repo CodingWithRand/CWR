@@ -1,6 +1,7 @@
 package com.cwr.androidnativeutil;
 
 import android.app.AppOpsManager;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -70,6 +71,16 @@ public class PermissionCheck extends MainNativeUtil {
         }
     }
 
+    @ReactMethod
+    public void checkForNotificationPolicyAccess(Promise promise) {
+        NotificationManager notificationManager = (NotificationManager) NativeModuleContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager.isNotificationPolicyAccessGranted()) {
+            promise.resolve(true);
+        } else {
+            promise.resolve(false);
+        }
+    }
+
     private void requestSettingsPermission(String permission){
         Intent intent = new Intent(permission);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -103,5 +114,10 @@ public class PermissionCheck extends MainNativeUtil {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         NativeModuleContext.startActivity(intent);
+    }
+
+    @ReactMethod
+    public void requestNotificationPolicyAccess(){
+        requestSettingsPermission(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
     }
 }

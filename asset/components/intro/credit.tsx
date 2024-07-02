@@ -152,6 +152,14 @@ export default function Credit({ navigation }: { navigation: NativeStackNavigati
             }else{
               console.log("Accessibility service permission granted");
             }
+            if(!await PermissionCheck.checkForNotificationPolicyAccess()){
+              await PermissionCheck.requestNotificationPolicyAccess()
+              console.log("Notification policy access permission is not granted");
+              Alert.alert("Warning", "Notification policy access permission is not granted yet")
+              return
+            }else{
+              console.log("Notification policy access permission granted");
+            }
             await AsyncStorage.setItem("hasSetup", "true");
             setHasSetup(true);
             setShowModal(false);

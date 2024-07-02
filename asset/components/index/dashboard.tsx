@@ -104,6 +104,13 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
         if(selectedGathering === "total") setSelectedItems([])
     }, [selectedGathering])
 
+    useEffect(() => {
+        if(selectedPlan === "range"){
+            setSelectedGathering("separate")
+            setSelectedItems([])
+        }
+    }, [selectedPlan])
+
     return (
         <ScrollView>
             <Text style={[styles.title, topicsTextStyle]}>{langs[lang.lang].userpage1["usageplanningbutton"]}</Text>
@@ -172,6 +179,7 @@ export function UserPage1({ navigation, route }: { navigation: NativeStackNaviga
                         'checked' : 'unchecked'}
                     onPress={() => {setSelectedGathering('total'); setSelectedItems([])}}
                     color="#007BFF"
+                    disabled={selectedPlan === "range" ? true : false}
                 />
                 <Text style={[styles.optionsLabel,topicsTextStyle]}>{langs[lang.lang].userpage1["Allinclusiveplanbutton"]}</Text>
 
@@ -331,6 +339,7 @@ export function GUESTPAGE({ navigation }: { navigation: NativeStackNavigationPro
 
             <TouchableHighlight onPress={async () => {
                 const guestSettings = {
+                    plan: "duration",
                     gathering: {
                         name: "total",
                         body: ["total"]
@@ -442,6 +451,9 @@ export function UserPage2({ navigation, route }: { navigation: NativeStackNaviga
     };
 
     const addRange = (index: number) => {
+        // Only one range for now
+        if(range.length === gathering?.body?.length) return
+        if(!startTime[index] || !endTime[index]) return
         setRange((prevRange) => {
             if(startTime.length === endTime.length) {
                 return [...prevRange, {

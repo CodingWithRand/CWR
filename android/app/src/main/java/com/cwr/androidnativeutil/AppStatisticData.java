@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AppStatisticData extends MainNativeUtil{
 
@@ -45,8 +46,8 @@ public class AppStatisticData extends MainNativeUtil{
         return "AppStatisticData";
     }
 
-    private class TimePeriod{
-        private class BeginEndTime{
+    private static class TimePeriod{
+        private static class BeginEndTime{
             long st;
             long et;
         }
@@ -149,21 +150,34 @@ public class AppStatisticData extends MainNativeUtil{
             for (UsageStats usageStats : stats) {
                 String packageName = usageStats.getPackageName();
                 if (getAppName(packageName).equals("System Package")) continue;
+                if (Objects.equals(packageName, NativeModuleContext.getPackageName())) continue;
                 long timeInForeground = usageStats.getTotalTimeInForeground();
 
-                UsageEvents.Event lastAppOnForegroundEvent = getLastAppEvent(beginEndTime.st, beginEndTime.et, UsageEvents.Event.MOVE_TO_FOREGROUND, null);
-                UsageEvents.Event lastAppOnBackgroundEvent = getLastAppEvent(beginEndTime.st, beginEndTime.et, UsageEvents.Event.MOVE_TO_BACKGROUND, null);
-                if(lastAppOnForegroundEvent.getTimeStamp() > lastAppOnBackgroundEvent.getTimeStamp()) {
-                    if (usageStats.getPackageName().equals(lastAppOnForegroundEvent.getPackageName())) {
-//                      Log.d("AppStatisticData", lastAppEvent.getPackageName());
-                        long elapsingTime = System.currentTimeMillis() - lastAppOnForegroundEvent.getTimeStamp();
+                /* Real-Time usage data check (not accurate) */
+
+//                UsageEvents.Event lastAppOnForegroundEvent = getLastAppEvent(beginEndTime.st, beginEndTime.et, UsageEvents.Event.MOVE_TO_FOREGROUND, null);
+//                UsageEvents.Event lastAppOnBackgroundEvent = getLastAppEvent(beginEndTime.st, beginEndTime.et, UsageEvents.Event.MOVE_TO_BACKGROUND, null);
+//                if(lastAppOnForegroundEvent.getTimeStamp() > lastAppOnBackgroundEvent.getTimeStamp()) {
+//                    if (usageStats.getPackageName().equals(lastAppOnForegroundEvent.getPackageName())) {
+//                        Log.d("AppStatisticData", String.valueOf(lastAppOnForegroundEvent.getTimeStamp()));
+//                        Log.d("AppStatisticData", String.valueOf(lastAppOnBackgroundEvent.getTimeStamp()));
+//                        long elapsingTime = System.currentTimeMillis() - lastAppOnForegroundEvent.getTimeStamp();
 //                      Log.d("AppStatisticData", timeInForeground + "+" + elapsingTime);
-                        if (elapsingTime > 0) timeInForeground += elapsingTime;
-                    }
+//                        if (elapsingTime > 0) timeInForeground += elapsingTime;
+//                    }
 //                  Log.d("AppStatisticData", "Spent " + timeInForeground + " millisecond in " + getAppName(packageName) + " (" + packageName + ")");
+//                }
+//                Log.d("AppStatisticData", "Spent " + timeInForeground + " millisecond in " + getAppName(packageName) + " (" + packageName + ", Last time use: )" + usageStats.getLastTimeUsed() );
+
+                if(appsForegroundTime.containsKey(getAppName(packageName))){
+                    long currentAppTotalUsage = (long) appsForegroundTime.get(getAppName(packageName));
+//                    Log.d("AppStatisticData", String.valueOf(currentAppTotalUsage));
+                    appsForegroundTime.put(getAppName(usageStats.getPackageName()), currentAppTotalUsage + timeInForeground);
+                } else {
+                    appsForegroundTime.put(getAppName(usageStats.getPackageName()), timeInForeground);
                 }
-                appsForegroundTime.put(getAppName(usageStats.getPackageName()), timeInForeground);
             }
+            Log.d("AppStatisticData", appsForegroundTime.toString());
         }
         return appsForegroundTime;
     }
@@ -186,6 +200,7 @@ public class AppStatisticData extends MainNativeUtil{
             default -> throw new IllegalArgumentException("Invalid time length or not specified");
         };
 
+        Log.d("AppStatisticData", beginEndTime.et + " " + beginEndTime.st);
         List<UsageStats> stats = usageStatsManager.queryUsageStats(interval, beginEndTime.st, beginEndTime.et);
         long appForegroundTime = 0L;
 
@@ -193,9 +208,26 @@ public class AppStatisticData extends MainNativeUtil{
             for (UsageStats usageStats : stats) {
                 String packageName = usageStats.getPackageName();
                 if (getAppName(packageName).equals("System Package")) continue;
+                if (Objects.equals(packageName, NativeModuleContext.getPackageName())) continue;
                 if (getAppName(packageName).equals(appName)){
-                    appForegroundTime = usageStats.getTotalTimeInForeground();
-                    break;
+                    appForegroundTime += usageStats.getTotalTimeInForeground();
+
+                    /* Real-Time usage data check (not accurate) */
+
+//                    UsageEvents.Event lastAppOnForegroundEvent = getLastAppEvent(beginEndTime.st, beginEndTime.et, UsageEvents.Event.MOVE_TO_FOREGROUND, packageName);
+//                    UsageEvents.Event lastAppOnBackgroundEvent = getLastAppEvent(beginEndTime.st, beginEndTime.et, UsageEvents.Event.MOVE_TO_BACKGROUND, packageName);
+//                    if(lastAppOnForegroundEvent.getTimeStamp() > lastAppOnBackgroundEvent.getTimeStamp()) {
+//                        if (usageStats.getPackageName().equals(lastAppOnForegroundEvent.getPackageName())) {
+//                        Log.d("AppStatisticData", String.valueOf(lastAppOnForegroundEvent.getTimeStamp()));
+//                        Log.d("AppStatisticData", String.valueOf(lastAppOnBackgroundEvent.getTimeStamp()));
+//                            long elapsingTime = System.currentTimeMillis() - lastAppOnForegroundEvent.getTimeStamp();
+//                        Log.d("AppStatisticData", appForegroundTime + "+" + elapsingTime);
+//                            if (elapsingTime > 0) appForegroundTime += elapsingTime;
+//                        }
+//                     Log.d("AppStatisticData", "Spent " + appForegroundTime + " millisecond in " + getAppName(packageName) + " (" + packageName + ")");
+//                    }
+//                    Log.d("AppStatisticData", "Spent " + appForegroundTime + " millisecond in " + getAppName(packageName) + " (" + packageName + ")");
+//                    break;
                 }
                 // Log.d("AppStatisticData", "Spent " + timeInForeground + " millisecond in " + getAppName(packageName) + " (" + packageName + ")");
             }
@@ -212,6 +244,7 @@ public class AppStatisticData extends MainNativeUtil{
 
         for (ResolveInfo resolveInfo : resolveInfos) {
             String packageName = resolveInfo.activityInfo.packageName;
+            if (Objects.equals(packageName, NativeModuleContext.getPackageName())) continue;
             String appName = resolveInfo.loadLabel(packageManager).toString();
             allInstalledAppNamesAndPackages.put(appName, appName + " (" + packageName + ")");
         }

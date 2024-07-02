@@ -159,12 +159,12 @@ public class BackgroundProcessWorkers {
                 for (Object TotalAppUsageInPeriod : RetrievedAppUsageStatisticData.values()) {
                     TotalAppsUsageInPeriod += ((Number) TotalAppUsageInPeriod).longValue();
                 }
+//                Brightness brightnessSetting = new Brightness(backgroundContext);
                 if (TotalAppsUsageInPeriod >= (usageRestrictionIntervalValue * comparator)) {
-                    Brightness brightnessSetting = new Brightness(backgroundContext);
                     Audio audioSetting = new Audio(backgroundContext);
                     Notification notification = new Notification(backgroundContext);
                     if (configs.hasKey("isIntenselyStricted") && configs.getBoolean("isIntenselyStricted")) {
-                        brightnessSetting.setScreenBrightness(0);
+//                        brightnessSetting.openScreenBrightnessLayoutOnBackground(0.0F);
                         audioSetting.setVolume("all", 0);
                     }
 
@@ -199,6 +199,7 @@ public class BackgroundProcessWorkers {
                     );
                     Log.i("AppStatisticProcessor", "You've spent " + TotalAppsUsageInPeriod + " milliseconds on screen. Go touch grass now man.");
                 } else {
+//                    brightnessSetting.closeScreenBrightnessLayoutOnBackground();
                     Log.i("AppStatisticProcessor", "You've spent " + TotalAppsUsageInPeriod + " milliseconds on screen");
                 }
             } catch (JSONException je) {
@@ -218,12 +219,12 @@ public class BackgroundProcessWorkers {
                     String theAppIntervalUnit = theAppBcp.unit;
                     long theComparator = theAppBcp.c;
                     long usedTimeInApp = ((Number) AppUsageInPeriod.getValue()).longValue();
+//                    Brightness brightnessSetting = new Brightness(backgroundContext);
                     if(usedTimeInApp >= (theAppUsageRestrictionIntervalValue * theComparator)){
-                        Brightness brightnessSetting = new Brightness(backgroundContext);
                         Audio audioSetting = new Audio(backgroundContext);
                         Notification notification = new Notification(backgroundContext);
                         if (theAppConfigs.hasKey("isIntenselyStricted") && theAppConfigs.getBoolean("isIntenselyStricted")) {
-                            brightnessSetting.setScreenBrightness(0);
+//                            brightnessSetting.openScreenBrightnessLayoutOnBackground(0.0F);
                             audioSetting.setVolume("all", 0);
                         }
 
@@ -259,6 +260,7 @@ public class BackgroundProcessWorkers {
                         );
                         Log.i("AppStatisticProcessor", "You've spent " + usedTimeInApp + " milliseconds on " + appName + ". Go touch grass now man.");
                     } else {
+//                        brightnessSetting.closeScreenBrightnessLayoutOnBackground();
                         Log.i("AppStatisticProcessor", "You've spent " + usedTimeInApp + " milliseconds on " + appName + ".");
                     }
                 }

@@ -11,9 +11,10 @@ import { FIREBASE_PERSONAL_ADMIN_KEY } from "@env"
 import { retryFetch } from "../scripts/util";
 import { Button } from "react-native-paper";
 import { useGlobal } from "../scripts/global";
+import Slider from "@react-native-community/slider";
 
 
-const { AppStatisticData, PermissionCheck, BackgroundProcess } = NativeModules;
+const { AppStatisticData, PermissionCheck, BackgroundProcess, BrightnessSetting } = NativeModules;
 
 export function Dashboard({ navigation }: { navigation: NativeStackNavigationProp<RouteStackParamList, "UserDashboard"> }) {
     const isDark = useColorScheme() === "dark"
@@ -22,14 +23,23 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
         intenseMode: useState(false),
     };
     const { lang } = useGlobal();
+    const [ brightness, setbrightness ] = useState(0);
 
     useEffect(() => {
         (async () => {
             // console.log(await AppStatisticData.getAllInstalledLaunchableAppNames());
-            // await PermissionCheck.requestAccessibilityServicePermission();
+            // await PermissionCheck.requestAccessibilityServicePermission()
+            setbrightness(await BrightnessSetting.getScreenBrightness());
             if(!await PermissionCheck.checkWriteSettingsPermission()) AsyncStorage.setItem("intenseMode", "false");
         })()
     }, [])
+
+    useEffect(() => {
+        (async () => {
+            console.log(await BrightnessSetting.getScreenBrightness());
+            await BrightnessSetting.setScreenBrightness(brightness)
+        })();
+    }, [brightness]);
 
     useEffect(() => {
         (async () => {
@@ -105,24 +115,24 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                     name: "Retriever", // ชื่อ Worker (*Required)
 
                     /* ตรวจจับการใช้งานแอปทุกแอปพลิเคชัน */
-                    // retrieveTotalAppsStatistic: {
-                    //     interval: "daily" // ได้จากตัวแปร unit (*Required)
-                    // }
+                    retrieveTotalAppsStatistic: {
+                        interval: "daily" // ได้จากตัวแปร unit (*Required)
+                    }
 
                     /* ตรวจจับการใช้งานแอปแต่ละแอปพลิเคชัน */
-                    retrieveAppsStatistic: [
-                        /* ตัวอย่าง */
-                        //1. YouTube
-                        {
-                            appName: "YouTube", // ชื่อ App (*Required)
-                            interval: "daily" // ได้จากตัวแปร unit (*Required)
-                        },
-                        //2. planreminder (this app)
-                        {
-                            appName: "planreminder",
-                            interval: "daily"
-                        }
-                    ]
+                    // retrieveAppsStatistic: [
+                    //     /* ตัวอย่าง */
+                    //     //1. YouTube
+                    //     {
+                    //         appName: "YouTube", // ชื่อ App (*Required)
+                    //         interval: "daily" // ได้จากตัวแปร unit (*Required)
+                    //     },
+                    //     //2. planreminder (this app)
+                    //     {
+                    //         appName: "Google",
+                    //         interval: "daily"
+                    //     }
+                    // ]
                 },
                 {
                     name: "Processor",
@@ -133,29 +143,29 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
                         // ชื่องาน(*Fix): { // configs }
 
                         /* งานตรวจจับระยะเวลาการใช้แอปทั้งหมด */
-                        // totalAppUsageRestriction: {
-                        //     restrictedPeriod: 1, // ระยะเวลาที่ให้ใช้ ได้จาก durations[i].duration (*Required)
-                        //     inUnit: "minute", // ใช้หน่วย "minute"(นาที) เท่านั้น (*Required)
-                        //     watchInterval: "daily", // ได้จากตัวแปร unit (*Required)
-                        //     isIntenselyStricted: true // ได้จากตัวแปร isStrictMode (*Required)
-                        // }
+                        totalAppUsageRestriction: {
+                            restrictedPeriod: 1, // ระยะเวลาที่ให้ใช้ ได้จาก durations[i].duration (*Required)
+                            inUnit: "minute", // ใช้หน่วย "minute"(นาที) เท่านั้น (*Required)
+                            watchInterval: "daily", // ได้จากตัวแปร unit (*Required)
+                            isIntenselyStricted: true // ได้จากตัวแปร isStrictMode (*Required)
+                        }
 
                         /* งานตรวจจับระยะเวลาการใช้แอปต่างๆ */
-                        appsUsageRestriction: {
-                            /* ชื่อแอป (ได้จาก durations[i].owner): { // configs } */
-                            YouTube: {
-                                restrictedPeriod: 1,
-                                inUnit: "minute",
-                                watchInterval: "daily",
-                                isIntenselyStricted: true
-                            },
-                            planreminder: {
-                                restrictedPeriod: 1,
-                                inUnit: "minute",
-                                watchInterval: "daily",
-                                isIntenselyStricted: true
-                            }
-                        }
+                        // appsUsageRestriction: {
+                        //     /* ชื่อแอป (ได้จาก durations[i].owner): { // configs } */
+                        //     YouTube: {
+                        //         restrictedPeriod: 1,
+                        //         inUnit: "minute",
+                        //         watchInterval: "daily",
+                        //         isIntenselyStricted: true
+                        //     },
+                        //     Google: {
+                        //         restrictedPeriod: 1,
+                        //         inUnit: "minute",
+                        //         watchInterval: "daily",
+                        //         isIntenselyStricted: true
+                        //     }
+                        // }
                     }
                 }
             ])} underlayColor="darkgreen" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "green", borderRadius: moderateScale(10, width) }}>
@@ -201,6 +211,12 @@ export function Dashboard({ navigation }: { navigation: NativeStackNavigationPro
             <TouchableHighlight onPress={promptSignOut} underlayColor="dimgrey" style={{ width: horizontalScale(100, width), padding: moderateScale(10, width), backgroundColor: "grey", borderRadius: moderateScale(10, width) }}>
                 <Text>Sign Out</Text>
             </TouchableHighlight>
+            <Slider
+                style={{ width: width }}
+                maximumValue={255}
+                onValueChange={(slidervalue) => setbrightness(slidervalue)}
+                value={brightness}
+            />
         </View>
     );
 }

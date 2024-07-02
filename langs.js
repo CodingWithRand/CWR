@@ -103,6 +103,16 @@ const th = {
         },
         conclusion: "กรุณาอนุญาตให้แอปพลิเคชันเข้าถึงสิทธิ์เหล่านี้ก่อนเข้าใช้งาน",
         permitBtn: "อนุญาตทั้งหมด"
+    },
+    settingsAppliedPage: {
+        successApplied: "การตั้งค่าได้ถูกนำไปใช้งานแล้ว!",
+        choices: "คุณต้องการ...",
+        initiate: "เริ่มการตรวจจับข้อมูลการใช้แอปพลิเคชัน",
+        revoke: "หยุดการทำงานตัวตรวจจับเดิม",
+        alertsuccessinitiate: "การตรวจจับข้อมูลการใช้แอปพลิเคชันสำเร็จ",
+        alertsuccessrevoke: "หยุดการทำงานตัวตรวจจับเดิมสำเร็จ",
+        alerterrorrevoke: "ไม่มีตัวตรวจจับกำลังทำงานอยู่",
+        alerterrorinitiate: "ตัวตรวจจับข้อมูลกำลังทำงาน โปรดหยุดมันก่อน"
     }
 }
 
@@ -209,6 +219,16 @@ const en = {
         },
         conclusion: "Please grant these permissions before continue using the app",
         permitBtn: "Grant all permissions"
+    },
+    settingsAppliedPage: {
+        successApplied: "Successfully applied the setting!",
+        choices: "Would you like to...",
+        initiate: "Start App Usage Data tracker",
+        revoke: "Stop the previous tracker",
+        alertsuccessinitiate: "App Usage Data tracker started successfully",
+        alertsuccessrevoke: "App Usage Data tracker stopped successfully",
+        alerterrorrevoke: "No tracker is currently running",
+        alerterrorinitiate: "App Usage Data tracker is already running, please stop it first"
     }
 }
 

@@ -6,4 +6,13 @@
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
     </style>
 
+    <style name="EmptyActivity" parent="android:Theme.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Toast</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">#00000000</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorForeground">#000</item>
+    </style>
+
 </resources>

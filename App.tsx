@@ -79,6 +79,7 @@ function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<
     {link:"https://www.flaticon.com/free-icons/triangle", title: "Triangle icons created by Dave Gandy - Flaticon", img: require("./asset/imgs/arrow-down.png")},
     {link:"https://www.flaticon.com/free-icons/search", title: "Search icons created by Catalin Fertu - Flaticon", img: require("./asset/imgs/search-symbol.png")},
     {link:"https://www.flaticon.com/free-icons/user", title: "User icons created by Freepik - Flaticon", img: isDark ? require("./asset/imgs/dark-account.png") : require("./asset/imgs/light-account.png")},
+    {link: "https://www.flaticon.com/free-icons/verified-badge-emoji", title: "Verified badge emoji icons created by icon wind - Flaticon", img: require("./asset/imgs/verify.png")},
   ]
 
   const setLang = (langCode: keyof typeof langs) => {
@@ -180,11 +181,11 @@ function Pages(){
       <Stack.Navigator screenOptions={{ presentation: "transparentModal" }}>
         <Stack.Screen name="Credit" component={Credit} options={{ headerShown: false }}/>
         <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }}/>
-        <Stack.Screen name="GuestDashboard" component={Dashboard} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.guestpage, headerRight: () => <ToolBarBTN navigation={navigation} guest/> })}/>
+        <Stack.Screen name="GuestDashboard" component={GUESTPAGE} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.guestpage, headerRight: () => <ToolBarBTN navigation={navigation} guest/> })}/>
         <Stack.Screen name="UserDashboard" component={UserPage1} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.userpage, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
         <Stack.Screen name="UserDashboard2" component={UserPage2} options={({ navigation }) => ({...titleBarStyle, title: langs[lang.lang].headerTitles.userpage, headerRight: () => <ToolBarBTN navigation={navigation}/> })} />
         <Stack.Screen name="Menu" component={ToolBar} options={{ headerShown: false }}/>
-        <Stack.Screen name="SettingsApplied" component={SettingsApplied} options={{ title: "" }} />
+        <Stack.Screen name="SettingsApplied" component={SettingsApplied} options={{...titleBarStyle, title: "" }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

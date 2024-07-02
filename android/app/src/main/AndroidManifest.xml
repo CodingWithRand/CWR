@@ -20,7 +20,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme"
-      android:debuggable="true">
+    >
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -33,6 +33,13 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+        <activity android:name="com.cwr.planreminder.DummyBrightnessActivity"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.cwr.planreminder.Dummy"
+            android:excludeFromRecents="true"
+            android:theme="@style/EmptyActivity"
+        />
+
       <service android:name=".TrackForegroundAppOpening" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
           android:exported="true">
         <intent-filter>

@@ -136,7 +136,7 @@ export default function RegistrationPage({ navigation }: { navigation: NativeSta
     const [ loading, setLoading ] = useState<boolean>(false);
     const [ injectJS, setInjectJS ] = useState<string>();
     const [ cwrRegistrationType, setCWRRegistrationType ] = useState<string>("");
-    const { authUser, counter, lang } = useGlobal();
+    const { authUser, lang } = useGlobal();
     const { themedColor } = useGlobal();
     const registrationBtnsFadingAnim = new Animated.Value(0);
     const registrationPageTitle = new Animated.Value(0);

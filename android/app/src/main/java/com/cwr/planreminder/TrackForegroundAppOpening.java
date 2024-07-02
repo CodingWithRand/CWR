@@ -73,15 +73,14 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                         Log.e("AppStatisticProcessor", "Unable to create notification channel: " + e.getMessage());
                     }
 
-                   
+//                    Brightness brightnessSetting = new Brightness(getApplicationContext());
                     if (nowTime.after(startTime) && nowTime.before(endTime)) {
                         // แจ้งเตือนผู้ใช้ให้หยุดใช้แอป และบอกว่าช่วงที่ห้ามใช้แอปจะหมดอีกเมื่อไรถ้ากดเข้าใช้แอป
                         long remainingTime = endTime.getTimeInMillis() - nowTime.getTimeInMillis();
                         int remainingMinutes = (int) (remainingTime / (1000 * 60));
-                        Brightness brightnessSetting = new Brightness(getApplicationContext());
                         Audio audioSetting = new Audio(getApplicationContext());
                         if(isStrictModeOn){
-                            brightnessSetting.setScreenBrightness(0);
+//                            brightnessSetting.openScreenBrightnessLayoutOnBackground(0.0F);
                             audioSetting.setVolume("all", 0);
                         }
                         notification.createAndSendNotification(
@@ -117,6 +116,9 @@ public class TrackForegroundAppOpening extends AccessibilityService {
                         );
                         Log.d("TrackForegroundAppService", "Hey, why don't you stop using " + appName + " now? The prohibited period is starting soon in " + minutesUntilStart + " minutes!");
                     }
+//                    else {
+//                        brightnessSetting.closeScreenBrightnessLayoutOnBackground();
+//                    }
                 }
 
 

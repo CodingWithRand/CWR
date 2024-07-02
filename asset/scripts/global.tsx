@@ -11,10 +11,6 @@ type GlobalStateType = {
   authUser: {
     isAuthUser: Mutable<FirebaseAuthTypes.User>
   },
-  counter: {
-    globalCounter: Mutable<number>,
-    setGlobalCounter: Mutable<React.Dispatch<React.SetStateAction<number | undefined>>>
-  }
   themedColor: {
     bg: string
     comp: string
@@ -27,10 +23,6 @@ type GlobalStateType = {
 
 const GlobalStateConstructor = {
   authUser: { isAuthUser: null },
-  counter: {
-    globalCounter: null,
-    setGlobalCounter: null
-  },
   themedColor: {
     bg: Colors.lighter,
     comp: Colors.lighter
@@ -45,7 +37,6 @@ const GlobalState = createContext<GlobalStateType>(GlobalStateConstructor);
 
 export function Global({ children }: { children: JSX.Element }){
   const [isAuthUser, getCurrentUser] = useState<FirebaseAuthTypes.User | null>();
-  const [globalCounter, setGlobalCounter] = useState<number>();
   const [themedColor, setThemedColor] = useState({
     bg: Colors.lighter,
     comp: Colors.lighter
@@ -62,7 +53,7 @@ export function Global({ children }: { children: JSX.Element }){
 
   useEffect(() => {
     (async () => {
-      setLang(await AsyncStorage.getItem("preferredLang") as keyof typeof langs);
+      setLang(await AsyncStorage.getItem("preferredLang") || "en");
     })()
   }, []);
 
@@ -77,7 +68,7 @@ export function Global({ children }: { children: JSX.Element }){
     return () => unsubscribe();
   }, []);
   
-  return <GlobalState.Provider value={{ authUser: {isAuthUser}, counter: {globalCounter, setGlobalCounter}, themedColor: themedColor, lang: { lang, setLang } }}>{children}</GlobalState.Provider>;
+  return <GlobalState.Provider value={{ authUser: {isAuthUser}, themedColor: themedColor, lang: { lang, setLang } }}>{children}</GlobalState.Provider>;
 }
 
 export function useGlobal(){

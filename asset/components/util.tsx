@@ -4,7 +4,8 @@ import { Animated, Text, StyleProp, TextStyle, Modal, ActivityIndicator, View, u
 import { FIREBASE_PERSONAL_ADMIN_KEY } from "@env"
 import { retryFetch } from "../scripts/util";
 import { useGlobal } from "../scripts/global";
-import { GoogleSignin } from "react-native-google-signin";
+// import { GoogleSignin } from "react-native-google-signin";
+import { NativeModules } from 'react-native';
 import auth from "@react-native-firebase/auth"
 import langs from "../../langs";
 
@@ -47,6 +48,9 @@ export function Loading({ loading }: { loading: boolean }){
   )
 }
 
+
+const { BackgroundProcess } = NativeModules;
+
 export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boolean }) {
   /* 
       Suggestion
@@ -77,9 +81,12 @@ export function SignOutBTN({ navigation, guest }: { navigation: any, guest?: boo
               `${langs[lang.lang].menu.signOutAlertPart1} ${guest ? langs[lang.lang].menu.signOutGuestCase : ""} ${langs[lang.lang].menu.signOutAlertPart2}`,
               [
                 { text: langs[lang.lang].menu.proceedBtn, onPress: guest ? async () => {
+                  if(await BackgroundProcess.isInvokerRegistered()) await BackgroundProcess.revokeInvokerRegistry();
+                  await BackgroundProcess.revokeAppInForegroundEventListener();
                   await auth().currentUser?.delete();
                   navigation.goBack();
-                  setTimeout(() => navigation.replace("Registration"), 100);
+                  await jobDelay(() => navigation.replace("Registration"), 1000);
+                  // setTimeout(() => navigation.replace("Registration"), 100);
                 } : promptSignOut },
                 { text: langs[lang.lang].menu.cancelBtn, style: "cancel" },
               ]

@@ -1,5 +1,6 @@
 package com.cwr.androidnativeutil;
 
+import com.cwr.androidnativeutil.settings.Brightness;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -23,6 +24,7 @@ public class AndroidNativeUtilPackage implements ReactPackage {
         modules.add(new AppStatisticData(reactContext));
         modules.add(new PermissionCheck(reactContext));
         modules.add(new BackgroundProcess(reactContext));
+        modules.add(new Brightness(reactContext));
 
         return modules;
     }

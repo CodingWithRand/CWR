@@ -37,6 +37,11 @@ public class BackgroundProcess extends MainNativeUtil{
 
     private static final String WORKERS_REGISTERED_FLAG = "247app-management-department-workers";
 
+    @ReactMethod
+    public void isInvokerRegistered(Promise promise){
+        promise.resolve(isInvokerRegistered(NativeModuleContext));
+    }
+
     private static boolean isInvokerRegistered(Context context){
         SharedPreferences preferences = context.getSharedPreferences(
             PreferenceManager.getDefaultSharedPreferencesName(context),

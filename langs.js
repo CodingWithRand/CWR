@@ -38,6 +38,8 @@ const th = {
         attributionbutton:"แหล่งที่มาของรูปภาพ",
         signoutbutton:"ออกจากระบบ",
         languagetext:"ภาษา",
+        othertext:"อื่น ๆ",
+        helpbutton:"ความช่วยเหลือ",
         englishtext:"ภาษาอังกฤษ",
         thaitext:"ภาษาไทย",
         signOutAlertPart1: "คุณกำลังจะออกจากระบบ",
@@ -45,6 +47,9 @@ const th = {
         signOutAlertPart2: "คุณยืนยันหรือไม่?",
         proceedBtn: "ใช่ ฉันต้องการออกจากระบบ",
         cancelBtn: "ยกเลิก",
+        accessibilityserviceexplain: "ในการใช้แอปพลิเคชันของเรา คุณต้องให้อนุญาต Accessibility Service เพื่อที่จะสามารถใช้งานการตรวจจับแบบช่วงเวลาได้ แต่มันอาจส่งผลต่อแอปพลิเคชันบางแอปที่ต้องใช้คุณสมบัติทางความปลอดภัย คุณสามารถเปิดหรือปิดการใช้งาน Accessibility Service ได้ตลอดเวลาที่นี่โดยคลิกที่ปุ่มนี้",
+        accessibilityservicetoggle: "เปิด/ปิดการใช้งาน Accessibility Service",
+        helpinquiry: "สำหรับข้อมูลเพิ่มเติม โปรดติดต่อผู้ดูแลระบบ"
     },
     userpage1: {
         usageplanningbutton:"การกำหนดเเผนการใช้งาน",
@@ -97,7 +102,7 @@ const th = {
         explanations: {
             writeSetting: "การอนุญาตนี้จำเป็นสำหรับการแก้ไขการตั้งค่าระบบ การอนุญาตนี้เกี่ยวข้องกับ \"โหมดเข้มงวด\" เป็นหลัก ซึ่งจะเปลี่ยนแปลงเสียงและความสว่างของอุปกรณ์ ในการตรวจสอบแต่ละครั้งว่าการใช้งานแอปเกินขีดจำกัด เมื่อเปิดการตั้งค่านี้",
             appUsageStats: "การอนุญาตนี้จำเป็นสำหรับการตรวจสอบการใช้งานแอปพลิเคชันเป็นหลัก และจะถูกเปรียบเทียบกับขีดจำกัดที่ผู้ใช้กำหนด การใช้งานแอปพลิเคชันจะถูกตรวจสอบทุกๆ 1 นาทีหรือทุกครั้งที่ผู้ใช้เปิดแอปพลิเคชัน",
-            accessibilityService: "การอนุญาตนี้จำเป็นสำหรับการเปิดใช้งาน Accessibility Service ซึ่งใช้ในการติดตามกิจกรรมของผู้ใช้บนอุปกรณ์ ในกรณีนี้ เราจะใช้เพื่อติดตามว่าผู้ใช้เปิดแอปใหม่หรือไม่",
+            accessibilityService: "การอนุญาตนี้จำเป็นสำหรับการเปิดใช้งาน Accessibility Service ซึ่งใช้ในการติดตามกิจกรรมของผู้ใช้บนอุปกรณ์ ในกรณีนี้ เราจะใช้เพื่อติดตามว่าผู้ใช้เปิดแอปใหม่หรือไม่ เมื่อใช้กับการตรวจจับการใช้งานแบบช่วงเวลา ซึ่งตั้งขึ้นโดย User",
             notifications: "การอนุญาตนี้จำเป็นพื้นฐานในการส่งการแจ้งเตือนแบบพุชเมื่อเตือนผู้ใช้เกี่ยวกับเวลาหน้าจอ",
             wifi: "แอปพลิเคชันนี้ต้องใช้การเชื่อมต่ออินเทอร์เน็ตเพื่อลงทะเบียนบัญชี ดังนั้นโปรดตรวจสอบให้แน่ใจว่าได้เข้าถึงการเชื่อมต่ออินเทอร์เน็ตจากอุปกรณ์ของคุณ"
         },
@@ -109,6 +114,7 @@ const th = {
         choices: "คุณต้องการ...",
         initiate: "เริ่มการตรวจจับข้อมูลการใช้แอปพลิเคชัน",
         revoke: "หยุดการทำงานตัวตรวจจับเดิม",
+        revokeAll: "หยุดการทำงานตัวตรวจจับทั้งหมด",
         alertsuccessinitiate: "การตรวจจับข้อมูลการใช้แอปพลิเคชันสำเร็จ",
         alertsuccessrevoke: "หยุดการทำงานตัวตรวจจับเดิมสำเร็จ",
         alerterrorrevoke: "ไม่มีตัวตรวจจับกำลังทำงานอยู่",
@@ -155,6 +161,8 @@ const en = {
         attributionbutton:"Image Sources",
         signoutbutton:"Signout",
         languagetext:"Language",
+        othertext:"Other",
+        helpbutton:"Help",
         englishtext:"English",
         thaitext:"Thai",
         signOutAlertPart1: "You're about to sign out.",
@@ -162,6 +170,9 @@ const en = {
         signOutAlertPart2: "Do you confirm this operation?",
         proceedBtn: "Yes, I'd like to sign out",
         cancelBtn: "Cancel",
+        accessibilityserviceexplain: "In order to use our app, you need to allow the Accessibility Service for tracking the usage in period. But it might affect some of other apps that require security features. You can enable or disable it any time here by click this button.",
+        accessibilityservicetoggle: "Enable/Disable Accessibility Service",
+        helpinquiry: "For more information, please contact us."
     },
     defaultApp: "All-inclusive apps",
     userpage1: {
@@ -213,7 +224,7 @@ const en = {
         explanations: {
             writeSetting: "This permission is required to modify the system settings. This permission mainly relates to the \"Strict Mode\", which will alter the device audio and brightness each check that the app usage exceeds the limit, when this setting is switched on.",
             appUsageStats: "This permission is mainly required to monitor the usage of the application, and will be compared with the limit set by the user. The usage of the application will be queried every 1 minute or every time user open an application.",
-            accessibilityService: "This permission is required to enable the accessibility service, which is used for tracking user activity on the device. In this case, we use it to track whether the user is open a new app or not",
+            accessibilityService: "This permission is required to enable the accessibility service, which is used for tracking user activity on the device. In this case, we use it to track whether the user is open a new app or not in order to monitor the usage of the application in a specific period set by user.",
             notifications: "This permission is fundamentally required to send push notifications when reminding the user about their screen time",
             wifi: "This application requires internet connection to register an account by all means, so please make sure to have internet connection accessed from your device"
         },
@@ -225,6 +236,7 @@ const en = {
         choices: "Would you like to...",
         initiate: "Start App Usage Data tracker",
         revoke: "Stop the previous tracker",
+        revokeAll: "Stop all trackers",
         alertsuccessinitiate: "App Usage Data tracker started successfully",
         alertsuccessrevoke: "App Usage Data tracker stopped successfully",
         alerterrorrevoke: "No tracker is currently running",

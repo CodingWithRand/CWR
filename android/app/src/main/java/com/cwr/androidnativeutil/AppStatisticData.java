@@ -246,7 +246,7 @@ public class AppStatisticData extends MainNativeUtil{
             String packageName = resolveInfo.activityInfo.packageName;
             if (Objects.equals(packageName, NativeModuleContext.getPackageName())) continue;
             String appName = resolveInfo.loadLabel(packageManager).toString();
-            allInstalledAppNamesAndPackages.put(appName, appName + " (" + packageName + ")");
+            allInstalledAppNamesAndPackages.put(appName, appName);
         }
 
         promise.resolve(PackageUtilities.mapToWritableMap(allInstalledAppNamesAndPackages));

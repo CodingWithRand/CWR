@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useColorScheme, SafeAreaView, StatusBar, Image, View, TouchableOpacity, useWindowDimensions, Pressable, ScrollView, Text, Alert, BackHandler, StyleSheet, Modal, FlatList, Linking } from 'react-native';
+import { useColorScheme, SafeAreaView, StatusBar, Image, View, TouchableOpacity, useWindowDimensions, Pressable, ScrollView, Text, Alert, BackHandler, StyleSheet, Modal, FlatList, Linking, NativeModules } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,6 +19,7 @@ import SettingsApplied from './asset/components/index/settingsApplied';
 import { Dashboard } from './asset/components/utility-component';
 
 const Stack = createNativeStackNavigator();
+const { BackgroundProcess, PermissionCheck } = NativeModules;
 
 function ToolBarBTN({ navigation, guest }: { navigation: any, guest?: boolean }){
   const isDark = useColorScheme() === 'dark';
@@ -39,6 +40,7 @@ function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<
   const modal = {
     lang: useState(false),
     attrb: useState(false),
+    help: useState(false),
   }
   
   const iconSize = width > height ? 50 : 35
@@ -66,7 +68,7 @@ function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<
       display: 'flex',
       flexDirection: "row",
       alignItems: "center",
-    }
+    },
   })
 
   const imgSources = [
@@ -162,6 +164,39 @@ function ToolBar({ navigation, route }: { navigation: NativeStackNavigationProp<
             </View>
           </Modal>
         </View>
+        <Text style={mutableStyles.sectionTitle}>{langs[lang.lang].menu["othertext"]}</Text>
+        <View style={mutableStyles.menuBtn}>
+          <TouchableOpacity onPress={() => modal.help[1](true)}>
+            <Text style={mutableStyles.menuBtnText}>{langs[lang.lang].menu.helpbutton}</Text>
+          </TouchableOpacity>
+          <Modal visible={modal.help[0]} animationType='fade'>
+            <ScrollView style={{ backgroundColor: isDark ? "black" : "white", padding: 15 }}>
+              <Text style={{ marginVertical: 10, color: themedColor.comp }}>{langs[lang.lang].menu.accessibilityserviceexplain}</Text>
+              <TouchableOpacity style={{ marginVertical: 20 }} onPress={async () => await PermissionCheck.requestAccessibilityServicePermission()}>
+                <Text style={{ color: "red", textAlign: "center" }}>{langs[lang.lang].menu.accessibilityservicetoggle}</Text>
+              </TouchableOpacity>
+              <Text style={{ marginVertical: 10, color: themedColor.comp }}>{langs[lang.lang].menu.helpinquiry}</Text>
+              <Text style={{ fontWeight: "bold", color: themedColor.comp }}>Email: thanwisitang7910@gmail.com</Text>
+              <Text style={{ fontWeight: "bold", color: themedColor.comp }}>Facebook: Thanwisit Angsachon</Text>
+              <Text style={{ fontWeight: "bold", color: themedColor.comp }}>Tel: +66 0960042389</Text>
+            </ScrollView>
+            <Pressable onPress={() => modal.help[1](false)} style={{ backgroundColor: isDark ? "black" : "white" }}>
+              <Text style={{ color: themedColor.comp, textAlign: "center", fontSize: 30, marginVertical: 20 }}>X</Text>
+            </Pressable>
+          </Modal>
+        </View>
+        <View style={mutableStyles.menuBtn}>
+          <TouchableOpacity onPress={async () => {
+              await BackgroundProcess.revokeAppInForegroundEventListener();
+              if(await BackgroundProcess.isInvokerRegistered()){
+                  await BackgroundProcess.revokeInvokerRegistry();
+              }
+              Alert.alert("Success", langs[lang.lang].settingsAppliedPage.alertsuccessrevoke);
+          }}>
+              <Text style={[mutableStyles.menuBtnText, { color: "red", textAlign:"center" }]}>{langs[lang.lang].settingsAppliedPage.revokeAll}</Text>
+          </TouchableOpacity>
+        </View>
+        
         <SignOutBTN navigation={navigation} guest={route.params.guest}/>
       </View>
     </>

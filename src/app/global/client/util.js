@@ -505,7 +505,14 @@ function NavBar(){
     function MenuBtn(){
         const { device } = useGlobal();
         const [appearingComponent, setAppearance] = useState(<></>);
+        const [isMatched640, setIsMatched640] = useState();
         let menu;     
+
+        useEffect(() => {
+            const handleMatchedMediaChange = e => setIsMatched640(e.matches);
+            window.matchMedia("(max-width: 640px)").addEventListener("change", handleMatchedMediaChange);
+            return () => window.matchMedia("(max-width: 640px)").removeEventListener("change", handleMatchedMediaChange);
+        }, [])
 
         useEffect(() => {
             menu = document.querySelector("#navbar #menu");
@@ -523,8 +530,7 @@ function NavBar(){
                     setTimeout(() => menu.style.display = "none", 500)
                 };
             }
-
-            if(device.device === "xs"){
+            if(device.device === "xs" || (isMatched640 !== undefined ? isMatched640 : window.matchMedia("(max-width: 640px)").matches)) {
                 menu.style.display = "none"
                 menu.style.opacity = 0
                 setAppearance(<div id="menu-btn">Menu <Image width={15} height={15} dir="icon/" name="sort-down.png" alt="triangle-icon" onClick={menuBtn}/></div>)
@@ -534,7 +540,7 @@ function NavBar(){
                 menu.style.display = "flex"
                 menu.style.opacity = 1
             }
-        }, [device.device])
+        }, [device.device, isMatched640])
 
         return appearingComponent
     }
@@ -569,7 +575,7 @@ function NavBar(){
 function CorousselElements({ total, bgImgsSrc, autoScroll, elems, wrappersStyle }) {
     let imgs = [];
     for (let i = 0; i < total; i++) imgs.push(
-        <div className="c-elem w-screen h-screen" style={{ ...autoScroll, ...wrappersStyle[i], backgroundImage: `url(${bgImgsSrc + `/wallpaper-${i + 1}.jpg`})`, backgroundPositionX: "center", backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
+        <div className="c-elem w-screen h-screen" style={{ ...autoScroll, ...wrappersStyle[i], backgroundImage: `url(${bgImgsSrc + `/wallpaper-${i + 1}.png`})`, backgroundPositionX: "center", backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
             {elems[i]}
         </div>
     );

@@ -103,7 +103,7 @@
 
     .ctrl-btn {
         aspect-ratio: 2.25 / 1;
-        @apply absolute flex items-center flex-col-reverse h-screen w-full;
+        @apply absolute flex items-center flex-col-reverse h-screen w-full pointer-events-none;
     }
 
     .arrows {
@@ -111,12 +111,12 @@
     }
 
     .arrows #lft {
-        @apply h-full pl-6 !important;
+        @apply h-full pl-[3vw] pointer-events-auto !important;
         
     }
 
     .arrows #rght {
-        @apply h-full pr-6 !important;
+        @apply h-full pr-[3vw] pointer-events-auto !important;
         
     }
 
@@ -133,7 +133,7 @@
     }
 
     .tab {
-        @apply grow h-2 rounded-md bg-neutral-200 opacity-50;
+        @apply grow h-2 rounded-md bg-neutral-200 opacity-50 pointer-events-auto;
     }
 }
 

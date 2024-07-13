@@ -1,2 +1,2 @@
 # Pre-release Log
-*Latest Change* - About me page finished
+*Latest Change* - My Projects page replacement coroussel is finished.

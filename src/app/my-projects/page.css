@@ -1,5 +1,39 @@
-body{ overflow-x: hidden; }
+@tailwind components;
+
+@layer components{
+    h1.title{
+        @apply sm:text-4xl md:text-6xl lg:text-8xl;
+    }
+    h2.subtitle, p.development-status, a.learn-more{
+        @apply sm:text-lg md:text-xl lg:text-2xl;
+    }
+}
+
+html{ overflow-x: hidden; width: auto; height: auto; }
+body{width: auto; height: auto;}
 #navbar{ position: relative !important; }
 dd{ margin-inline-start: 40px; }
 h1{ font-size: xx-large }
 dt{ font-size: x-large; }
+
+.intro-page{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1rem;
+    height: 100%;
+    padding: 12vw;
+    text-align: center;
+}
+
+.cwr-education{
+    color: rgb(200, 255, 255);
+    text-shadow: 0 0 1rem rgb(0, 255, 255);
+}
+
+p.development-status{
+    opacity: 0.8;
+    color: white;
+    text-shadow: 0 0 1rem rgb(200, 255, 255);
+}

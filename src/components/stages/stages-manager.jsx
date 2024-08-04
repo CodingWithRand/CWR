@@ -4,19 +4,24 @@ import { Components } from "../../scripts/util";
 import { useGlobal } from "../../scripts/global";
 import FoundationOfProgramming from "./the-beginning/foundation-of-programming";
 import { SetUp } from "../setup";
+import { signOut } from "@firebase/auth";
 import "../../css/use/stages.css";
+import Cookies from "universal-cookie";
+import { auth } from "../../scripts/firebase";
 
 const totalStageSections = {
     "the-beginning": 3
 }
+const { AlertBox } = Components;
 
 export default function StagesManager(){
     const { stageName, sectionName, page } = useParams();
-    const { scriptLoaded } = useGlobal();
+    const { scriptLoaded, login } = useGlobal();
     const [ urlFilteredComponent, setUrlFilteredComponent ] = useState(null);
     const [ bgimg, setbgimg ] = useState("");
     const [ bgfilter, setbgfilter ] = useState(undefined);
     const navigator = useNavigate();
+    const cookies = new Cookies();
 
     useEffect(() => {
         switch(stageName){
@@ -70,6 +75,17 @@ export default function StagesManager(){
                         <Components.Dynamic.Image constant dir="icon/" name="next.png" alt="next-arrow-icon" />
                     </button>
                 </footer>} 
+                <AlertBox id="session-expired" auto detect={(login.isLoggedIn === "undefined" || login.isLoggedIn === false) && (cookies.get("login") === "undefined" || cookies.get("login") === false)} 
+                messages={{
+                    title: "Your session has expired.",
+                    subtitle: "Please sign in again!",
+                    action: "Sign out in"
+                }} 
+                action={() => {
+                    navigator("/registration");
+                    window.location.reload();
+                    signOut(auth);
+                }}/>
             </div>
         </>
     )

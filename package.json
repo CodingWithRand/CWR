@@ -27,9 +27,9 @@
     "webpack": "^5.89.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node caching-list.js && react-scripts start",
     "deploy": "npx vercel --prod",
-    "build": "react-scripts build",
+    "build": "node caching-list.js && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "css-compiler": "node ./src/scripts/tailwind-to-css.js",

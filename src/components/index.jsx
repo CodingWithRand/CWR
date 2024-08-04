@@ -136,7 +136,10 @@ function Stage(props){
         <div className={`stage ${props.status}`}>
             <dialog id={`sinf-${props.index}`} className="stage-info">
                 <div className="dialog-box">
-                    <h1 onClick={() => navigator(`/stage/${Functions.convertToParamCase(props.name)}/${Functions.convertToParamCase(props.sectionNames[props.currentSectionProgress || 0])}/0`)}>{`Stage ${props.index} (${props.currentSectionProgress || 0}/${props.totalSections || "NA"})`}</h1>
+                    <h1 onClick={() => {
+                        navigator(`/stage/${Functions.convertToParamCase(props.name)}/${Functions.convertToParamCase(props.sectionNames[props.currentSectionProgress || 0])}/0`)
+                        window.location.reload();
+                    }}>{`Stage ${props.index} (${props.currentSectionProgress || 0}/${props.totalSections || "NA"})`}</h1>
                     <h3>{props.name}</h3>
                     <p>{props.desc}</p>
                 </div>

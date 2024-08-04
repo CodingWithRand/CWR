@@ -21,7 +21,10 @@ export default function LoadingScreen() {
         navigator(`/${searchParams.get("redirectFrom") || ""}`);
         // window.location.reload();
       }
-      else navigator('/greeting');
+      else{ 
+        navigator('/greeting');
+        window.location.reload();
+      }
     };
   }, [searchParams.get('loadingState')]);
   
@@ -293,7 +296,7 @@ export default function LoadingScreen() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       if(searchParams.get("loadingState")) clearInterval(intervalId);
-      const quote = ["\"Hi guys, Rand here.\" How original...", "A former Roblox tutorial YouTuber", "I love you, Carisa", "Look at your closet"];
+      const quote = ["\"Hi guys, Rand here.\" How original...", "A former Roblox tutorial YouTuber", "I love you, Carisa", "Look at your closet", "If the loading bar hasn't started moving, please scroll down to the bottom of the page."];
       const randomIndex = Math.floor(Math.random() * quote.length);
       setLoadingQuote(quote[randomIndex]);
     }, 3000);

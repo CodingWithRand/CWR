@@ -6,17 +6,16 @@
     /* Footer Component */
 
     .footer {
-        @apply relative w-full p-4 sm:p-8 bg-[#DEDEDE] dark:bg-black dark:text-white;
-        display: grid;
+        @apply flex flex-col gap-y-4 md:grid relative w-full p-4 sm:p-8 bg-[#DEDEDE] dark:bg-black dark:text-white;
         grid-template-columns: repeat(3, 1fr);
     }
 
     .credit-card h1 {
-        @apply text-[1.1em] nmob:text-[1.4em] sm:text-[1.7em]
+        @apply text-[1.7em]
     }
 
     .credit-card ul li {
-        @apply flex items-center mb-1 leading-none text-[0.5em] nmob:text-[0.75em] sm:text-xs md:text-sm nmob:text-sm sm:text-base
+        @apply flex items-center mb-1 leading-none text-base
     }
 
     .footer .credit-card {

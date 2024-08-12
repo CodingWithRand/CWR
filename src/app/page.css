@@ -136,7 +136,7 @@
     }    
 
     #bio-card{
-        @apply rounded-lg shadow-sm max-w-3xl p-0 max-w-[80%] max-h-full overflow-hidden bg-white dark:bg-neutral-300;
+        @apply rounded-lg shadow-sm max-w-3xl p-0 max-w-[80%] max-h-full overflow-auto bg-white dark:bg-neutral-300;
         box-shadow: 0.5em 0.5em 2em gray;
     }
 

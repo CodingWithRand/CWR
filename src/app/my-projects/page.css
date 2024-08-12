@@ -32,8 +32,12 @@ dt{ font-size: x-large; }
     text-shadow: 0 0 1rem rgb(0, 255, 255);
 }
 
-p.development-status{
+p.development-status, a.visit-site{
     opacity: 0.8;
     color: white;
-    text-shadow: 0 0 1rem rgb(200, 255, 255);
+    text-shadow: 0 0 1rem rgb(200, 200, 200);
+}
+
+a.visit-site{
+    font-size: 3rem;
 }

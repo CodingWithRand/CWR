@@ -425,46 +425,34 @@ function Media(props){
 }
 
 function CWRFooter(){
-    const [ iconSize, setIconSize ] = useState(0);
-
-    useEffect(() => {
-        const handleIconSizeAlter = () => {
-            if(window.innerWidth < 400) setIconSize(12);
-            else setIconSize(20);
-        }
-        handleIconSizeAlter();
-        window.addEventListener("resize", handleIconSizeAlter);
-        return () => window.removeEventListener("resize", handleIconSizeAlter);
-    }, []);
-
     return(
         <footer className="footer">
             <div className="credit-card">
             <h1>Powered by</h1>
             <ul>
-                <li><Image dir="icon/" name="vercel.png" constant alt="vercel-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://vercel.com" target="_blank">Vercel</a></li>
-                <li><Image dir="icon/" name="fb.png" constant alt="firebase-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://firebase.google.com" target="_blank">Firebase</a></li>
-                <li><Image dir="icon/" name="github.svg" constant alt="github-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://github.com" target="_blank">GitHub</a></li>
-                <li><Image dir="icon/" name="render.png" alt="render-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://render.com" target="_blank">Render</a></li>
+                <li><Image dir="icon/" name="vercel.png" constant alt="vercel-logo" width={20} height={20}/>&nbsp;<a href="https://vercel.com" target="_blank">Vercel</a></li>
+                <li><Image dir="icon/" name="fb.png" constant alt="firebase-logo" width={20} height={20}/>&nbsp;<a href="https://firebase.google.com" target="_blank">Firebase</a></li>
+                <li><Image dir="icon/" name="github.svg" constant alt="github-logo" width={20} height={20}/>&nbsp;<a href="https://github.com" target="_blank">GitHub</a></li>
+                <li><Image dir="icon/" name="render.png" alt="render-logo" width={20} height={20}/>&nbsp;<a href="https://render.com" target="_blank">Render</a></li>
             </ul>
             </div>
             <div className="credit-card">
             <h1>Created using</h1>
             <ul>
-                <li><Image dir="icon/" name="react.png" constant alt="react-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://react.dev" target="_blank">React</a></li>
-                <li><Image dir="icon/" name="nextjs-icon-background.svg" alt="next-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://nextjs.org" target="_blank">Next.js</a></li>
-                <li><Image dir="icon/" name="express.svg" alt="express-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://expressjs.com/" target="_blank">Express</a></li>
-                <li><Image dir="icon/" name="node.png" constant alt="node-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://nodejs.org" target="_blank">Node.js</a></li>
-                <li><Image dir="icon/" name="tw.png" constant alt="tw-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a></li>
+                <li><Image dir="icon/" name="react.png" constant alt="react-logo" width={20} height={20}/>&nbsp;<a href="https://react.dev" target="_blank">React</a></li>
+                <li><Image dir="icon/" name="nextjs-icon-background.svg" alt="next-logo" width={20} height={20}/>&nbsp;<a href="https://nextjs.org" target="_blank">Next.js</a></li>
+                <li><Image dir="icon/" name="express.svg" alt="express-logo" width={20} height={20}/>&nbsp;<a href="https://expressjs.com/" target="_blank">Express</a></li>
+                <li><Image dir="icon/" name="node.png" constant alt="node-logo" width={20} height={20}/>&nbsp;<a href="https://nodejs.org" target="_blank">Node.js</a></li>
+                <li><Image dir="icon/" name="tw.png" constant alt="tw-logo" width={20} height={20}/>&nbsp;<a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a></li>
             </ul>
             </div>
             <div className="credit-card">
             <h1>Medias from</h1>
             <ul>
-                <li><Image dir="icon/" name="flaticon.png" constant alt="flaticon-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://flaticon.com" target="_blank">Flaticon</a></li>
-                <li><Image dir="icon/" name="iconduck.png" constant alt="iconduck-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://iconduck.com" target="_blank">Iconduck</a></li>
-                <li><Image dir="icon/" name="brand-freepik.svg" alt="freepik-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://www.freepik.com/" target="_blank">Freepik</a></li>
-                <li><Image dir="icon/" name="microsoft-designer.png" constant alt="microsoft-designer-logo" width={iconSize} height={iconSize}/>&nbsp;<a href="https://designer.microsoft.com/" target="_blank">Microsoft Designer (AI Generated)</a></li>
+                <li><Image dir="icon/" name="flaticon.png" constant alt="flaticon-logo" width={20} height={20}/>&nbsp;<a href="https://flaticon.com" target="_blank">Flaticon</a></li>
+                <li><Image dir="icon/" name="iconduck.png" constant alt="iconduck-logo" width={20} height={20}/>&nbsp;<a href="https://iconduck.com" target="_blank">Iconduck</a></li>
+                <li><Image dir="icon/" name="brand-freepik.svg" alt="freepik-logo" width={20} height={20}/>&nbsp;<a href="https://www.freepik.com/" target="_blank">Freepik</a></li>
+                <li><Image dir="icon/" name="microsoft-designer.png" constant alt="microsoft-designer-logo" width={20} height={20}/>&nbsp;<a href="https://designer.microsoft.com/" target="_blank">Microsoft Designer (AI Generated)</a></li>
                 <li><a href="/medias-src">View media sources list</a></li>
             </ul>
             </div>
@@ -546,14 +534,17 @@ function NavBar(){
     }
     
     return(
-        <nav id="navbar">
-            <MenuBtn />
-            <ul id="menu">
-                <li><a href="#about-me">About me</a></li>
-                <li><a href="/my-projects">My Projects</a></li>
-                <li><a>Lounge</a></li>
-                <li><a>Contact</a></li>
-            </ul>
+        <nav id="navbar" className="text-sm nmob:text-base">
+            <div className="flex flex-row justify-between items-center">
+                <a className="ml-4 w-[30px] h-[30px]" href="/"><Image constant dir="icon/" name="home.png" alt="home"/></a>
+                <MenuBtn />
+                <ul id="menu">
+                    <li><a href="/#about-me">About me</a></li>
+                    <li><a href="/my-projects">My Projects</a></li>
+                    <li><a>Lounge</a></li>
+                    <li><a>Contact</a></li>
+                </ul>
+            </div>
             <ul>
                 <ThemeChanger />
                 {   authUser.isAuthUser ? 

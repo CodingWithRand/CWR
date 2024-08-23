@@ -11,7 +11,7 @@ export default function MyProjects() {
     <>
       <NavBar />
       <Coroussel 
-        totalPages={5} 
+        totalPages={6} 
         corousselElements={[
           <div key={1} className="intro-page" style={{ backdropFilter: "blur(10px);" }}>
             <h1 className="title cwr-education">CWR Education</h1>
@@ -54,6 +54,14 @@ export default function MyProjects() {
             <p className="description text-white">This program is a simple encryption program that allows you to encrypt or decrypt text using the Caesar Cipher. It is developed in JavaScript.</p>
             <br />
             <a className="visit-site" href="http://codingwithrand.infinityfreeapp.com/caesar-cipher/" target="_blank">Try now!</a>
+          </div>,
+          <div key={6} className="intro-page" style={{ backdropFilter: "blur(10px);" }}>
+            <h1 className="title text-white" id="devto-project-name">Camp Activities Inquiry</h1>
+            <br />
+            <p className="description text-white">This website project is for submitting to participate in the first community challenge of <a href="https://dev.to/" target="_blank" className="text-red-500">DEV.to</a> <b><a href="https://dev.to/devteam/join-our-first-community-challenge-the-frontend-challenge-8be" target="_blank">&quot;The Frontend Challenge&quot;</a></b> in the prompt of &quot;Glam Up My Markup 💅&quot; To brief up the prompt in the challenge I participated in, it's about using CSS and JavaScript to make the template HTML code look beautiful and interactive when showing on the website. It's not a proper form though, so you cannot really submit any information to the database. By the way, I really participated in the challenge, but I didn't win any prizes. You can check for the participation badge on my Dev.to account profile to make sure I really participated.</p>
+            <br />
+            <a className="visit-site" href="https://codingwithrand.github.io/DEV.to-challenge/" target="_blank">Visit Site</a>
+            <a className="learn-more text-white" href="https://dev.to/codingwithrand/glam-up-my-markup-camp-activities-the-frontend-challenge-submission-1m4e" target="_blank">Learn More</a>
           </div>
         ]}
         corousselWrappersStyle={[

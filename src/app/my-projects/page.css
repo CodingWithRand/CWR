@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Carter+One&family=Truculenta:opsz,wght@12..72,100..900&display=swap');
 @tailwind components;
 
 @layer components{
@@ -6,6 +7,9 @@
     }
     h2.subtitle, p.development-status, a.learn-more{
         @apply sm:text-lg md:text-xl lg:text-2xl;
+    }
+    p.description{
+        @apply lg:text-lg
     }
 }
 
@@ -40,4 +44,11 @@ p.development-status, a.visit-site{
 
 a.visit-site{
     font-size: 3rem;
+}
+
+#devto-project-name{
+    font-family: "Carter One", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    text-shadow: 0 0 1rem rgb(255, 255, 255);
 }

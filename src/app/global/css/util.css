@@ -88,6 +88,7 @@
 
     .coroussel {
         @apply flex items-center;
+        overflow-x: hidden;
     }
 
     .coroussel ._elems .c-elem {

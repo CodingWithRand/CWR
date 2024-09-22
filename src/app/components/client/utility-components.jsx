@@ -85,24 +85,24 @@ export function ProgressBarSparkle() {
 
 function SkillBar({ abbrv, percent }){
     const { Image } = Client.Components.Dynamic;
-    const progressBar = useRef();
+    // const progressBar = useRef();
     const skillSection = useRef();
     
-    useEffect(() => {
-        const observer = new MutationObserver((mutationsList) => {
-            mutationsList.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                    if(skillSection.current.style?.opacity === "1"){
-                        progressBar.current.style.width = `${percent}%`;
-                    } else {
-                        progressBar.current.style.width = 0;
-                    }
-                }
-            })
-        })
-        observer.observe(skillSection.current, { attributes: true, attributeFilter: ['style'] });
-        return () => observer.disconnect();
-    }, [])
+    // useEffect(() => {
+    //     const observer = new MutationObserver((mutationsList) => {
+    //         mutationsList.forEach((mutation) => {
+    //             if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+    //                 if(skillSection.current.style?.opacity === "1"){
+    //                     progressBar.current.style.width = `${percent}%`;
+    //                 } else {
+    //                     progressBar.current.style.width = 0;
+    //                 }
+    //             }
+    //         })
+    //     })
+    //     observer.observe(skillSection.current, { attributes: true, attributeFilter: ['style'] });
+    //     return () => observer.disconnect();
+    // }, [])
 
     function getFullNameFromAbbrv(abbrv){
         switch(abbrv){
@@ -140,7 +140,7 @@ function SkillBar({ abbrv, percent }){
             <Image title={getFullNameFromAbbrv(abbrv)} constant dir="icon/" cls="skill-icon" name={`${abbrv}.png`} alt={`${abbrv}-icon`} width={30} height={30}/>
             &nbsp;
             <span className="skill-icon-name" style={{ color: `var(--${abbrv}-color)`}}>{getFullNameFromAbbrv(abbrv)}</span>
-            <div className="progress-cover-bar" title={`${percent}%`} style={{ background: `
+            {/* <div className="progress-cover-bar" title={`${percent}%`} style={{ background: `
                 var(--progress-bg-cover) padding-box,
                 var(--${abbrv}-gradient-color) border-box
             ` }}>
@@ -148,7 +148,7 @@ function SkillBar({ abbrv, percent }){
                     <ProgressBarSparkle />
                 </div>
                 <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-600 dark:text-neutral-300" style={{ textShadow: "0 0 5px lightgray" }}>{percent}%</span>
-            </div>
+            </div> */}
         </li>
     )
 }
@@ -180,7 +180,7 @@ export function SkillsBarList({ id }){
                             const ol = document.getElementById(id);
                             if(e.target.style.rotate === "180deg") {
                                 e.target.style.rotate = "0deg";
-                                ol.style.display = "block";
+                                ol.style.display = "grid";
                                 setTimeout(() => ol.style.opacity = 1, 500);
                                 ol.childNodes.forEach((li, i) => {
                                     if(li.tagName === "LI"){
@@ -204,7 +204,7 @@ export function SkillsBarList({ id }){
                     }
                 />
             </h2>
-            <ol id={id} style={{display: "none", opacity: 0}}>
+            <ol id={id} style={{display: "none", gridTemplateColumns: "repeat(4, 1fr)", opacity: 0}}>
                 {
                     (() => {
                         switch(id){

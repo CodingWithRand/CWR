@@ -20,7 +20,7 @@ export default function Home() {
               <article className="skills">
                 <SkillsBlock />
               </article>
-              <i className="text-black dark:text-white text-center p-4 sm:text-2xl lg:text-4xl w-full block">&quot;The only way to do great work is to love what you do&quot;</i>
+              <i className="text-black dark:text-white text-center p-4 sm:text-2xl lg:text-4xl w-full block">&quot;Time is precious, so manage it wisely.&quot;</i>
           </section>
       </main>
       <Client.Components.CWRFooter />

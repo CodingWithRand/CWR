@@ -104,7 +104,7 @@ export function SkillsBlock(){
                 <SkillsBarList id="frameworks-libs-tools"/>
                 <SkillsBarList id="technical-skills"/>
                 <SkillsBarList id="designing-skills" />
-                <li id="dev-type" className="text-center my-4 p-4">
+                {/* <li id="dev-type" className="text-center my-4 p-4">
                     <h2 className="text-base nmob:text-[1.45em] sm:text-[2em]" style={{ color: "white" }}>I&apos;m considered a...</h2>
                     <div className="progress-cover-bar mt-8 mb-4" style={{ width: "100%", background: `
                         var(--progress-bg-cover) padding-box,
@@ -120,7 +120,7 @@ export function SkillsBlock(){
                         <span className="text-center text-xs md:text-base" style={{ color: "white" }}>Full-Stack Developer</span>
                         <span className="text-right text-xs md:text-base" style={{ color: "white" }}>Back-End Developer</span>
                     </div>
-                </li>
+                </li> */}
             </ul>
         </div>
     )

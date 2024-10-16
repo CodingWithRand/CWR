@@ -9,7 +9,17 @@
         @apply sm:text-lg md:text-xl lg:text-2xl;
     }
     p.description{
-        @apply lg:text-lg
+        @apply lg:text-lg;
+    }
+    .title.thringo{
+        @apply text-blue-400;
+        -webkit-text-stroke-width: 2px;
+        -webkit-text-stroke-color: rgb(59 130 246);
+        text-shadow: 0 0 2rem rgb(188, 214, 255)
+    }
+    .subtitle.thringo, .learn-more.thringo{
+        @apply text-blue-400;
+        text-shadow: 0 0 2rem rgb(59 130 246)
     }
 }
 
@@ -51,4 +61,9 @@ a.visit-site{
     font-weight: 400;
     font-style: normal;
     text-shadow: 0 0 1rem rgb(255, 255, 255);
+}
+
+.description{
+    max-height: 50vh;
+    overflow: auto;
 }

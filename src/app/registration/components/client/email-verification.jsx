@@ -32,7 +32,7 @@ export default function EmailVerifificationPage() {
                     const targetWebsite = [
                         "https://cwr-education.vercel.app",
                     ];
-                    targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: userCredential.user.displayName , origin: window.location.origin }, url));
+                    targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: user.displayName , origin: window.location.origin }, url));
                 }
                 else window.location.replace("/")
             }

@@ -28,7 +28,13 @@ export default function EmailVerifificationPage() {
             if(user.emailVerified){
                 console.log('verified');
                 cookies.set("emailVerified", true, { path: "/" });
-                if(window === window.parent) window.location.replace("/")
+                if(window !== window.parent){
+                    const targetWebsite = [
+                        "https://cwr-education.vercel.app",
+                    ];
+                    targetWebsite.forEach((url) => window.parent.postMessage({ authenticationProgressFinished: true, clientUsername: userCredential.user.displayName , origin: window.location.origin }, url));
+                }
+                else window.location.replace("/")
             }
             else reload(user).then(() => console.log('Reloaded')).catch((error) => console.error('Error while try to fetch data from database:', error));
         }, 1000);

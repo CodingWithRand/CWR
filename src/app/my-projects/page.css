@@ -9,7 +9,7 @@
         @apply sm:text-lg md:text-xl lg:text-2xl;
     }
     p.description{
-        @apply lg:text-lg overflow-auto sm:overflow-hidden;
+        @apply lg:text-lg;
         max-height: 50vh;
     }
     .title.thringo{
@@ -62,4 +62,10 @@ a.visit-site{
     font-weight: 400;
     font-style: normal;
     text-shadow: 0 0 1rem rgb(255, 255, 255);
+}
+
+@media (max-width:640px){
+    p.description{
+        overflow: auto;
+    }
 }
